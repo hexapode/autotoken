@@ -180,3 +180,15 @@ A separate, opt-in Pi extension appends bounded source context after eligible su
 The context program triggered twice, appending10,020 bytes. The probe used $0.563712 in conservative accounting, within a separately reserved $3 portion of the existing Anthropic authorization. Total-token difference is -2,991 (-8.8%); call difference is -3 (-37.5%). Neither percentage is a general estimate of savings.
 
 An independent check ran the identical issue regression on the pristine base commit `7015fc4333a2f32cd58c3465296e834acd4496ff`: it fails on the trailing-newline email. Both final patches reject the three invalid public-issue email examples while accepting the valid email. Full repository suites also pass. Model randomness, the deliberately chosen issue, and a single rollout per arm prevent causal or generalization claims. Repeated independent issues and full routing costs are still required.
+
+### Further candidate mining
+
+A separate subagent mined the frozen baseline corpus for additional candidates, preserving issue partitions and keeping command-level evidence local (`data/analysis/additional-patterns-v1/report.json`):
+
+- Structured test results:108 `pytest ... | tail` observations across42 issues (25 observations /10 issues in heldout). In22 observations, an outer exit0 accompanies failure text. Some are intentional regression failures or compound commands; this is not proof that the agent declared success incorrectly. A program can preserve the test process status and provide bounded failure IDs/excerpts.
+- Checked text edits:195 replace/write observations across48 issues. Only46 contain guards recognized by the miner; unrecognized guards may exist. A bounded replacement operation could assert expected occurrence counts and return a diff, while the model still chooses the edit.
+- Isolated original-versus-patched checks:18 stash/test/restore observations across11 issues. Ten use whole-tree stash forms, which can also stash new tests. An isolated comparison runner is worth investigating.
+- Test discovery followed by execution:33 observations across29 issues, but30 following turns also edit source, weakening whole-call replacement claims.
+- Failure output followed by source inspection:36 observations with file/line pointers across27 issues; eight next turns include reads, none are pure read-only next turns.
+
+These are exploratory opportunities and feasibility rankings, not validated programs or measured savings. Structured test evidence and checked edits are the most concrete next implementation candidates.
