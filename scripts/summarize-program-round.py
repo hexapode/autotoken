@@ -12,6 +12,26 @@ def figures(events,denominator):
  usage=u.sums(events)
  return {'matchedUsage':usage,'matchedIssues':len({e['instance'] for e in events}),'callPercent':100*usage['calls']/denominator['calls'] if denominator['calls'] else 0,'tokenPercent':100*usage['totalTokens']/denominator['totalTokens'] if denominator['totalTokens'] else 0,'sourceReportedCostPercent':100*usage['sourceReportedCostSum']/denominator['sourceReportedCostSum'] if denominator['sourceReportedCostSum'] else 0}
 
+def workflow_evidence(events):
+ """Audit exact-stage continuity without adding dependent stages to the union."""
+ stages=[e for e in events if 'workflowStep' in e]
+ if not stages:return None
+ grouped=collections.defaultdict(list)
+ for e in stages:
+  grouped[(e['cohort'],e['instance'],e['workflowId'])].append(e)
+ chains=[]
+ for group in grouped.values():
+  group.sort(key=lambda e:e['workflowStep'])
+  for pos,e in enumerate(group):
+   if e['workflowStep']!=pos+1:raise ValueError('Workflow exact stage lacks its preceding exact stage')
+   if e['targetOrdinal']!=e['sourceOrdinal']+1:raise ValueError('Nonadjacent workflow stage')
+   if pos==0:
+    if e.get('dependencyTargetOrdinal') is not None:raise ValueError('First workflow stage has dependency')
+   elif e.get('dependencyTargetOrdinal')!=group[pos-1]['targetOrdinal'] or e['sourceOrdinal']!=group[pos-1]['targetOrdinal']:
+    raise ValueError('Broken workflow dependency')
+  if len(group)>1:chains.append(group)
+ return {'startedExactSequences':len(grouped),'sequencesWithMultipleExactStages':len(chains),'additionalExactStages':sum(len(g)-1 for g in chains),'multiStageOriginalUsage':u.sums([e for g in chains for e in g]),'addedToConservativeUnion':False,'netSavingsDemonstrated':False}
+
 def main():
  p=argparse.ArgumentParser(description=__doc__);p.add_argument('--manifest',type=pathlib.Path,required=True);p.add_argument('--baseline',type=pathlib.Path,required=True);p.add_argument('--cache',type=pathlib.Path,required=True);p.add_argument('--candidate',nargs=2,action='append',required=True);p.add_argument('--public',type=pathlib.Path,required=True);a=p.parse_args()
  manifest=json.loads(a.manifest.read_text());baseline=json.loads(a.baseline.read_text());denominator=baseline['denominator'];newreports=[];new_events=[]
@@ -55,7 +75,7 @@ def main():
   es=[e for e in old_events if e['program']==c['program']]
   rows.append({'program':c['program'],'title':c['title'],'round':'previous','proposals':c['proposals'],'proposalMatchPercent':100*len(es)/c['proposals'] if c['proposals'] else 0,**figures(es,denominator)})
  for report,es,file in newreports:
-  rows.append({'program':report['program'],'title':report['title'],'round':'new','sourceReport':file,'proposals':report['proposals'],'proposalMatchPercent':100*len(es)/report['proposals'] if report['proposals'] else 0,**figures(es,denominator),'cohorts':report.get('cohorts'),'partitions':report.get('byPartition',report.get('partitions'))})
+  rows.append({'program':report['program'],'title':report['title'],'round':'new','sourceReport':file,'proposals':report['proposals'],'proposalMatchPercent':100*len(es)/report['proposals'] if report['proposals'] else 0,**figures(es,denominator),'cohorts':report.get('cohorts'),'partitions':report.get('byPartition',report.get('partitions')),'workflowEvidence':workflow_evidence(es)})
  combined,duplicates,chains=agg.select_union(old_events+new_events);new_only,nd,nc=agg.select_union(new_events)
  report={'version':1,'kind':'conditional-gross-program-replay-percentages','trajectories':baseline['trajectories'],'uniqueIssues':baseline['uniqueIssues'],'denominator':denominator,'programs':rows,'previousUnion':figures(old_selected,denominator),'newRoundUnion':{**figures(new_only,denominator),'duplicateTargetsRemoved':nd,'dependentChainsExcluded':nc},'combinedUnion':{**figures(combined,denominator),'duplicateTargetsRemoved':duplicates,'dependentChainsExcluded':chains},'incrementalExactCalls':len(combined)-len(old_selected),'sourceManifestSha256':baseline['sourceManifestSha256'],'verifiedNewEvents':verified,'limitations':['Percentages divide matched original calls/tokens by the full corpus denominator, not by proposals.','Proposal match percentage is descriptive precision, not deployment safety or task success.','Programs see prior/current observations; future calls are replay labels only.','Original recorded token counts are known; avoiding those calls is conditional on dispensable reasoning and successful program execution.','Gross estimates exclude routing/program/false-positive costs and future context/cache effects.','Per-program savings may overlap; combined totals deduplicate targets and exclude dependent adjacent substitutions.','New candidates use candidate-specific discovery/validation issue partitions; previously inspected discovery issues are excluded from validation. This corpus is not untouched external validation.','Coverage-only or EOF-equivalent scenarios are not added to exact totals.','No recorded commands are executed and no paid model calls occur.']}
  a.public.write_text(json.dumps(report,indent=2)+'\n');print(json.dumps({'newRound':report['newRoundUnion'],'combined':report['combinedUnion'],'incrementalCalls':report['incrementalExactCalls']},indent=2))

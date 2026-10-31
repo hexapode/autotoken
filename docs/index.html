@@ -104,17 +104,29 @@ autotoken proxy --provider ollama</pre><p>Chat Completions, Responses, and Anthr
       <p class="replay-note">Three bounded planners pass 37 fixture checks. These are discovery results: matching a tool action does not prove that removing the model turn preserves its reasoning or fixes the issue. <a href="https://github.com/hexapode/autotoken/blob/main/eval/swebench/WORKFLOW_EXPERIMENT.md#mining-the-public-multi-harness-sample">Read the methods and results ↗</a></p>
       <div class="findings" id="savings-estimate"><div><div class="eyebrow">Replay estimate · 300 trajectories</div><h3>How many turns could code replace?</h3><p>We checked four programs against <strong>11,525 recorded assistant turns</strong>. There are <strong>34 exact, command-only matches</strong> (0.30% of turns). Including equivalent reads and assuming accompanying reasoning can be omitted gives <strong>572 potential replacements</strong> (4.96%).</p><p>The broader scenario includes 469 write-and-run steps, 61 navigation steps and 42 read repairs. Automatic script execution would require explicit opt-in. These are opportunities in discovery traces, not demonstrated saved calls.</p></div><div><div class="eyebrow">Counted with tiktoken</div><h3>What about tokens?</h3><p>Counting visible text with <code>cl100k_base</code> gives roughly <strong>1.02 million tokens</strong> for the strict scenario and <strong>6.98 million</strong> for the broader scenario—0.42% and 2.87% of the estimated corpus total.</p><p>Most of that is context that would not need to be sent for a skipped request. This assumes full conversation history on each request. Actual usage, context truncation, caching and routing costs are unavailable; these are gross estimates, not billed savings.</p><p><a href="trace-savings-estimate.json">Explore the counts and assumptions ↗</a></p></div></div>
       <div class="candidate-estimates" id="new-candidates">
-        <div class="section-heading"><div><div class="eyebrow">15 program candidates · five models</div><h3>Classify thousands of traces.</h3></div><p class="section-intro">2,498 trajectories, 500 issues and 129,846 recorded responses. The classifiers run locally, with no model calls.</p></div>
-        <p><strong>About 29 seconds for a full pass · 4 CPU workers</strong></p>
+        <div class="section-heading"><div><div class="eyebrow">18 program candidates · five models</div><h3>Classify thousands of traces.</h3></div><p class="section-intro">2,498 trajectories, 500 issues and 129,846 recorded responses. The classifiers run locally, with no model calls.</p></div>
+        <p><strong>About 36 seconds for a full pass · 4 CPU workers</strong></p>
         <table><caption>Five largest exact-match candidates; gross usage before routing and execution costs</caption><thead><tr><th scope="col">Program</th><th scope="col">Matches / proposals</th><th scope="col">Potential tokens avoided</th></tr></thead><tbody>
           <tr><th scope="row">Write a script, then run it</th><td>438 / 2,238</td><td>7,017,304</td></tr>
+          <tr><th scope="row">Read a unique Python definition</th><td>133 / 2,353</td><td>2,142,923</td></tr>
           <tr><th scope="row">Status after a syntax check</th><td>42 / 382</td><td>1,113,702</td></tr>
           <tr><th scope="row">Syntax check after an edit</th><td>30 / 1,574</td><td>949,349</td></tr>
           <tr><th scope="row">Continue a source read</th><td>38 / 12,335</td><td>518,334</td></tr>
-          <tr><th scope="row">Rerun a passing test</th><td>18 / 92</td><td>445,040</td></tr>
         </tbody></table>
-        <p class="replay-note"><strong>Combined: 0.48% of recorded calls / 0.34% of recorded tokens.</strong> The deduplicated total is 627 calls and 10.95 million tokens. These are conditional replay estimates. Removing model reasoning and preserving task results still need live testing; low proposal match rates rule out broad activation.</p>
-        <p class="replay-note">The runner evaluates each program independently and caches results by trace and source hashes. Wider-context opportunities stay separate because extra output costs are unknown. <a href="https://github.com/hexapode/autotoken#run-program-classifiers-on-thousands-of-traces">Run it yourself ↗</a> · <a href="program-round-v5-summary.json">All 15 candidates and percentages ↗</a> · <a href="program-round-v5-batch.json">Full batch report ↗</a> · <a href="usage-traces-scale-summary.json">Sources ↗</a></p>
+        <p class="replay-note"><strong>Combined: 0.59% of recorded calls / 0.40% of recorded tokens.</strong> The deduplicated total is 760 calls and 13.09 million tokens. These are conditional replay estimates. Removing model reasoning and preserving task results still need live testing; low proposal match rates rule out broad activation.</p>
+        <p class="replay-note">The runner evaluates each program independently and caches results by trace and source hashes. Wider-context opportunities stay separate because extra output costs are unknown. <a href="https://github.com/hexapode/autotoken#run-program-classifiers-on-thousands-of-traces">Run it yourself ↗</a> · <a href="program-round-v6-summary.json">All 18 candidates and percentages ↗</a> · <a href="program-round-v6-batch.json">Full batch report ↗</a> · <a href="usage-traces-scale-summary.json">Sources ↗</a></p>
+      </div>
+      <div class="candidate-estimates" id="program-round-v6">
+        <div class="eyebrow">Programs with several steps</div><h3>Can code carry a workflow further?</h3>
+        <p>Each program keeps state between tool results and stops when its next step is uncertain. We tested three sequences across the same 2,498 coding runs.</p>
+        <table><caption>Exact first steps and complete two-step matches; whole model responses only</caption><thead><tr><th scope="col">Workflow</th><th scope="col">First-step matches</th><th scope="col">Complete sequences</th></tr></thead><tbody>
+          <tr><th scope="row"><a href="workflow-investigate-v6.json">Find definition → read → expand a cut-off expression</a></th><td>133 / 2,353</td><td>0</td></tr>
+          <tr><th scope="row"><a href="workflow-repro-v6.json">Write reproduction → run → read failure context</a></th><td>350 / 1,339</td><td>0</td></tr>
+          <tr><th scope="row"><a href="workflow-verify-v6.json">Edit → compile → rerun a registered test</a></th><td>1 / 83</td><td>0</td></tr>
+        </tbody></table>
+        <p class="replay-note"><strong>133 new call matches / 2.14 million recorded tokens.</strong> All come from reading a unique Python definition. That adds 0.10 percentage points of call coverage and 0.07 points of token coverage. The reproduction and verification first steps overlap existing programs and add no new coverage.</p>
+        <p class="replay-note">The longer sequences remain unproven: none matched both steps. The investigation program proposed 31 expansions after detecting incomplete Python syntax, but none matched the next response. Of 350 reproduction runs, 149 hit import or environment failures—useful evidence for testing recovery with environment metadata.</p>
+        <p class="replay-note">These are local planners, not automatically enabled workflows. Exact agreement measures a potential opportunity; live routing, extra tool output and task outcomes determine actual savings. <a href="program-round-v6-summary.json">Counts, percentages and overlap audit ↗</a> · <a href="program-round-v6-batch.json">Full 18-program replay ↗</a></p>
       </div>
       <div class="candidate-estimates" id="program-round-v3">
         <details class="past-round"><summary>Earlier round: four workflow programs</summary>
@@ -143,7 +155,8 @@ autotoken proxy --provider ollama</pre><p>Chat Completions, Responses, and Anthr
       </details>
       </div>
       <div class="candidate-estimates" id="program-round-v5">
-        <div class="eyebrow">Latest tests</div><h3>Search fallback and environment checks.</h3>
+        <details class="past-round"><summary>Earlier round: search fallback and environment checks</summary>
+        <div class="eyebrow">Error recovery</div><h3>Search fallback and environment checks.</h3>
         <table><caption>Replay across 2,498 recorded coding runs</caption><thead><tr><th scope="col">Program</th><th scope="col">Eligible matches / proposals</th><th scope="col">Corpus tokens potentially avoided</th></tr></thead><tbody>
           <tr><th scope="row"><a href="candidate-empty-search-v5.json">Broaden an empty search</a></th><td>14 / 784</td><td>0.0122%</td></tr>
           <tr><th scope="row"><a href="candidate-pytest-repair-v5.json">Retry a missing pytest command</a></th><td>0 / 106</td><td>0%</td></tr>
@@ -152,6 +165,7 @@ autotoken proxy --provider ollama</pre><p>Chat Completions, Responses, and Anthr
         </tbody></table>
         <p class="replay-note">This round adds 14 exact matches and 396,689 tokens. All 12 observed module retries after a missing pytest command still lacked pytest, so they receive no repair credit. Missing paths had no unique correction in prior observations. No finish candidate met the strict registered-verification conditions; a passing test alone never implies completion.</p>
         <p class="replay-note">Empty-search fallback matched only 1.8% of proposals. Its runtime scope limits remain unverified, so it needs selective routing and live validation. <a href="program-round-v5-summary.json">Read the accounting and zero results ↗</a></p>
+        </details>
       </div>
       <div class="questions" aria-label="More programs tested">
         <details><summary>Structured test results · prototype tested</summary><p>In 66 discovery turns, the agent shortened test output through a shell pipeline. Fifteen outputs contained failure evidence even though the outer shell reported success; some failures were intentional. Our program preserves the actual test-process status and returns bounded failure details. Local fixture checks pass. Model-call savings are unproven.</p></details>

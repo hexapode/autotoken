@@ -863,3 +863,67 @@ also pass. Raw event evidence stays private; only code and aggregates are publis
 [Pytest retry](../../docs/candidate-pytest-repair-v5.json) ·
 [Path repair](../../docs/candidate-path-repair-v5.json) ·
 [Completion scenario](../../docs/candidate-finalize-v5.json)
+
+
+## Stateful workflow replay: sixth candidate round
+
+Three independent agents each built a bounded multi-step planner. Policies were
+frozen after discovery using SHA256(`autotoken-v6:` + issue) modulo 5 equal to
+zero; every model for an issue shares its partition. This is a previously studied
+corpus, not untouched external validation. No recorded command or paid model
+request was executed.
+
+| Workflow | First-step proposals / matches | Second-step proposals / matches | Complete sequences | Incremental calls |
+| --- | ---: | ---: | ---: | ---: |
+| Fresh reproduction → run → failure context | 1,339 / 350 | 13 / 0 | 0 | 0 |
+| Edit → compile → registered focused test | 83 / 1 | 1 / 0 | 0 | 0 |
+| Unique definition search → context → lexical-cutoff expansion | 2,353 / 133 | 31 / 0 | 0 | 133 |
+
+The investigation planner reads from the unique Python definition line through
+the next hundred-line boundary. It may expand once only when Python tokenization
+reports EOF inside a multiline statement or string. There are 133 exact first
+reads across 114 issues, containing 2,142,923 recorded tokens; 108 matches and
+1,728,438 tokens are in the within-round validation partition. First-step command
+agreement is 5.65%. None of the 31 expansion proposals matches the following
+response. The 516 wider-context matches remain excluded from exact savings.
+
+The reproduction workflow preserves script identity, classifies execution output
+and stops on import/setup errors without installing packages or editing source.
+Its 350 run-stage matches contain 4,841,444 tokens, all overlapping write-run v2.
+Of these runs, 149 show import/environment failures, 175 exit zero, 22 show
+application tracebacks and four other failures. Thirteen qualify for bounded
+repository-frame context, but none matches the next read. Exit zero does not
+establish a valid reproduction or solved issue.
+
+Verification requires explicit test registration plus trusted source/test hashes,
+cwd, environment identity and tree epoch. A failed compile or changed guard
+stops the state machine. Replay substitutes prior successful focused-test output
+for hypothetical registration, so deployment credit remains zero. The only
+compile match contains 28,129 tokens and overlaps edit-compile v3. No subsequent
+registered test matches. Starting all 83 workflows could require up to 166 tool
+executions if compilation always succeeds; that is an upper bound, not savings.
+
+After removing 351 duplicate targets, all 18 programs cover **760 calls /
+13,088,738 recorded tokens**, or **0.58531% of calls / 0.40352% of tokens**.
+This adds 133 calls and 2,142,923 tokens over the prior round (0.10243 and 0.06607
+percentage points respectively). All incremental coverage comes from a first
+step; longer complete workflows have no supporting exact replay sequence yet.
+The independent auditor now rejects orphan stages and broken dependencies and
+reports multi-stage evidence separately from the conservative union.
+
+These are conditional gross historical usage estimates. Runtime file checks,
+registration and sandbox state are not reconstructed. Extra output, false
+positive routing, execution costs, cache effects and lost reasoning can change
+net savings. Low agreement rules out broad activation. Live task-quality and
+causal saved-call checks remain necessary.
+
+The three planners pass 24 synthetic fixtures; eight batch/cache checks and six
+accounting/dependency checks pass. A four-worker full replay took 36.4 seconds.
+All individual counts and usage totals match the batch; source hashes are checked.
+Only aggregate reports and code are published; raw events remain local.
+
+[Overlap and percentage audit](../../docs/program-round-v6-summary.json) ·
+[Full 18-program batch](../../docs/program-round-v6-batch.json) ·
+[Investigation](../../docs/workflow-investigate-v6.json) ·
+[Reproduction](../../docs/workflow-repro-v6.json) ·
+[Verification](../../docs/workflow-verify-v6.json)
