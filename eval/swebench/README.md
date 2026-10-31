@@ -17,7 +17,7 @@ The runner uses official x86_64 task images. On Apple Silicon, Docker must suppo
 
 ## Local mode without Docker
 
-Local profiles are implemented for `marshmallow-code__marshmallow-1343` and `marshmallow-code__marshmallow-1359`. It uses a fresh shallow checkout at the dataset base commit and a dedicated Python 3.9 environment. Unknown issues fail explicitly until a tested dependency profile is added.
+Local dependency profiles cover Marshmallow, pydicom and Astroid. Each issue must pass its baseline suite before inference; the original Marshmallow #1343 and #1359 pilots also have independent public-issue regressions. Each run uses a fresh shallow checkout at the dataset base commit and a dedicated Python 3.9 environment (3.10 for Astroid). Unknown issues fail explicitly until a tested dependency profile is added.
 
 ```sh
 npm run swe:run -- --execution local \
@@ -110,3 +110,18 @@ The first two local issues passed fresh-checkout suites (786 and 971 tests) plus
 Both baseline runs hit missing `rg`. Future local preparations copy the host search binary into the task's minimal PATH and record its source/version in `search-tool.json`; missing-search recovery is excluded from proposals. The second run clarified timeout units in the tool schema. Freeze these environment/interface changes before any paired comparisons.
 
 Next: collect independent calibration issues, test abstention and semantic equivalence, then freeze candidates and a decision router for paired baseline/substitution runs. Include router and synthesis costs, failures, latency, and downstream patch correctness. Discovery replay is not held-out validation.
+
+## Larger discovery collection
+
+```sh
+.venv/bin/python eval/swebench/collection_inventory.py --out data/collection-inventory.json
+npm run swe:collect -- data/collection-inventory.json data/collections/discovery-1000 100 1000
+```
+
+The last arguments are the dollar accounting ceiling and maximum provider queries. Choose the ceiling before starting paid inference. The pinned full SWE-bench **development** inventory includes 96 distinct Marshmallow/pydicom/astroid issues; it never reads the test split for collection and never repeats an issue to inflate the sample. This inventory may not yield 1,000 useful calls. Expand tested repository profiles if it is exhausted. Keep the official test split untouched for future evaluation.
+
+Collection is sequential, resumable with the same command, and uses fresh checkouts. A baseline suite must pass before any paid inference. Unsupported environments are recorded as failures. Additional profiles have repository-suite checks only; only the original two pilot issues have independent public-issue regression checks. A passing suite alone does **not** establish that the issue was fixed. Raw traces, manifests, dependency snapshots and the collection ledger remain under ignored `data/`.
+
+`collection.json` durably reserves each request before dispatch, using UTF-8 request bytes plus 8,192 overhead tokens and the output cap. Inputs over 128 KB, non-text inputs, server-side conversation references and nonstandard service tiers are rejected. Accounting uses conservative $5/M input and $10/M output with no cache discounts; unknown or interrupted usage retains the reservation. This is a local estimate against published standard small-context pricing, not a provider invoice or account-level billing limit. A usage estimate exceeding its reservation stops collection for review. Completed responses and dispatched queries are reported separately. Failed tasks and partial traces are retained rather than discarded.
+
+Use `collection.json`/`summary.json` for progress. `collector.lock` prevents concurrent collectors in the same directory. After a hard crash, verify the recorded PID has stopped before removing the stale lock. Interrupted issues are retained and skipped on resume; remaining issues continue. Ctrl-C stops the active task and collection. Model retry is disabled; each issue has a 40-query limit and 15-minute inference deadline. Baseline/environment preparation and post-run testing have separate deadlines.

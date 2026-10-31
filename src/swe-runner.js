@@ -17,7 +17,7 @@ export function parseOptions(args) {
     const arg = args[i];
     if (arg === '--prepare-only') options.prepareOnly = true;
     else if (arg === '--no-evaluate') options.evaluate = false;
-    else if (['--execution', '--instance', '--dataset', '--split', '--out', '--max-requests', '--timeout-seconds'].includes(arg) && args[i + 1] && !args[i + 1].startsWith('--')) {
+    else if (['--revision', '--execution', '--instance', '--dataset', '--split', '--out', '--max-requests', '--timeout-seconds'].includes(arg) && args[i + 1] && !args[i + 1].startsWith('--')) {
       const key = { '--max-requests': 'maxRequests', '--timeout-seconds': 'timeoutSeconds' }[arg] || arg.slice(2);
       options[key] = ['maxRequests', 'timeoutSeconds'].includes(key) ? Number(args[++i]) : args[++i];
     } else throw new Error(`Unknown or incomplete option: ${arg}`);
@@ -70,7 +70,7 @@ export async function runTask(options) {
   const name = `m2c-swe-${randomBytes(8).toString('hex')}`;
   try {
     await stage('preparing');
-    await command(python, [join(ROOT, 'eval/swebench/prepare.py'), '--dataset', options.dataset, '--split', options.split, '--instance', options.instance, '--out', outputDir, ...(options.execution === 'local' ? ['--public-only'] : [])], { log: join(outputDir, 'prepare.log'), timeoutMs: 180000 });
+    await command(python, [join(ROOT, 'eval/swebench/prepare.py'), '--dataset', options.dataset, '--split', options.split, '--instance', options.instance, '--out', outputDir, ...(options.revision ? ['--revision', options.revision] : []), ...(options.execution === 'local' ? ['--public-only'] : [])], { log: join(outputDir, 'prepare.log'), timeoutMs: 180000 });
     const task = JSON.parse(await readFile(join(outputDir, 'task.json'), 'utf8'));
     manifest.datasetRevision = task.revision;
     if (options.prepareOnly) { await stage('prepared'); return manifest; }
@@ -79,11 +79,11 @@ export async function runTask(options) {
     if (options.execution === 'local') {
       await stage('preparing-local-environment');
       local = await prepareLocal(task, outputDir, command);
-      manifest.localEnvironment = { python: local.profile.python, packages: local.profile.packages, sandboxed: false };
+      manifest.localEnvironment = { python: local.profile.python, packages: local.profile.packages, testPath: local.profile.testPath, sandboxed: false };
       await stage('baseline-local-tests');
       manifest.baselineTests = await localTests(local, outputDir, 'before', command);
       if (manifest.baselineTests.suite.exitCode !== 0 || manifest.baselineTests.suite.timedOut) throw new Error('Local baseline suite failed; inspect before-tests.log before inference');
-      if (manifest.baselineTests.regression.exitCode === 0 || manifest.baselineTests.regression.timedOut) throw new Error('Public-issue regression was not reproduced cleanly');
+      if (manifest.baselineTests.regression && (manifest.baselineTests.regression.exitCode === 0 || manifest.baselineTests.regression.timedOut)) throw new Error('Public-issue regression was not reproduced cleanly');
     } else {
     await command('docker', ['info', '--format', '{{.ServerVersion}}']);
     dockerHost = process.env.DOCKER_HOST || (await command('docker', ['context', 'inspect', '--format', '{{.Endpoints.docker.Host}}'])).stdout.trim();
@@ -106,11 +106,13 @@ export async function runTask(options) {
     const token = randomBytes(24).toString('hex');
     let attempts = 0;
     proxy = createRecordingServer({ upstreamBase: process.env.LLM_BASE_URL || 'https://api.openai.com/v1', upstreamKey: key, proxyToken: token, directory: traceDir, runId: name, instanceId: task.instance_id, sessionId: 'baseline-1', timeoutMs: 180000,
-      transport: opts => {
+      onTrace: options.onTrace,
+      transport: async opts => {
         if (++attempts > options.maxRequests) throw new Error('Agent request budget exhausted');
         const body = JSON.parse(opts.body);
         if (body.model !== manifest.model || body.reasoning?.effort !== 'medium' || !(body.max_output_tokens > 0 && body.max_output_tokens <= 8192)) throw new Error('Unexpected model settings');
         if (!body.tools?.every(tool => tool.name === toolName)) throw new Error('Unexpected host tool advertised');
+        await options.beforeRequest?.(opts);
         return dispatch(opts);
       }
     });

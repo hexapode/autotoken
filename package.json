@@ -18,7 +18,8 @@
     "pi:live-smoke": "node --env-file-if-exists=.env src/pi-live-smoke.js",
     "swe:run": "node --env-file-if-exists=.env src/swe-runner.js",
     "swe:analyze": "node src/trajectory-analysis.js",
-    "swe:propose": "node --env-file-if-exists=.env src/trajectory-learn.js"
+    "swe:propose": "node --env-file-if-exists=.env src/trajectory-learn.js",
+    "swe:collect": "node --env-file-if-exists=.env src/collect.js"
   },
   "devDependencies": {
     "@earendil-works/pi-coding-agent": "1.4.0"

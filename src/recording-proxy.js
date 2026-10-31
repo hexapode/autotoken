@@ -37,7 +37,7 @@ export function createRecordingHandler({
   upstreamBase, upstreamKey, proxyToken, directory = './data/trajectories',
   runId = null, instanceId = null, sessionId = null, timeoutMs = 300000,
   maxRequestBytes = 16 * 1024 * 1024, maxRecordBytes = 64 * 1024 * 1024,
-  transport = dispatch, warn = console.error
+  transport = dispatch, onTrace, warn = console.error
 }) {
   if (!upstreamKey || !proxyToken) throw new Error('Set LLM_API_KEY and PROXY_TOKEN');
   const base = new URL(upstreamBase);
@@ -103,7 +103,7 @@ export function createRecordingHandler({
       const headers = forwardHeaders(req.headers, true);
       headers.authorization = `Bearer ${upstreamKey}`;
       headers['content-length'] = String(body.length);
-      const upstream = await transport({ url, headers, body, signal: controller.signal });
+      const upstream = await transport({ url, headers, body, signal: controller.signal, traceId: id });
       upstream.once('error', () => { upstreamFailed = true; });
       const cancelUpstream = () => upstream.destroy(new Error('Request cancelled'));
       controller.signal.addEventListener('abort', cancelUpstream, { once: true });
@@ -157,6 +157,7 @@ export function createRecordingHandler({
         metadata.response = completeRecording ? inspectResponse(Buffer.concat(recording), metadata.responseHeaders || {}, metadata.endpoint) : { usage: null, parseError: 'Incomplete recording' };
         try { await saveMetadata(traceDir, metadata); }
         catch { warn(`Trace ${metadata.id}: final metadata write failed`); }
+        try { await onTrace?.(metadata); } catch { warn(`Trace ${metadata.id}: completion callback failed`); }
       }
     }
   };

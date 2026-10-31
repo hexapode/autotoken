@@ -7,7 +7,7 @@ from huggingface_hub import HfApi
 
 
 def public_task(row):
-    return {key: row[key] for key in ("instance_id", "repo", "base_commit", "problem_statement", "image")}
+    return {key: row[key] for key in ("instance_id", "repo", "base_commit", "problem_statement", "image", "version") if key in row}
 
 
 def main():
@@ -17,8 +17,9 @@ def main():
     parser.add_argument('--instance', required=True)
     parser.add_argument('--out', required=True)
     parser.add_argument('--public-only', action='store_true')
+    parser.add_argument('--revision')
     args = parser.parse_args()
-    revision = HfApi().dataset_info(args.dataset).sha
+    revision = args.revision or HfApi().dataset_info(args.dataset).sha
     rows = load_dataset(args.dataset, split=args.split, revision=revision)
     row = next((dict(row) for row in rows if row['instance_id'] == args.instance), None)
     if row is None:

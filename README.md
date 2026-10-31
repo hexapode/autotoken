@@ -2,7 +2,7 @@
 
 A local experiment in replacing repeated LLM work with deterministic programs. General requests go through the proxy; the learner discovers recurring data transformations, proposes bounded programs, and evaluates them in shadow mode. A decision model selects a registered program or abstains.
 
-For the coding-agent experiment, a separate **Pi recording proxy** now preserves Responses API and Chat Completions requests, tool calls/results, streamed responses, and per-request traces. Start with [Pi setup and verification](examples/pi/README.md). This path is record-only. The [SWE-bench baseline runner](eval/swebench/README.md) supports isolated Docker tasks with official evaluation and an explicit Docker-free local pilot with repository tests. Both export patches and traces; learned action substitution is not yet implemented.
+For the coding-agent experiment, a separate **Pi recording proxy** now preserves Responses API and Chat Completions requests, tool calls/results, streamed responses, and per-request traces. Start with [Pi setup and verification](examples/pi/README.md). This path is record-only. The [SWE-bench baseline runner](eval/swebench/README.md) supports isolated Docker tasks with official evaluation and an explicit Docker-free local pilot with repository tests. Both export patches and traces; learned action substitution is not yet implemented. A resumable `swe:collect` runner supports larger discovery collections with per-request budget accounting; see the [collection instructions](eval/swebench/README.md#larger-discovery-collection).
 
 Public project: [hexapode/autotoken](https://github.com/hexapode/autotoken). The static explainer lives in [`docs/index.html`](docs/index.html).
 

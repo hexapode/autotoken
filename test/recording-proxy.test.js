@@ -175,3 +175,15 @@ test('Responses failed, incomplete and partial streams are distinguished from su
   const plain = inspectResponse(Buffer.from('{"status":"completed","output":[],"usage":{"total_tokens":7}}'), { 'content-type': 'application/json' }, '/v1/responses');
   assert.equal(plain.usage.total_tokens, 7);
 });
+
+test('collection gate receives trace identity and settlement includes final usage', async t => {
+  let reserved, settled;
+  const {handler, trace} = await setup(t, async opts => {
+    reserved = opts.traceId;
+    return upstream(JSON.stringify({status:'completed',output:[],usage:{input_tokens:123,output_tokens:7,total_tokens:130}}));
+  }, {onTrace: metadata => { settled=metadata; }});
+  const req=request('{"model":"gpt-6.1-sol"}');req.url='/v1/responses';
+  await handler(req,new ResponseSink());
+  assert.equal(reserved,(await trace()).metadata.id);
+  assert.equal(settled.id,reserved);assert.equal(settled.response.usage.total_tokens,130);
+});

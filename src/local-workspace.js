@@ -3,8 +3,8 @@ import { join } from 'node:path';
 import { localEnvironment } from './local-tool.js';
 
 export function localProfile(task) {
-  if (!['marshmallow-code__marshmallow-1343', 'marshmallow-code__marshmallow-1359'].includes(task.instance_id) || task.repo !== 'marshmallow-code/marshmallow') throw new Error('No verified local environment profile for this issue; use Docker or add a tested profile');
-  return { python: '3.9', packages: ['setuptools==68.2.2', 'wheel==0.42.0', 'pytest==6.2.5', 'python-dateutil==2.8.2', 'simplejson==3.19.2', 'pytz==2021.3'] };
+  if (!['marshmallow-code/marshmallow', 'pydicom/pydicom', 'pylint-dev/astroid'].includes(task.repo)) throw new Error('No verified local environment profile for this issue; use Docker or add a tested profile');
+  return { python: task.repo === 'pylint-dev/astroid' ? '3.10' : '3.9', testPath: task.repo === 'pydicom/pydicom' ? 'pydicom/tests' : 'tests', packages: [task.repo === 'pylint-dev/astroid' ? 'setuptools==65.6.3' : 'setuptools==68.2.2', 'wheel==0.42.0', 'pytest==6.2.5', 'python-dateutil==2.8.2', 'simplejson==3.19.2', 'pytz==2021.3', 'packaging==24.2', ...(task.repo === 'pylint-dev/astroid' ? ['wrapt==1.14.1', 'lazy-object-proxy==1.9.0', 'typing_extensions==4.12.2', 'attrs==23.2.0', 'six==1.16.0'] : []), ...(task.repo === 'pydicom/pydicom' ? ['numpy==1.23.5', 'Pillow==9.5.0'] : [])] };
 }
 export async function prepareLocal(task, directory, command) {
   const profile = localProfile(task);
@@ -31,18 +31,18 @@ export async function prepareLocal(task, directory, command) {
   const freeze = (await command('uv', ['pip', 'freeze', '--python', python])).stdout;
   await writeFile(join(directory, 'task-requirements.txt'), freeze);
   // Independent regression from the public issue; never uses SWE-bench's gold/test patches.
-  const regression = join(directory, 'issue-regression.py');
+  const regression = ['marshmallow-code__marshmallow-1343', 'marshmallow-code__marshmallow-1359'].includes(task.instance_id) ? join(directory, 'issue-regression.py') : null;
   const regressionCode = task.instance_id === 'marshmallow-code__marshmallow-1359'
     ? `from datetime import datetime\nfrom marshmallow import Schema, fields\nclass Lists(Schema):\n    times = fields.List(fields.DateTime())\nclass Tuples(Schema):\n    times = fields.Tuple((fields.DateTime(),))\nfor cls in [Lists, Tuples]:\n    schema = cls()\n    result = schema.load({'times': ['2020-01-02T03:04:05']})\n    assert result['times'][0] == datetime(2020, 1, 2, 3, 4, 5), result\nprint('Public-issue list/tuple DateTime regression passed')\n`
     : `from marshmallow import Schema, fields, validates\nclass Bar(Schema):\n    value = fields.String()\n    @validates('value')\n    def validate_value(self, value):\n        pass\nclass Foo(Schema):\n    bar = fields.Nested(Bar)\nerrors = Foo().validate({'bar': 'invalid'})\nassert isinstance(errors, dict) and 'bar' in errors, repr(errors)\nprint('Public-issue regression passed')\n`;
-  await writeFile(regression, regressionCode);
+  if (regression) await writeFile(regression, regressionCode);
   return { ...paths, profile, python, regression, env: localEnvironment(paths.repo, paths.venv, paths.home, paths.temp) };
 }
 export async function localTests(local, directory, phase, command) {
   const common = { cwd: local.repo, env: local.env, allowFailure: true, timeoutMs: 180000 };
-  const suite = await command(local.python, ['-m', 'pytest', '-q', 'tests'], { ...common, log: join(directory, `${phase}-tests.log`) });
-  const regression = await command(local.python, [local.regression], { ...common, log: join(directory, `${phase}-regression.log`) });
-  return { kind: 'local-tests-not-official-swebench', suite: { exitCode: suite.code, timedOut: suite.timedOut }, regression: { exitCode: regression.code, timedOut: regression.timedOut }, passed: suite.code === 0 && regression.code === 0 && !suite.timedOut && !regression.timedOut };
+  const suite = await command(local.python, ['-m', 'pytest', '-q', local.profile.testPath], { ...common, log: join(directory, `${phase}-tests.log`) });
+  const regression = local.regression ? await command(local.python, [local.regression], { ...common, log: join(directory, `${phase}-regression.log`) }) : null;
+  return { kind: 'local-tests-not-official-swebench', suite: { exitCode: suite.code, timedOut: suite.timedOut }, regression: regression ? { exitCode: regression.code, timedOut: regression.timedOut } : null, independentRegression: !!regression, passed: suite.code === 0 && !suite.timedOut && (!regression || (regression.code === 0 && !regression.timedOut)) };
 }
 
 export async function verifyLocalPatch(local, task, directory, command) {
