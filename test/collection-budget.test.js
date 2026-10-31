@@ -42,3 +42,14 @@ test('external allocation stays reserved until a final trial ledger settles', t 
  put('accounting-review');assert.equal(b.charged,8);
  put('complete');assert.equal(b.charged,.75);assert.equal(b.state.externalCosts[0].status,'settled');
 });
+test('Anthropic reservations use Opus pricing and reject other models or premium settings', t => {
+ const root=mkdtempSync(join(tmpdir(),'m2c-opus-budget-'));t.after(()=>rmSync(root,{recursive:true,force:true}));
+ const request={model:'claude-opus-5-5',max_tokens:8192,messages:[{role:'user',content:'hello'}]};
+ const bytes=Buffer.from(JSON.stringify(request));
+ assert.equal(requestReservation(bytes,'claude-opus-5-5'),((bytes.length+8192)*8+8192*20)/1e6);
+ assert.throws(()=>requestReservation(bytes));
+ assert.throws(()=>requestReservation(Buffer.from(JSON.stringify({...request,speed:'fast'})),'claude-opus-5-5'));
+ const budget=new CollectionBudget(join(root,'ledger'),{model:'claude-opus-5-5',requests:{},budgetUsd:25,targetQueries:40});
+ budget.reserve({traceId:'opus',body:bytes});budget.settle({id:'opus',state:'complete',response:{status:'completed',usage:{input_tokens:35,output_tokens:4}}});
+ assert.equal(budget.charged,.00036);
+});

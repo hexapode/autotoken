@@ -2,9 +2,12 @@ import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
+import { inspectAnthropicResponse } from './trace-anthropic.js';
+
 // Analysis is separate from forwarding. Unknown events remain intact in response.bin.
 export function inspectResponse(buffer, headers, endpoint = '/v1/chat/completions') {
   if (headers['content-encoding'] && headers['content-encoding'] !== 'identity') return { usage: null, parseError: 'Compressed response retained raw; analysis unavailable' };
+  if (endpoint === '/v1/messages') return inspectAnthropicResponse(buffer, headers);
   const text = buffer.toString('utf8');
   if (!String(headers['content-type']).includes('text/event-stream')) {
     try {

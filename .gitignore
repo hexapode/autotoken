@@ -10,3 +10,6 @@ __pycache__/
 .DS_Store
 *.pem
 *.key
+
+.autotoken.env
+.autotoken/

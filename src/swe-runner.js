@@ -7,6 +7,7 @@ import { pathToFileURL, fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
 import { createRecordingServer, dispatch } from './recording-proxy.js';
 import { summarizeTraces } from './trace.js';
+import { experimentModel } from './experiment-model.js';
 import { prepareLocal, localTests, verifyLocalPatch } from './local-workspace.js';
 
 const ROOT = resolve(fileURLToPath(new URL('..', import.meta.url)));
@@ -57,11 +58,12 @@ export function command(binary, args, { cwd = ROOT, env = process.env, log, time
 }
 export async function runTask(options) {
   if (options.workflowArm && (!['singleton', 'workflow'].includes(options.workflowArm) || options.execution !== 'local')) throw new Error('Invalid local workflow experiment arm');
+  const profile = experimentModel(options.model);
   const python = join(ROOT, '.venv/bin/python');
   const outputDir = resolve(options.out || join(ROOT, 'data/swebench', `${options.instance}-${new Date().toISOString().replaceAll(':', '-')}`));
   await mkdir(resolve(outputDir, '..'), { recursive: true });
   await mkdir(outputDir, { recursive: false, mode: 0o700 });
-  const manifest = { version: 1, kind: 'baseline-discovery-pilot', options, model: 'gpt-6.1-sol', reasoning: 'medium', piVersion: '1.4.0', swebenchVersion: '5.0.2', startedAt: new Date().toISOString(), state: 'preparing', outputDir };
+  const manifest = { version: 1, kind: 'baseline-discovery-pilot', options, model: profile.id, protocol: profile.api, reasoning: 'medium', piVersion: '1.4.0', swebenchVersion: '5.0.2', startedAt: new Date().toISOString(), state: 'preparing', outputDir };
   const save = () => writeFile(join(outputDir, 'manifest.json'), JSON.stringify(manifest, null, 2), { mode: 0o600 });
   const stage = async state => { manifest.state = state; console.log(`[${state}] ${options.instance}`); await save(); };
   let container, proxy, local, dockerHost;
@@ -75,8 +77,8 @@ export async function runTask(options) {
     const task = JSON.parse(await readFile(join(outputDir, 'task.json'), 'utf8'));
     manifest.datasetRevision = task.revision;
     if (options.prepareOnly) { await stage('prepared'); return manifest; }
-    const key = process.env.LLM_API_KEY || process.env.OPENAI_API_KEY;
-    if (!key) throw new Error('Set LLM_API_KEY or OPENAI_API_KEY');
+    const key = profile.provider === 'anthropic' ? process.env.ANTHROPIC_API_KEY : (process.env.LLM_API_KEY || process.env.OPENAI_API_KEY);
+    if (!key) throw new Error('Set the configured provider API key');
     if (options.execution === 'local') {
       await stage('preparing-local-environment');
       local = await prepareLocal(task, outputDir, command);
@@ -106,12 +108,13 @@ export async function runTask(options) {
     await mkdir(agentDir); await mkdir(workDir); await mkdir(traceDir);
     const token = randomBytes(24).toString('hex');
     let attempts = 0;
-    proxy = createRecordingServer({ upstreamBase: process.env.LLM_BASE_URL || 'https://api.openai.com/v1', upstreamKey: key, proxyToken: token, directory: traceDir, runId: name, instanceId: task.instance_id, sessionId: 'baseline-1', timeoutMs: 180000,
+    proxy = createRecordingServer({ upstreamBase: options.upstreamBase || (profile.provider === 'openai' ? process.env.LLM_BASE_URL : undefined) || profile.upstreamBase, upstreamAuth: profile.upstreamAuth, upstreamKey: key, proxyToken: token, directory: traceDir, runId: name, instanceId: task.instance_id, sessionId: 'baseline-1', timeoutMs: 180000,
       onTrace: options.onTrace,
       transport: async opts => {
         if (++attempts > options.maxRequests) throw new Error('Agent request budget exhausted');
         const body = JSON.parse(opts.body);
-        if (body.model !== manifest.model || body.reasoning?.effort !== 'medium' || !(body.max_output_tokens > 0 && body.max_output_tokens <= 8192)) throw new Error('Unexpected model settings');
+        const validSettings = profile.provider === 'anthropic' ? body.thinking?.type === 'adaptive' && body.output_config?.effort === 'medium' && body.max_tokens > 0 && body.max_tokens <= 8192 : body.reasoning?.effort === 'medium' && body.max_output_tokens > 0 && body.max_output_tokens <= 8192;
+        if (body.model !== manifest.model || !validSettings) throw new Error('Unexpected model settings');
         if (!body.tools?.every(tool => tool.name === toolName)) throw new Error('Unexpected host tool advertised');
         await options.beforeRequest?.(opts);
         return dispatch(opts);
@@ -120,8 +123,9 @@ export async function runTask(options) {
     const port = await new Promise((resolve, reject) => { proxy.once('error', reject); proxy.listen(0, '127.0.0.1', () => resolve(proxy.address().port)); });
     const config = JSON.parse(await readFile(join(ROOT, 'examples/pi/models.json'), 'utf8'));
     const provider = config.providers['model-to-code'];
-    provider.baseUrl = `http://127.0.0.1:${port}/v1`; delete provider.headers;
+    provider.baseUrl = `http://127.0.0.1:${port}${profile.provider === 'anthropic' ? '' : '/v1'}`; provider.api = profile.api; delete provider.headers;
     provider.models[0].maxTokens = 8192;
+    if (profile.provider === 'anthropic') provider.models = [{id: profile.id, name: 'Claude Opus 5.5', reasoning: true, input: ['text'], contextWindow: 200000, maxTokens:8192, cost:{input:4,output:20,cacheRead:0.2,cacheWrite:5}, compat:{forceAdaptiveThinking:true}}];
     await writeFile(join(agentDir, 'models.json'), JSON.stringify(config));
     await writeFile(join(agentDir, 'settings.json'), JSON.stringify({ transport: 'sse', defaultThinkingLevel: 'medium', retry: { enabled: false, provider: { maxRetries: 0 } } }));
     const prompt = taskPrompt(task, options.execution);
@@ -150,7 +154,7 @@ export async function runTask(options) {
       patch = (await command('docker', ['exec', '-w', '/testbed', name, 'git', 'diff', '--cached', '--binary', task.base_commit])).stdout;
     }
     await writeFile(join(outputDir, 'patch.diff'), patch);
-    const prediction = { instance_id: task.instance_id, model_name_or_path: `pi-1.4.0-gpt-6.1-sol-medium-${options.execution}-record-only`, model_patch: patch };
+    const prediction = { instance_id: task.instance_id, model_name_or_path: `pi-1.4.0-${profile.id}-medium-${options.execution}-record-only`, model_patch: patch };
     await writeFile(join(outputDir, 'predictions.jsonl'), JSON.stringify(prediction) + '\n');
     manifest.patchBytes = Buffer.byteLength(patch);
     if (container) { await command('docker', ['rm', '-f', name]); container = null; }

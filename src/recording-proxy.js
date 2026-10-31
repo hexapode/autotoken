@@ -34,28 +34,32 @@ async function saveMetadata(directory, metadata) {
 }
 
 export function createRecordingHandler({
-  upstreamBase, upstreamKey, proxyToken, directory = './data/trajectories',
+  upstreamBase, upstreamKey, upstreamAuth = 'bearer', proxyToken, directory = './data/trajectories',
   runId = null, instanceId = null, sessionId = null, timeoutMs = 300000,
   maxRequestBytes = 16 * 1024 * 1024, maxRecordBytes = 64 * 1024 * 1024,
   transport = dispatch, onTrace, warn = console.error
 }) {
-  if (!upstreamKey || !proxyToken) throw new Error('Set LLM_API_KEY and PROXY_TOKEN');
+  if ((!upstreamKey && upstreamAuth !== 'none') || !proxyToken) throw new Error('Set an upstream API key and PROXY_TOKEN');
+  if (!['bearer', 'x-api-key', 'none'].includes(upstreamAuth)) throw new Error('Invalid upstream authentication mode');
   const base = new URL(upstreamBase);
   if (!['https:', 'http:'].includes(base.protocol) || base.username || base.password || base.search || base.hash) throw new Error('Invalid upstream base URL');
   if (base.protocol === 'http:' && !['localhost', '127.0.0.1', '[::1]'].includes(base.hostname)) throw new Error('Use HTTPS for non-local upstreams');
   if (![timeoutMs, maxRequestBytes, maxRecordBytes].every(n => Number.isSafeInteger(n) && n > 0)) throw new Error('Limits must be positive integers');
-  const endpoints = { '/v1/chat/completions': 'chat/completions', '/v1/responses': 'responses' };
+  const endpoints = { '/v1/chat/completions': 'chat/completions', '/v1/responses': 'responses', '/v1/messages': 'messages' };
   return async (req, res) => {
     const send = (status, message) => {
       if (res.destroyed) return;
       res.writeHead(status, { 'content-type': 'application/json' });
       res.end(JSON.stringify(message));
     };
+    if (!req.url?.startsWith('/') || req.url.startsWith('//')) return send(404, {error:'Unsupported endpoint'});
+    const requestUrl = new URL(req.url, 'http://localhost');
+    const endpoint = requestUrl.pathname;
     if (req.headers.origin) return send(403, { error: 'Browser-origin requests are not supported' });
-    if (req.method === 'GET' && req.url === '/health') return send(200, { ok: true, mode: 'record-only', protocols: ['chat-completions', 'responses'] });
-    if (req.method !== 'POST' || !Object.hasOwn(endpoints, req.url)) return send(404, { error: 'Supported endpoints: POST /v1/chat/completions and POST /v1/responses' });
-    const url = new URL(`${base.href.replace(/\/$/, '')}/${endpoints[req.url]}`);
-    if (!authorized(req.headers.authorization, proxyToken)) return send(401, { error: 'Invalid proxy token' });
+    if (req.method === 'GET' && req.url === '/health') return send(200, { ok: true, mode: 'record-only', protocols: ['chat-completions', 'responses', 'anthropic-messages'] });
+    if (req.method !== 'POST' || !Object.hasOwn(endpoints, endpoint)) return send(404, { error: 'Supported endpoints: POST /v1/chat/completions, POST /v1/responses, POST /v1/messages' });
+    const url = new URL(`${base.href.replace(/\/$/, '')}/${endpoints[endpoint]}${requestUrl.search}`);
+    if (!authorized(req.headers.authorization || (endpoint === '/v1/messages' && typeof req.headers['x-api-key'] === 'string' ? `Bearer ${req.headers['x-api-key']}` : ''), proxyToken)) return send(401, { error: 'Invalid proxy token' });
     if (!String(req.headers['content-type']).toLowerCase().startsWith('application/json')) return send(415, { error: 'Use application/json' });
     if (req.headers['content-encoding'] && req.headers['content-encoding'] !== 'identity') return send(415, { error: 'Compressed request bodies are not supported' });
 
@@ -88,7 +92,7 @@ export function createRecordingHandler({
       const id = randomUUID(); traceDir = join(resolve(directory), id);
       await mkdir(traceDir, { recursive: true, mode: 0o700 });
       metadata = {
-        version: 1, id, mode: 'record-only', endpoint: req.url, startedAt: new Date().toISOString(),
+        version: 1, id, mode: 'record-only', endpoint, startedAt: new Date().toISOString(),
         runId: label(req.headers['x-m2c-run-id']) ?? runId,
         instanceId: label(req.headers['x-m2c-instance-id']) ?? instanceId,
         sessionId: label(req.headers['x-m2c-session-id']) ?? sessionId,
@@ -101,7 +105,9 @@ export function createRecordingHandler({
       await saveMetadata(traceDir, metadata);
       file = await open(join(traceDir, 'response.bin'), 'wx', 0o600);
       const headers = forwardHeaders(req.headers, true);
-      headers.authorization = `Bearer ${upstreamKey}`;
+      if (upstreamAuth === 'bearer') headers.authorization = `Bearer ${upstreamKey}`;
+      if (upstreamAuth === 'x-api-key') headers['x-api-key'] = upstreamKey;
+      if (endpoint === '/v1/messages' && !headers['anthropic-version']) headers['anthropic-version'] = '2023-06-01';
       headers['content-length'] = String(body.length);
       const upstream = await transport({ url, headers, body, signal: controller.signal, traceId: id });
       upstream.once('error', () => { upstreamFailed = true; });

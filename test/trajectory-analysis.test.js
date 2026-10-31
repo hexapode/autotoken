@@ -62,3 +62,14 @@ test('replay distinguishes command substeps from exact full-action matches', asy
   assert.equal(replay.triggered, 2); assert.equal(replay.exactCommandMatches, 1);
   assert.equal(replay.kind, 'discovery-replay-not-held-out');
 });
+
+test('Anthropic tool-use blocks link to subsequent native tool results', () => {
+ const metadata=(id,output)=>({id,startedAt:id,state:'complete',upstreamStatus:200,response:{output,status:'completed',done:true}});
+ const result='Exit code: 0; timed out: false\n3 passed';
+ const run=extractRun({options:{instance:'native',split:'dev'}},[
+  {metadata:metadata('a',[{type:'tool_use',id:'tool1',name:'local_bash',input:{command:'python -m pytest -q'}}]),request:{messages:[{role:'user',content:'fix'}]}},
+  {metadata:metadata('b',[{type:'text',text:'done'}]),request:{messages:[{role:'user',content:[{type:'tool_result',tool_use_id:'tool1',content:[{type:'text',text:result}]}]}]}}
+ ],'/native');
+ assert.equal(run.turns[0].actions[0].command,'python -m pytest -q');assert.equal(run.turns[0].actions[0].result,result);
+ assert.equal(run.turns[1].phase,'continuation');assert.equal(run.turns[1].previousToolResult,result);assert.equal(run.turns[1].finalAnswer,true);
+});

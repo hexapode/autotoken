@@ -19,18 +19,31 @@ function text(value) {
   if (Array.isArray(value)) return value.map(item => item.text || '').join('\n');
   return JSON.stringify(value ?? null);
 }
+function toolResults(request) {
+  const results = (Array.isArray(request.input) ? request.input : []).filter(i => i.type === 'function_call_output');
+  for (const message of request.messages || []) {
+    if (message.role === 'tool') results.push({call_id:message.tool_call_id,output:message.content});
+    for (const block of Array.isArray(message.content) ? message.content : []) if (block.type === 'tool_result') results.push({call_id:block.tool_use_id,output:block.content});
+  }
+  return results;
+}
+function responseActions(response) {
+  const actions = (response?.output || []).filter(i => ['function_call','tool_use'].includes(i.type)).map(i => ({call_id:i.call_id || i.id,name:i.name,arguments:i.type === 'tool_use' ? i.input : i.arguments}));
+  for (const choice of response?.choices || []) for (const tool of choice.message?.tool_calls || []) if (tool) actions.push({call_id:tool.id,name:tool.function?.name,arguments:tool.function?.arguments});
+  return actions;
+}
 export function extractRun(manifest, records, runDirectory) {
   const sorted = [...records].sort((a, b) => a.metadata.startedAt.localeCompare(b.metadata.startedAt));
   const results = new Map();
   for (const { request } of sorted) {
-    for (const item of request.input || []) if (item.type === 'function_call_output' && !results.has(item.call_id)) results.set(item.call_id, text(item.output));
+    for (const item of toolResults(request)) if (!results.has(item.call_id)) results.set(item.call_id, text(item.output));
   }
   const turns = [];
   for (const [index, { metadata, request }] of sorted.entries()) {
-    const prior = (request.input || []).filter(item => item.type === 'function_call_output');
-    const actions = (metadata.response?.output || []).filter(item => item.type === 'function_call').map(item => {
+    const prior = toolResults(request);
+    const actions = responseActions(metadata.response).map(item => {
       let argumentsValue = null;
-      try { argumentsValue = JSON.parse(item.arguments); } catch {}
+      try { argumentsValue = typeof item.arguments === 'string' ? JSON.parse(item.arguments) : item.arguments; } catch {}
       const command = typeof argumentsValue?.command === 'string' ? argumentsValue.command : null;
       const result = results.get(item.call_id) ?? null;
       return { callId: item.call_id, name: item.name, arguments: argumentsValue, command, tags: command === null ? ['unparsed'] : classifyCommand(command), result,
@@ -40,7 +53,7 @@ export function extractRun(manifest, records, runDirectory) {
     turns.push({ id: metadata.id, instanceId: metadata.instanceId ?? manifest.options?.instance, ordinal: index + 1, phase: prior.length ? 'continuation' : 'initial',
       previousToolResult: prior.length ? text(prior.at(-1).output) : null,
       actions, tags: [...new Set(actions.flatMap(a => a.tags))], usage: metadata.response?.usage ?? null, latencyMs: metadata.durationMs,
-      valid: metadata.state === 'complete' && metadata.upstreamStatus === 200 && !metadata.recordingTruncated && !metadata.recordingError && metadata.response?.done !== false && !metadata.response?.error,
+      valid: metadata.state === 'complete' && metadata.upstreamStatus === 200 && !metadata.recordingTruncated && !metadata.recordingError && metadata.response?.done !== false && !metadata.response?.error && !['failed','incomplete'].includes(metadata.response?.status),
       finalAnswer: actions.length === 0 });
   }
   return { directory: runDirectory, instanceId: manifest.options.instance, split: manifest.options.split, state: manifest.state, execution: manifest.options.execution,

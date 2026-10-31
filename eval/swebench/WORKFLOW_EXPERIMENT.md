@@ -45,3 +45,14 @@ The follow-up freezes six unseen issues (Astroid #1903, #1959, #1978; pydicom #1
 Pass a version-1 plan JSON with `issues` and `repeats` as the third argument to `workflow-trial.js`. Resuming requires identical plan, budget, pinned dataset and runtime hashes. Interrupted arms remain recorded and are not silently rerun. Report only complete three-arm blocks with passing suites as paired query deltas; preserve failures and unattempted blocks. The new issues do not yet have independent regression scripts, so suite passes alone are not proof of issue resolution.
 
 The collection ledger reserves the full experimental allocation while its separate ledger is running, interrupted, missing or unreadable. It releases unused funds only after terminal completion or budget exhaustion, including unknown-usage reservations in the final charge. This permits two separate processes without multiple writers to the same budget ledger. A full multiworker collector still needs a central reservation service or disjoint budgets.
+
+
+## Anthropic comparison
+
+The trial runner also accepts `claude-opus-5-5` as its final argument, with `ANTHROPIC_API_KEY` supplied through an ignored local environment file. It uses native Anthropic Messages through the recording proxy and medium adaptive thinking. The issue plan, three arms and two repetitions can be reused for a separate provider comparison. Per-provider tokens are not directly comparable tokenizer units.
+
+```sh
+node --env-file=.env.anthropic src/workflow-trial.js data/experiments/opus-v1 BUDGET_USD data/experiments/workflow-expanded-plan.json claude-opus-5-5
+```
+
+Set an authorized numeric budget before launching. Opus accounting conservatively charges all input, including cached tokens, at $8/M and output at $20/M, covering the published one-hour cache-write rate. Premium speed/residency options and multimodal input are rejected by the experimental budget gate. The general recording proxy has no model-ID restriction; these limits belong only to the paid experiment runner. Model availability was verified through Anthropic's Models API; a full run requires a separate explicit spending allowance.

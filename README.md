@@ -8,7 +8,46 @@ Public project: [hexapode/autotoken](https://github.com/hexapode/autotoken). The
 
 An [exploratory workflow comparison](eval/swebench/WORKFLOW_EXPERIMENT.md) tests automatic validation against single-check and baseline arms on independent issues. This intervention is confined to the experiment.
 
-## Run
+## Install
+
+Node.js 22.19 or later is required. The CLI has no runtime npm dependencies. Install from the public GitHub repository:
+
+```sh
+npm install -g github:hexapode/autotoken
+autotoken demo
+```
+
+The demo is offline and needs no API key. To record real requests:
+
+```sh
+autotoken init
+# Edit .autotoken.env: set LLM_API_KEY to your provider key.
+autotoken proxy --provider openai
+```
+
+`init` generates a separate local `PROXY_TOKEN`, writes an owner-only configuration file, and excludes that file and `.autotoken/` recordings from Git. Point your client's base URL at `http://127.0.0.1:3001/v1`, use `PROXY_TOKEN` as its API key, and keep its existing model ID. The upstream provider key stays in the proxy. `autotoken traces .autotoken/traces` summarizes recordings.
+
+### Providers
+
+The recording proxy is model-agnostic. It forwards the client's model ID and request body unchanged, including tools and streamed responses. The API format must match the configured provider; this is not an API translator.
+
+| Provider | Start command | Client API |
+| --- | --- | --- |
+| OpenAI | `autotoken proxy --provider openai` | Chat Completions or Responses |
+| Anthropic | `autotoken proxy --provider anthropic` | Native Messages |
+| OpenAI-compatible service | `autotoken proxy --provider compatible --upstream https://YOUR_PROVIDER/v1` | Supported Chat Completions / Responses endpoints |
+| Local Ollama | `autotoken proxy --provider ollama` | Ollama's supported OpenAI-compatible endpoints |
+
+Anthropic accepts `ANTHROPIC_API_KEY` or `LLM_API_KEY`; use `http://127.0.0.1:3001` as an Anthropic SDK base URL (the SDK appends `/v1/messages`). OpenAI accepts `OPENAI_API_KEY` or `LLM_API_KEY`. Other hosted compatible services use `LLM_API_KEY`. Local Ollama needs no upstream key, but client authentication still uses the local `PROXY_TOKEN`.
+
+Options include `--env-file PATH`, `--port NUMBER`, and `--trace-dir PATH`; see `autotoken --help`. Each proxy process connects to one upstream. Start separate ports for multiple providers. The native Gemini, Bedrock, Azure deployment-path APIs, realtime WebSockets, uploads and batch APIs are not implemented. Use a compatible endpoint where your provider offers one.
+
+Anthropic authentication, version headers, streamed tool JSON, and cumulative usage are covered by mock transport and real-Pi integration tests. The [Anthropic Messages documentation](https://platform.claude.com/docs/en/api/overview) and [streaming guide](https://platform.claude.com/docs/en/build-with-claude/streaming) define that protocol. Ollama documents its [OpenAI-compatible API](https://docs.ollama.com/api/openai-compatibility); endpoint support varies by provider. Recorded token totals include cached input; they are not invoices.
+
+Installing the proxy enables recording, not automatic substitution. The bounded transformation demo and experimental coding workflows remain separate. Trace files can contain full prompts and source code; keep `.autotoken/` private. No traces are uploaded by Autotoken beyond the original requests sent to your configured model provider.
+
+## Run from source
+
 
 The core proxy requires Node.js 22+; no package installation is needed for its runtime or unit tests. The optional real-Pi integration test uses the pinned development dependency (`npm ci --ignore-scripts`) and requires Node.js 22.19+.
 

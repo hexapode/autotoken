@@ -85,7 +85,7 @@ test('upstream status and retry headers pass through without retrying', async t 
 });
 test('authentication and unsupported endpoints never call the upstream', async t => {
   const { handler, directory } = await setup(t, () => { throw new Error('Must not run'); });
-  for (const [headers, path, expected] of [[{ authorization: 'Bearer wrong' }, '/v1/chat/completions', 401], [{ origin: 'https://other.invalid' }, '/v1/chat/completions', 403], [{}, '/v1/messages', 404]]) {
+  for (const [headers, path, expected] of [[{ authorization: 'Bearer wrong' }, '/v1/chat/completions', 401], [{ origin: 'https://other.invalid' }, '/v1/chat/completions', 403], [{}, '/v1/unsupported', 404]]) {
     const req = request('{}', headers); req.url = path;
     const res = new ResponseSink(); await handler(req, res); assert.equal(res.statusCode, expected);
   }
@@ -186,4 +186,29 @@ test('collection gate receives trace identity and settlement includes final usag
   await handler(req,new ResponseSink());
   assert.equal(reserved,(await trace()).metadata.id);
   assert.equal(settled.id,reserved);assert.equal(settled.response.usage.total_tokens,130);
+});
+
+test('Anthropic Messages preserves bytes, model and SDK headers while replacing credentials', async t => {
+ const body=JSON.stringify({model:'claude-opus-5-5',max_tokens:128,system:'instructions',messages:[{role:'user',content:[{type:'text',text:'hi'}]}]});
+ const reply=JSON.stringify({type:'message',content:[{type:'text',text:'hello'}],stop_reason:'end_turn',usage:{input_tokens:10,cache_read_input_tokens:20,cache_creation_input_tokens:5,output_tokens:4}});
+ const {handler,trace}=await setup(t,async opts=>{
+  assert.equal(opts.url.href,'https://provider.invalid/v1/messages?beta=true');assert.equal(opts.body.toString(),body);
+  assert.equal(opts.headers['x-api-key'],'upstream-secret');assert.equal(opts.headers.authorization,undefined);
+  assert.equal(opts.headers['anthropic-version'],'2023-06-01');assert.equal(opts.headers['anthropic-beta'],'example-beta');
+  return upstream(reply);
+ },{upstreamAuth:'x-api-key'});
+ const req=request(body,{'x-api-key':'local-secret','anthropic-beta':'example-beta'});delete req.headers.authorization;req.url='/v1/messages?beta=true';
+ const res=new ResponseSink();await handler(req,res);assert.equal(res.bytes().toString(),reply);
+ const saved=await trace();assert.equal(saved.metadata.response.usage.total_tokens,39);assert.equal(saved.metadata.model,'claude-opus-5-5');
+ assert.doesNotMatch(JSON.stringify(saved.metadata),/local-secret|upstream-secret/);
+});
+test('Anthropic stream preserves tool JSON and cumulative usage without double counting', () => {
+ const events=[{type:'message_start',message:{usage:{input_tokens:10,cache_read_input_tokens:20,output_tokens:1}}},{type:'content_block_start',index:0,content_block:{type:'tool_use',id:'t1',name:'read',input:{}}},{type:'content_block_delta',index:0,delta:{type:'input_json_delta',partial_json:'{"path":'}},{type:'content_block_delta',index:0,delta:{type:'input_json_delta',partial_json:'"a.py"}'}},{type:'content_block_stop',index:0},{type:'message_delta',delta:{stop_reason:'tool_use'},usage:{output_tokens:7}},{type:'message_stop'}];
+ const parse=e=>inspectResponse(Buffer.from(e.map(v=>'data: '+JSON.stringify(v)+'\n\n').join('')),{'content-type':'text/event-stream'},'/v1/messages');
+ const parsed=parse(events);assert.equal(parsed.usage.total_tokens,37);assert.deepEqual(parsed.output[0].input,{path:'a.py'});assert.equal(parsed.done,true);
+ assert.equal(parse(events.slice(0,-1)).status,'incomplete');assert.equal(parse([...events,{type:'error',error:{type:'overloaded_error'}}]).status,'failed');
+});
+test('local compatible server receives no upstream credentials in unauthenticated mode', async t => {
+ const {handler}=await setup(t,async opts=>{assert.equal(opts.headers.authorization,undefined);assert.equal(opts.headers['x-api-key'],undefined);return upstream('{"choices":[]}');},{upstreamAuth:'none',upstreamKey:undefined});
+ const res=new ResponseSink();await handler(request('{"model":"my-local-model"}'),res);assert.equal(res.statusCode,200);
 });
