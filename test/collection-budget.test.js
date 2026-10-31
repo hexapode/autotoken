@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, rmSync, readFileSync } from 'node:fs';
+import { mkdtempSync, rmSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { CollectionBudget, requestReservation } from '../src/collection-budget.js';
@@ -30,4 +30,15 @@ test('external experiment allocations reduce collection budget without inflating
  const b=new CollectionBudget(join(root,'ledger'),{requests:{},budgetUsd:1,targetQueries:10,externalCosts:[{charged:.99,source:'paired-trial'}]});
  assert.equal(b.attempts,0);assert.equal(b.charged,.99);
  assert.throws(()=>b.reserve({traceId:'a',body}),/dollar budget/);
+});
+test('external allocation stays reserved until a final trial ledger settles', t => {
+ const root=mkdtempSync(join(tmpdir(),'m2c-budget-'));t.after(()=>rmSync(root,{recursive:true,force:true}));
+ const trial=join(root,'trial.json');const file=join(root,'ledger');
+ const b=new CollectionBudget(file,{requests:{},budgetUsd:10,targetQueries:10,externalCosts:[{source:trial,status:'reserved',reservation:8,charged:8}]});
+ assert.equal(b.charged,8);
+ const put=status=>writeFileSync(trial,JSON.stringify({status,budgetUsd:8,requests:{a:{charged:.5},b:{charged:.25}}}));
+ put('running');assert.equal(b.charged,8);
+ put('interrupted');assert.equal(b.charged,8);
+ put('accounting-review');assert.equal(b.charged,8);
+ put('complete');assert.equal(b.charged,.75);assert.equal(b.state.externalCosts[0].status,'settled');
 });

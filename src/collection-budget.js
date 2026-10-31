@@ -1,4 +1,4 @@
-import { writeFileSync, renameSync } from 'node:fs';
+import { writeFileSync, renameSync, readFileSync } from 'node:fs';
 
 // Conservative accounting: no cache discounts. Unknown/unfinished requests retain
 // their reservation on resume. These are estimates, not the provider's invoice.
@@ -15,12 +15,28 @@ export function requestReservation(body) {
 export class CollectionBudget {
   constructor(file, state) { this.file = file; this.state = state; }
   save() { writeFileSync(this.file + '.tmp', JSON.stringify(this.state, null, 2), { mode: 0o600 }); renameSync(this.file + '.tmp', this.file); }
-  get charged() { return Object.values(this.state.requests).reduce((n, r) => n + r.charged, 0) + (this.state.externalCosts || []).reduce((n, r) => n + r.charged, 0); }
+  refreshExternalCosts() {
+    for (const entry of this.state.externalCosts || []) {
+      if (entry.status !== 'reserved') continue;
+      try {
+        const trial = JSON.parse(readFileSync(entry.source, 'utf8'));
+        if (!['complete', 'budget-stopped'].includes(trial.status) || trial.budgetUsd !== entry.reservation) continue;
+        const values = Object.values(trial.requests).map(r => r.charged);
+        if (values.some(n => !Number.isFinite(n) || n < 0)) continue;
+        const actual = values.reduce((a,b) => a+b,0);
+        if (actual > entry.reservation) this.state.accountingError = 'External trial exceeded its reserved budget';
+        entry.charged = actual; entry.status = 'settled'; entry.queries = values.length;
+      } catch { /* Retain full allocation on missing, partial, or unreadable ledger. */ }
+    }
+  }
+  get charged() { this.refreshExternalCosts(); return Object.values(this.state.requests).reduce((n, r) => n + r.charged, 0) + (this.state.externalCosts || []).reduce((n, r) => n + r.charged, 0); }
   get attempts() { return Object.keys(this.state.requests).length; }
   reserve({ traceId, body }) {
     if (!traceId || this.state.requests[traceId]) throw new Error('Duplicate request reservation');
     if (this.attempts >= this.state.targetQueries) throw new Error('Collection query limit reached');
     const charged = requestReservation(body);
+    this.refreshExternalCosts();
+    if (this.state.accountingError) throw new Error(this.state.accountingError);
     if (this.charged + charged > this.state.budgetUsd) throw new Error('Collection dollar budget reached');
     this.state.requests[traceId] = { charged, reservation: charged, state: 'reserved' };
     this.save(); // Durable BEFORE dispatch; failed dispatches remain charged.
