@@ -790,3 +790,76 @@ estimates before routing/execution/false-positive costs or downstream task effec
 [Read continuation](../../docs/candidate-read-continuation-v4.json) ·
 [Edited-file review](../../docs/candidate-patch-review-v4.json) ·
 [Traceback context](../../docs/candidate-traceback-context-v4.json)
+
+### Error recovery and explicit completion checks (round v5)
+
+Four separate agents evaluated one program each on the same 2,498 trajectories.
+Discovery was fixed up front as SHA256(`autotoken-v5:` + issue ID) modulo five
+equals zero: 110 discovery issues and 390 within-round validation issues, grouped
+across models. Policies were frozen before validation; this is still a reused
+research corpus. No recorded commands or paid inference were executed.
+
+| Candidate | Proposals | Eligible exact matches | Recorded tokens | Corpus token % |
+| --- | ---: | ---: | ---: | ---: |
+| Empty-search parent-scope fallback | 784 | 14 | 396,689 | 0.01223% |
+| Missing pytest → module retry | 106 | 0 | 0 | 0% |
+| History-bound missing-path repair | 0 | 0 | 0 | 0% |
+| Explicit finish-after-verification | 0 | 0 | 0 | 0% |
+
+**Empty-search fallback** requires native exit 1 with empty output from a plain
+literal `grep` over one explicit repository file. It predicts fixed recursive
+search of that file's immediate parent, preserving the pattern, with no line
+numbers. Root-wide search, changed queries, regex rewrites, bundles and unsupported
+options abstain. Future execution must enforce registered-tree/no-symlink limits,
+1,000 files, 8 MB total input, 16 KB output and a five-second timeout. Historical
+bounds are unverified. Fourteen whole calls match across 13 issues (13 Gemini,
+one DeepSeek), all containing observed reasoning/prose. The match rate is only
+1.79%. Nine validation matches account for 280,851 tokens; discovery has five.
+
+**Missing pytest** accepts an exact native exit-127 executable-not-found error
+and a bounded standalone invocation with explicit test targets. Its fixed retry
+uses registered `python3 -m pytest` with the same arguments and working directory,
+without installation or option/target guessing. Twelve observed next commands
+match that retry, but all twelve report that the pytest module is missing. They
+fail the program's runtime-result guard and receive no eligible repair credit.
+The remaining 94 next commands differ. An unavailable module is an environment
+problem, not a repaired invocation; those failed retries are recorded separately.
+
+**Path repair** preserves a failed `cat`/`head`/`sed` operation and range while
+looking for exactly one previously observed successful same-basename path. It
+uses the prior 12 responses and supported file listings, never future filenames,
+spelling guesses or new searches. There are 29 supported native failed reads,
+but none has the necessary unique historical alternative, so no proposal qualifies.
+
+**Explicit completion** is a hypothetical opt-in scenario, not a default
+termination rule. It requires an exact registered pytest command with a positive
+passed-count summary, subsequent successful full-tree `git diff --check`, only
+supported read-only operations in the recent history, unchanged tree/environment,
+and registered handling of staged/untracked changes. Historical opt-in and test
+registration are absent; deployment credit is always zero. Of 40 diff-check-like
+turns, seven have supported passing full-tree checks, but none also has the
+required recent trustworthy test evidence. No proposal qualifies. Passing tests
+alone never implies completion, and final prose is not a native submission match.
+
+The four candidates add **14 eligible calls / 396,689 tokens**, or 0.01078% of
+recorded calls and 0.01223% of recorded tokens. After duplicate/dependency checks,
+the 15-program union is **627 calls / 10,945,815 tokens**: **0.48288% of calls /
+0.33746% of tokens**, up from 0.47210% / 0.32523%. No new overlap was found. These
+are gross counterfactual usage estimates, before execution, routing, false-positive
+costs, reasoning loss and task-quality effects. This round provides little new
+coverage and does not justify broad routing.
+
+All 15 program IDs are registered in the batch runner. Full-corpus batch counts
+and token totals match the independent per-program accounting. A fresh
+classification pass took 29.1 seconds with four workers; a checksum-verified
+cached replay took 5.9 seconds with identical call/token totals. Timing differences
+between rounds are single-machine observations, not comparative performance
+claims. The four new planners pass 29 fixtures; the eight batch/cache fixtures
+also pass. Raw event evidence stays private; only code and aggregates are published.
+
+[Percentage/overlap audit](../../docs/program-round-v5-summary.json) ·
+[Full 15-program batch](../../docs/program-round-v5-batch.json) ·
+[Empty-search fallback](../../docs/candidate-empty-search-v5.json) ·
+[Pytest retry](../../docs/candidate-pytest-repair-v5.json) ·
+[Path repair](../../docs/candidate-path-repair-v5.json) ·
+[Completion scenario](../../docs/candidate-finalize-v5.json)

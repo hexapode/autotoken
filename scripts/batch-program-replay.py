@@ -22,6 +22,8 @@ PLUGIN_FILES={'inspect_unique_small_file_v3':'candidate-inspect-file-v3.py','syn
 PROGRAMS.update({'inspect_unique_small_file_v3':'Read a uniquely identified small file','syntax_check_status_v3':'Inspect status after a syntax check','missing_rg_literal_search_repair_v3':'Repair a missing ripgrep command','edit_compile_v3':'Check syntax after a source edit'})
 PLUGIN_FILES.update({'traceback_context_v4':'candidate-traceback-context-v4.py','edited_file_patch_review_v4':'candidate-patch-review-v4.py','bounded_read_continuation_v4':'candidate-read-continuation-v4.py'})
 PROGRAMS.update({'traceback_context_v4':'Read source context from a traceback','edited_file_patch_review_v4':'Review the edited file diff','bounded_read_continuation_v4':'Continue a bounded source read'})
+PLUGIN_FILES.update({'missing_pytest_module_retry_v5':'candidate-pytest-repair-v5.py','known_path_read_repair_v5':'candidate-path-repair-v5.py','empty_search_parent_scope_v5':'candidate-empty-search-v5.py','explicit_finish_after_verification_v5':'candidate-finalize-v5.py'})
+PROGRAMS.update({'missing_pytest_module_retry_v5':'Retry a missing pytest executable through its module','known_path_read_repair_v5':'Repair a read using a uniquely known path','empty_search_parent_scope_v5':'Broaden an empty search to the parent directory','explicit_finish_after_verification_v5':'Finish under an explicit verification policy'})
 SOURCES.extend(PLUGIN_FILES.values())
 PLUGINS={name:module('plugin_'+name,file) for name,file in PLUGIN_FILES.items()}
 

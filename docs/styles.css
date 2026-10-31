@@ -13,3 +13,5 @@
 .router-replay .findings{margin-top:24px}.replay-note{font-size:13px;line-height:1.8;color:var(--muted);margin-top:24px}.runtime-foot{flex-wrap:wrap;gap:8px}
 
 .candidate-estimates{margin:42px 0}.candidate-estimates table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:14px}.candidate-estimates caption{text-align:left;color:var(--muted);font-size:13px;padding:0 0 14px}.candidate-estimates th,.candidate-estimates td{text-align:left;vertical-align:top;border-bottom:1px solid var(--line);padding:18px 14px 18px 0;overflow-wrap:anywhere}.candidate-estimates thead th{font:11px/1.6 var(--mono);font-weight:600}.candidate-estimates th:first-child{width:40%}.candidate-estimates tbody th{font-weight:500}@media(max-width:600px){.candidate-estimates table{font-size:12px}.candidate-estimates th,.candidate-estimates td{padding:14px 9px 14px 0}.candidate-estimates thead th{font-size:10px}.candidate-estimates th:first-child{width:38%}}
+
+.past-round>summary{cursor:pointer;font-size:15px;font-weight:600;padding:16px 0;border-bottom:1px solid var(--line)}.past-round[open]>summary{margin-bottom:24px}

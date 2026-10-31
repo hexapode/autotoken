@@ -38,8 +38,8 @@ The discovery corpus also includes **300 public trajectories / 11,525 assistant 
 The offline batch runner evaluates the program eligibility guards and argument
 planners without calling a model or executing recorded commands. The current
 corpus has **2,498 trajectories / 129,846 recorded responses** across five models
-and 500 issues. Four workers run all eleven classifiers in about **33 seconds** on our machine;
-a checksum-verified cached replay takes about **5 seconds**.
+and 500 issues. Four workers run all fifteen classifiers in about **29 seconds** on our machine;
+a checksum-verified cached replay takes about **6 seconds**.
 Results are cached by trace checksum and the selected program bundle's source
 hashes; changed code automatically invalidates that bundle's cache.
 
@@ -49,7 +49,7 @@ From a source checkout, using Python 3.9 or later (standard library only):
 # Download ~1.67 GB of pinned public artifacts to an external volume.
 python3 scripts/download-official-traces.py --out /path/to/traces --workers 16
 
-# Run all eleven classifiers. The SQLite cache and raw data stay local.
+# Run all fifteen classifiers. The SQLite cache and raw data stay local.
 python3 scripts/batch-program-replay.py \
   --manifest /path/to/traces/manifest.json \
   --cache /path/to/traces/replay.sqlite \
@@ -70,19 +70,22 @@ while rechecking source bytes. `--no-cache` forces evaluation; `--limit 100`
 provides a small smoke run. Errors and unsupported usage formats are reported,
 not silently counted as zero opportunities. No provider key is needed.
 
-The expanded replay finds **613 exact whole-call matches / 10,549,126 recorded
-tokens**: **0.47% of calls / 0.33% of tokens**, before routing and program costs.
-The latest three candidates add 42 matches; their low proposal match rates do
-not justify unconditional routing. Earlier candidates range from 0.7% to 82%. Another 1,695 wider-read opportunities
+The expanded replay finds **627 exact whole-call matches / 10,945,815 recorded
+tokens**: **0.48% of calls / 0.34% of tokens**, before routing and program costs.
+The latest four candidates add 14 eligible matches, all from empty-search
+fallback. The other three produce zero eligible savings; broad activation is
+not justified. Earlier candidates range from 0.7% to 82%. Another 1,695 wider-read opportunities
 are reported separately. A next-action match does not prove that reasoning or
-task outcomes survive removal. [Per-program results and percentages](docs/program-round-v4-summary.json)
+task outcomes survive removal. [Per-program results and percentages](docs/program-round-v5-summary.json)
 and [source provenance](docs/usage-traces-scale-summary.json) include model
 breakdowns, missing-response accounting and overlap limits. The learned router
 below remains a separate experiment; this batch uses deterministic program guards.
 New program IDs include `syntax_check_status_v3`, `edit_compile_v3`,
 `inspect_unique_small_file_v3` and `missing_rg_literal_search_repair_v3`.
 The latest additions are `traceback_context_v4`, `edited_file_patch_review_v4`
-and `bounded_read_continuation_v4`.
+and `bounded_read_continuation_v4`. Error-driven candidates include
+`missing_pytest_module_retry_v5`, `known_path_read_repair_v5`,
+`empty_search_parent_scope_v5` and `explicit_finish_after_verification_v5`.
 
 ## Install
 
