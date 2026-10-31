@@ -6,6 +6,8 @@ For the coding-agent experiment, a separate **Pi recording proxy** now preserves
 
 Public project: [hexapode/autotoken](https://github.com/hexapode/autotoken). The static explainer lives in [`docs/index.html`](docs/index.html).
 
+An [exploratory workflow comparison](eval/swebench/WORKFLOW_EXPERIMENT.md) tests automatic validation against single-check and baseline arms on independent issues. This intervention is confined to the experiment.
+
 ## Run
 
 The core proxy requires Node.js 22+; no package installation is needed for its runtime or unit tests. The optional real-Pi integration test uses the pinned development dependency (`npm ci --ignore-scripts`) and requires Node.js 22.19+.

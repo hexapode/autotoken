@@ -56,6 +56,7 @@ export function command(binary, args, { cwd = ROOT, env = process.env, log, time
   });
 }
 export async function runTask(options) {
+  if (options.workflowArm && (!['singleton', 'workflow'].includes(options.workflowArm) || options.execution !== 'local')) throw new Error('Invalid local workflow experiment arm');
   const python = join(ROOT, '.venv/bin/python');
   const outputDir = resolve(options.out || join(ROOT, 'data/swebench', `${options.instance}-${new Date().toISOString().replaceAll(':', '-')}`));
   await mkdir(resolve(outputDir, '..'), { recursive: true });
@@ -126,9 +127,9 @@ export async function runTask(options) {
     const prompt = taskPrompt(task, options.execution);
     await writeFile(join(outputDir, 'prompt.txt'), prompt);
     await stage('inference');
-    const result = await command(process.execPath, [join(ROOT, 'node_modules/@earendil-works/pi-coding-agent/dist/bundle/cli.js'), '--offline', '--no-extensions', '-e', join(ROOT, local ? 'eval/swebench/local-extension.ts' : 'eval/swebench/container-extension.ts'), '--no-skills', '--no-context-files', '--no-prompt-templates', '--no-mcp', '--no-approve', '--no-session', '--tools', toolName, '--provider', 'model-to-code', '--model', manifest.model, '--thinking', 'medium', '--mode', 'json', prompt], {
+    const result = await command(process.execPath, [join(ROOT, 'node_modules/@earendil-works/pi-coding-agent/dist/bundle/cli.js'), '--offline', '--no-extensions', '-e', join(ROOT, local ? (options.workflowArm ? 'eval/swebench/workflow-extension.ts' : 'eval/swebench/local-extension.ts') : 'eval/swebench/container-extension.ts'), '--no-skills', '--no-context-files', '--no-prompt-templates', '--no-mcp', '--no-approve', '--no-session', '--tools', toolName, '--provider', 'model-to-code', '--model', manifest.model, '--thinking', 'medium', '--mode', 'json', prompt], {
       cwd: workDir, timeoutMs: options.timeoutSeconds * 1000, log: join(outputDir, 'pi-events.jsonl'), allowFailure: true,
-      env: { PATH: process.env.PATH, HOME: process.env.HOME, TMPDIR: process.env.TMPDIR || tmpdir(), ...(local ? { M2C_LOCAL_REPO: local.repo, M2C_LOCAL_VENV: local.venv, M2C_LOCAL_HOME: local.home, M2C_LOCAL_TEMP: local.temp } : { DOCKER_HOST: dockerHost }), PI_CODING_AGENT_DIR: agentDir, PI_TELEMETRY: '0', PROXY_TOKEN: token, M2C_TASK_CONTAINER: name }
+      env: { PATH: process.env.PATH, HOME: process.env.HOME, TMPDIR: process.env.TMPDIR || tmpdir(), ...(local ? { M2C_LOCAL_REPO: local.repo, M2C_LOCAL_VENV: local.venv, M2C_LOCAL_HOME: local.home, M2C_LOCAL_TEMP: local.temp, ...(options.workflowArm ? { M2C_WORKFLOW_ARM: options.workflowArm, M2C_WORKFLOW_TEST_PATH: local.profile.testPath, M2C_WORKFLOW_LOG: join(outputDir, 'workflow-events.jsonl') } : {}) } : { DOCKER_HOST: dockerHost }), PI_CODING_AGENT_DIR: agentDir, PI_TELEMETRY: '0', PROXY_TOKEN: token, M2C_TASK_CONTAINER: name }
     });
     manifest.inference = { exitCode: result.code, signal: result.signal, timedOut: result.timedOut, requestAttempts: attempts };
     // Let pending stream metadata settle before reporting usage.

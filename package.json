@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node --env-file-if-exists=.env src/server.js",
-    "test": "node --test",
+    "test": "node --test test/*.test.js",
     "demo": "node src/demo.js",
     "eval": "node --env-file-if-exists=.env src/evaluate.js",
     "proxy": "node --env-file-if-exists=.env src/recording-proxy.js",

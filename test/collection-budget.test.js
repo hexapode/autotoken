@@ -25,3 +25,9 @@ test('budget enforces query cap and rejects non-text/context/tier bypasses', t =
  }
  assert.throws(()=>requestReservation(Buffer.from(JSON.stringify({...JSON.parse(body),input:'x'.repeat(130000)}))));
 });
+test('external experiment allocations reduce collection budget without inflating query counts', t => {
+ const root=mkdtempSync(join(tmpdir(),'m2c-budget-'));t.after(()=>rmSync(root,{recursive:true,force:true}));
+ const b=new CollectionBudget(join(root,'ledger'),{requests:{},budgetUsd:1,targetQueries:10,externalCosts:[{charged:.99,source:'paired-trial'}]});
+ assert.equal(b.attempts,0);assert.equal(b.charged,.99);
+ assert.throws(()=>b.reserve({traceId:'a',body}),/dollar budget/);
+});

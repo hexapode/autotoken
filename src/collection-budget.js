@@ -15,7 +15,7 @@ export function requestReservation(body) {
 export class CollectionBudget {
   constructor(file, state) { this.file = file; this.state = state; }
   save() { writeFileSync(this.file + '.tmp', JSON.stringify(this.state, null, 2), { mode: 0o600 }); renameSync(this.file + '.tmp', this.file); }
-  get charged() { return Object.values(this.state.requests).reduce((n, r) => n + r.charged, 0); }
+  get charged() { return Object.values(this.state.requests).reduce((n, r) => n + r.charged, 0) + (this.state.externalCosts || []).reduce((n, r) => n + r.charged, 0); }
   get attempts() { return Object.keys(this.state.requests).length; }
   reserve({ traceId, body }) {
     if (!traceId || this.state.requests[traceId]) throw new Error('Duplicate request reservation');

@@ -22,6 +22,7 @@ try {
     const identity = JSON.stringify(inventory);
     if (state && (state.inventoryIdentity !== identity || state.budgetUsd !== Number(budgetArg) || state.targetQueries !== Number(targetArg))) throw new Error('Resume requires identical inventory and budgets');
     state ||= { version: 1, model: 'gpt-6.1-sol', targetQueries: Number(targetArg), budgetUsd: Number(budgetArg), inventoryIdentity: identity, startedAt: new Date().toISOString(), requests: {}, tasks: [], status: 'running' };
+    state.status = 'running'; delete state.finishedAt;
     const budget = new CollectionBudget(statePath, state); budget.save();
     let stopping = false;
     const stop = () => { stopping = true; };
