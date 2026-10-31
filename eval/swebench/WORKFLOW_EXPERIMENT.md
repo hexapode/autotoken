@@ -284,3 +284,33 @@ A further three-agent pass used the same 455 baseline discovery decisions (60 ru
 - **Targeted failed-test reruns:** among 40 failure-summary turns, 39 have a single supported tool action. A conservative prior-output planner produces 22 plans across 16 issues, but zero exact next pytest argv matches and zero exact failed-node-set matches. Seventeen following turns run recognizable pytest; thirteen also edit. Plans add 4,200 JSON bytes. Five fixture groups pass for `scripts/targeted-rerun.py`, which never executes commands and would require registered environment and confirmed patch-change metadata before any live use. Automatic routing is not supported by this replay.
 
 Checks: `node scripts/read-dedup-check.mjs`, `python3 scripts/python-inspection-check.py`, and `python3 scripts/targeted-rerun-test.py`. These negative results support broadening the discovery corpus before further local mining.
+
+
+### Public multi-harness discovery sample
+
+We imported 100 trajectories each from three pinned public datasets, without running model inference or executing recorded code. Downloads and raw/normalized traces live on an external data volume; only importer code and aggregate metadata are published.
+
+| Source and attribution | Harness | Sample trajectories | Assistant turns | Reported outcomes |
+| --- | --- | ---: | ---: | --- |
+| [Nebius SWE-agent trajectories](https://huggingface.co/datasets/nebius/SWE-agent-trajectories) · CC BY 4.0 | SWE-agent | 100 | 2,316 | 8 resolved / 92 unresolved |
+| [Nebius SWE-rebench OpenHands trajectories](https://huggingface.co/datasets/nebius/SWE-rebench-openhands-trajectories) · CC BY 4.0 | OpenHands | 100 | 5,929 | 59 resolved / 41 unresolved |
+| [Kwai-Klear SWE-smith mini-SWE-agent-plus](https://huggingface.co/datasets/Kwai-Klear/SWE-smith-mini_swe_agent_plus-trajectories-66k) · MIT | mini-SWE-agent-plus | 100 | 3,280 | Outcome label absent in sampled schema |
+
+Total: **300 trajectories, 11,525 assistant turns, 11,516 extracted actions, 298 distinct issue IDs, 268 issue/base-commit groups, and 259 repositories**. Two issue IDs occur across harnesses. Synthetic variants sharing a repository/base commit stay together for splitting. The datasets contain SWE-bench-related GitHub issues and synthetic SWE-smith tasks; this is not a new SWE-bench Verified evaluation. Source-reported outcomes are not independently rechecked or comparable success-rate estimates across harnesses.
+
+Sampling uses a fixed seed, one trajectory per issue within each harness, repository round-robin selection, and only discovery folds 2–4. All 48 known local issue IDs are excluded. Reserved calibration/evaluation groups are excluded before reading selected conversations. Shard selection is purposive: three of twelve SWE-agent shards, the single OpenHands file, and five of 47 mini-SWE shards. This is a broad discovery sample, not an unbiased population estimate. Exact source revisions, shard indexes, licenses, selection rules and aggregate counts are in [`docs/public-traces-summary.json`](../../docs/public-traces-summary.json). Source cards/licenses and checksum manifests are retained locally.
+
+The download is 2,509,741,602 bytes; normalized JSONL is approximately 140 MB. Each record retains original messages, normalized roles, assistant turns, observations and provenance. SWE-agent custom actions remain distinct from bash; OpenHands native tool IDs align observations. There are 95 terminal `finish` calls without observations and five final non-finish calls with missing results. Eight assistant turns with observations have unsupported action encoding; their original content is retained. Missing results are not fabricated. Counts are assistant turns, not measured API request counts; original costs, token usage and timing are unavailable.
+
+OpenHands' sample includes 2,993 `execute_bash` actions and 2,528 `str_replace_editor` actions, plus `think`, `task_tracker` and `finish`. This broadens the previous shell-only discovery evidence and gives future miners structured edits to inspect. No new program savings have been measured on these public trajectories.
+
+Reproduce from a source checkout with `requests` and `pyarrow` installed:
+
+```sh
+python3 scripts/sample-public-traces.py --output /path/to/external/autotoken/public-traces/v1
+python3 scripts/normalize-public-traces.py --output /path/to/external/autotoken/public-traces/v1 --per-harness 100
+python3 scripts/public-traces-check.py
+python3 scripts/audit-public-traces.py --output /path/to/external/autotoken/public-traces/v1
+```
+
+The normalizer's nine synthetic checks cover message preservation, role conversion, custom actions, tool-ID alignment, terminal completion, missing results, ambiguous commands and grouped variants. The corpus audit confirms unique issues per harness, no known-local issue overlap, consistent discovery folds and preserved message counts. The normalization and audit scripts require the existing local fold manifest to reproduce its exclusions and refuse to run if it is absent.

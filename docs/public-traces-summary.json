@@ -1,0 +1,167 @@
+{
+  "sources": [
+    {
+      "id": "nebius/SWE-agent-trajectories",
+      "harness": "swe-agent",
+      "revision": "68195a1450865274106246d0d0296a1d6807b88e",
+      "license": "cc-by-4.0",
+      "shards": [
+        0,
+        6,
+        11
+      ]
+    },
+    {
+      "id": "nebius/SWE-rebench-openhands-trajectories",
+      "harness": "openhands",
+      "revision": "35455389ab51bf5e2306bfd436ef72d0f98bf882",
+      "license": "cc-by-4.0",
+      "shards": [
+        0
+      ]
+    },
+    {
+      "id": "Kwai-Klear/SWE-smith-mini_swe_agent_plus-trajectories-66k",
+      "harness": "mini-swe-agent-plus",
+      "revision": "750b2c11239fd5e32f97e6cfb9bf80fb9a9a2983",
+      "license": "mit",
+      "shards": [
+        0,
+        11,
+        23,
+        35,
+        46
+      ]
+    }
+  ],
+  "selectionPolicy": "One row per issue; deterministic round-robin by repository among pinned shard candidates; discovery folds2/3/4 only; known local issues excluded; synthetic variants share repo/base-commit fold",
+  "seed": "autotoken-public-v1",
+  "catalog": [
+    {
+      "harness": "swe-agent",
+      "eligibleDistinctIssues": 491,
+      "selected": 100,
+      "repositories": 100,
+      "splitGroups": 100
+    },
+    {
+      "harness": "openhands",
+      "eligibleDistinctIssues": 3739,
+      "selected": 100,
+      "repositories": 100,
+      "splitGroups": 100
+    },
+    {
+      "harness": "mini-swe-agent-plus",
+      "eligibleDistinctIssues": 2905,
+      "selected": 100,
+      "repositories": 70,
+      "splitGroups": 70
+    }
+  ],
+  "counts": {
+    "swe-agent": {
+      "trajectories": 100,
+      "messages": 4732,
+      "assistantTurns": 2316,
+      "actions": 2314,
+      "observationMessages": 2216,
+      "unsupportedActionTurns": 1,
+      "reportedResolved": 8,
+      "outcomeUnknown": 0,
+      "unmatchedNativeToolCalls": 0,
+      "terminalFinishWithoutObservation": 0,
+      "distinctIssues": 100
+    },
+    "openhands": {
+      "trajectories": 100,
+      "messages": 11958,
+      "assistantTurns": 5929,
+      "actions": 5928,
+      "observationMessages": 5829,
+      "unsupportedActionTurns": 1,
+      "reportedResolved": 59,
+      "outcomeUnknown": 0,
+      "unmatchedNativeToolCalls": 5,
+      "terminalFinishWithoutObservation": 95,
+      "distinctIssues": 100
+    },
+    "mini-swe-agent-plus": {
+      "trajectories": 100,
+      "messages": 6660,
+      "assistantTurns": 3280,
+      "actions": 3274,
+      "observationMessages": 3180,
+      "unsupportedActionTurns": 6,
+      "reportedResolved": 0,
+      "outcomeUnknown": 100,
+      "unmatchedNativeToolCalls": 0,
+      "terminalFinishWithoutObservation": 0,
+      "distinctIssues": 100
+    }
+  },
+  "downloadBytes": 2509741602,
+  "sampleBytes": 139731451,
+  "excludedRows": {
+    "reserved_calibration_or_evaluation": 39610,
+    "known_local_issue": 250
+  },
+  "errors": [],
+  "limitations": [
+    "Purposive shard selection, not an unbiased sample of full datasets.",
+    "One trajectory per issue; multiple synthetic issues may share a repository/base commit.",
+    "All imported trajectories are discovery-only; reserve separate tasks for evaluation.",
+    "Source labels are not independently verified; costs/latencies not available.",
+    "No recorded command or dataset-provided code is executed."
+  ],
+  "global": {
+    "trajectories": 300,
+    "distinctIssueIds": 298,
+    "splitGroups": 268,
+    "repositories": 259,
+    "assistantTurns": 11525,
+    "toolActions": 11516
+  },
+  "toolNames": [
+    {
+      "harness": "swe-agent",
+      "name": "swe_agent_action",
+      "count": 2314
+    },
+    {
+      "harness": "openhands",
+      "name": "think",
+      "count": 258
+    },
+    {
+      "harness": "openhands",
+      "name": "str_replace_editor",
+      "count": 2528
+    },
+    {
+      "harness": "openhands",
+      "name": "execute_bash",
+      "count": 2993
+    },
+    {
+      "harness": "openhands",
+      "name": "task_tracker",
+      "count": 54
+    },
+    {
+      "harness": "openhands",
+      "name": "finish",
+      "count": 95
+    },
+    {
+      "harness": "mini-swe-agent-plus",
+      "name": "bash",
+      "count": 3274
+    }
+  ],
+  "validation": "Unique issue per harness; known local issues excluded; discovery-only groups consistent; original message arrays retained; action source indices checked. Missing native tool observations counted separately from terminal finish.",
+  "observationGaps": {
+    "unmatchedNativeCalls": 5,
+    "terminalUnmatchedCalls": 5
+  }
+}
