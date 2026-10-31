@@ -7,6 +7,7 @@ import { pathToFileURL, fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
 import { createRecordingServer, dispatch } from './recording-proxy.js';
 import { summarizeTraces } from './trace.js';
+import { publicInventoryTask } from './warm-workspace.js';
 import { experimentModel } from './experiment-model.js';
 import { prepareLocal, localTests, verifyLocalPatch } from './local-workspace.js';
 
@@ -73,7 +74,9 @@ export async function runTask(options) {
   const name = `m2c-swe-${randomBytes(8).toString('hex')}`;
   try {
     await stage('preparing');
-    await command(python, [join(ROOT, 'eval/swebench/prepare.py'), '--dataset', options.dataset, '--split', options.split, '--instance', options.instance, '--out', outputDir, ...(options.revision ? ['--revision', options.revision] : []), ...(options.execution === 'local' ? ['--public-only'] : [])], { log: join(outputDir, 'prepare.log'), timeoutMs: 180000 });
+    if(options.publicTask) {
+      await writeFile(join(outputDir,'task.json'),JSON.stringify(publicInventoryTask(options.publicTask,options),null,2),{mode:0o600});
+    } else await command(python, [join(ROOT, 'eval/swebench/prepare.py'), '--dataset', options.dataset, '--split', options.split, '--instance', options.instance, '--out', outputDir, ...(options.revision ? ['--revision', options.revision] : []), ...(options.execution === 'local' ? ['--public-only'] : [])], { log: join(outputDir, 'prepare.log'), timeoutMs: 180000 });
     const task = JSON.parse(await readFile(join(outputDir, 'task.json'), 'utf8'));
     manifest.datasetRevision = task.revision;
     if (options.prepareOnly) { await stage('prepared'); return manifest; }
@@ -81,7 +84,7 @@ export async function runTask(options) {
     if (!key) throw new Error('Set the configured provider API key');
     if (options.execution === 'local') {
       await stage('preparing-local-environment');
-      local = await prepareLocal(task, outputDir, command);
+      local = await prepareLocal(task, outputDir, command, options.warmSource);
       manifest.localEnvironment = { python: local.profile.python, packages: local.profile.packages, testPath: local.profile.testPath, sandboxed: false };
       await stage('baseline-local-tests');
       manifest.baselineTests = await localTests(local, outputDir, 'before', command);

@@ -143,3 +143,13 @@ autotoken router-corpus .autotoken/replay PATH_TO_COLLECTION PATH_TO_TRIAL
 ```
 
 The local report includes source counts, issue assignments, per-fold policies, provider-specific metrics, treatment diagnostics, and exclusions. The frozen snapshot permits reproduction even while more traces arrive. No new paid model calls are needed.
+
+## Faster Opus discovery collection
+
+`node --env-file=.env.anthropic src/fast-collect.js NEW_OUTPUT 20 12` starts a separate baseline-only collection using up to 12 workers and a shared synchronous budget ledger. It selects the 40 discovery issues whose earlier local runs completed; these are new Opus trajectories on existing issues, not 40 new independent issues. Keep issue-level train/test grouping across model providers.
+
+The first burst reserves $20 from the original $50 Anthropic envelope after the initial Opus experiment completed at $12.43584 conservative accounting. The allocation is recorded locally in `data/experiments/opus-fast-allocation.json`; a second launch cannot silently allocate the same funds. Unknown or interrupted requests retain reservations. The collector does not increase output lengths or repeat requests to meet a spending target.
+
+Speed changes: public task fields come directly from the pinned inventory, and each task clones local Git objects then checks out and verifies its original base commit. Pydicom fixtures are copied only when their bytes match hashes in that pristine commit. Source patches, home configuration, and virtual environments are not reused. Every task still runs pristine baseline tests and fresh-checkout patch evaluation. Concurrency changes wall-time contention, so this cohort is for discovery, not a direct runtime treatment comparison.
+
+SIGUSR2 drains active tasks without scheduling more. SIGINT/SIGTERM interrupts active tasks. Use a new output directory; this burst runner does not silently resume interrupted work. The normal three-worker paired trial remains separate.

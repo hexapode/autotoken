@@ -241,3 +241,6 @@ autotoken router-corpus .autotoken/corpus-replay PATH_TO_COLLECTION PATH_TO_ANOT
 ```
 
 All providers, repetitions, and approaches for the same issue stay in one fold. Baseline runs train and calibrate the router; intervention runs are scored separately. Completed runs are snapshotted, duplicate trace IDs removed, and unfinished/failed runs listed in the exclusion audit. Outputs stay local; use a new output directory for each replay. To reproduce a frozen snapshot, run `autotoken router-corpus NEW_OUTPUT --snapshot PREVIOUS_OUTPUT/snapshot.json`. This simulates routing and program proposals, not downstream execution or realized savings.
+
+
+For higher-throughput coding trace collection, the source-only [fast collection runner](src/fast-collect.js) supports up to 12 workers with one shared budget. It reuses pristine Git objects and checksum-verified public fixtures while preserving fresh checkouts and test evaluation. Its current inventory and allocation rules are specific to this experiment; see the [collection protocol](eval/swebench/WORKFLOW_EXPERIMENT.md#faster-opus-discovery-collection).

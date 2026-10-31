@@ -1,12 +1,13 @@
 import { mkdir, writeFile, copyFile, chmod } from 'node:fs/promises';
 import { join } from 'node:path';
+import { seedPydicomFixtures } from './warm-workspace.js';
 import { localEnvironment } from './local-tool.js';
 
 export function localProfile(task) {
   if (!['marshmallow-code/marshmallow', 'pydicom/pydicom', 'pylint-dev/astroid'].includes(task.repo)) throw new Error('No verified local environment profile for this issue; use Docker or add a tested profile');
   return { python: task.repo === 'pylint-dev/astroid' ? '3.10' : '3.9', testPath: task.repo === 'pydicom/pydicom' ? 'pydicom/tests' : 'tests', packages: [task.repo === 'pylint-dev/astroid' ? 'setuptools==65.6.3' : 'setuptools==68.2.2', 'wheel==0.42.0', 'pytest==6.2.5', 'python-dateutil==2.8.2', 'simplejson==3.19.2', 'pytz==2021.3', 'packaging==24.2', ...(task.repo === 'pylint-dev/astroid' ? ['wrapt==1.14.1', 'lazy-object-proxy==1.9.0', 'typing_extensions==4.12.2', 'attrs==23.2.0', 'six==1.16.0'] : []), ...(task.repo === 'pydicom/pydicom' ? ['numpy==1.23.5', 'Pillow==9.5.0'] : [])] };
 }
-export async function prepareLocal(task, directory, command) {
+export async function prepareLocal(task, directory, command, warmSource) {
   const profile = localProfile(task);
   const paths = { repo: join(directory, 'checkout'), venv: join(directory, 'task-venv'), home: join(directory, 'task-home'), temp: join(directory, 'task-tmp') };
   for (const path of [paths.repo, paths.home, paths.temp]) await mkdir(path);
@@ -19,11 +20,21 @@ export async function prepareLocal(task, directory, command) {
     await chmod(join(bin, 'rg'), 0o755);
     await writeFile(join(directory, 'search-tool.json'), JSON.stringify({ source: search.stdout.trim(), version: (await command(join(bin, 'rg'), ['--version'])).stdout.trim() }, null, 2));
   }
-  await command('git', ['init', '-q', paths.repo]);
-  await command('git', ['-C', paths.repo, 'fetch', '--depth=1', `https://github.com/${task.repo}.git`, task.base_commit], { timeoutMs: 180000, log: join(directory, 'checkout.log') });
-  await command('git', ['-C', paths.repo, 'checkout', '--detach', 'FETCH_HEAD']);
+  if(warmSource) {
+    await command('git',['clone','--no-local','--no-checkout',join(warmSource,'checkout'),paths.repo],{timeoutMs:180000,log:join(directory,'checkout.log')});
+    await command('git',['-C',paths.repo,'checkout','--detach',task.base_commit]);
+  } else {
+    await command('git', ['init', '-q', paths.repo]);
+    await command('git', ['-C', paths.repo, 'fetch', '--depth=1', `https://github.com/${task.repo}.git`, task.base_commit], { timeoutMs: 180000, log: join(directory, 'checkout.log') });
+    await command('git', ['-C', paths.repo, 'checkout', '--detach', 'FETCH_HEAD']);
+  }
   const head = (await command('git', ['-C', paths.repo, 'rev-parse', 'HEAD'])).stdout.trim();
   if (head !== task.base_commit) throw new Error('Local checkout has wrong base commit');
+  if((await command('git',['-C',paths.repo,'status','--porcelain'])).stdout.trim())throw Error('Expected pristine warm checkout');
+  if(warmSource && task.repo==='pydicom/pydicom') {
+    const seeded=await seedPydicomFixtures(paths.repo,paths.home,join(warmSource,'task-home'));
+    await writeFile(join(directory,'fixture-cache.json'),JSON.stringify(seeded));
+  }
   await command('uv', ['venv', '--python', profile.python, paths.venv], { timeoutMs: 180000, log: join(directory, 'venv.log') });
   const python = join(paths.venv, 'bin/python');
   await command('uv', ['pip', 'install', '--python', python, ...profile.packages], { timeoutMs: 180000, log: join(directory, 'dependencies.log') });

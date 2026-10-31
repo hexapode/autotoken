@@ -33,3 +33,11 @@ test('draining finishes active work without starting more arms',async()=>{
  await runWorkflowPool(schedule,3,async()=>{stop=true;await new Promise(r=>setTimeout(r,5));finished++;},()=>stop);
  assert.equal(finished,1);
 });
+test('twelve workers overlap and pool waits for active work on failure',async()=>{
+ const jobs=Array.from({length:12},(_,i)=>({instance:String(i),repeat:1}));let active=0,peak=0,finished=0;
+ await assert.rejects(runWorkflowPool(jobs,12,async s=>{
+  active++;peak=Math.max(peak,active);await new Promise(r=>setTimeout(r,5));active--;finished++;
+  if(s.instance==='0')throw Error('worker failed');
+ }),/worker failed/);
+ assert.equal(peak,12);assert.equal(finished,12);assert.equal(active,0);
+});

@@ -5,7 +5,7 @@ import {extractRun} from './trajectory-analysis.js';
 import {makeRows} from './router-experiment.js';
 import {fingerprint,newPolicy,observe,metrics,calibrate,PATCH_REVIEW} from './decision-router.js';
 
-export const DEFAULT_ROOTS=['data/swebench','data/collections/discovery-25usd','data/experiments/workflow-live-v1','data/experiments/workflow-expanded-v2','data/experiments/opus55-v1'];
+export const DEFAULT_ROOTS=['data/swebench','data/collections/discovery-25usd','data/experiments/workflow-live-v1','data/experiments/workflow-expanded-v2','data/experiments/opus55-v1','data/experiments/opus-fast-v1'];
 export async function snapshotCorpus(roots){
  const runs=[],excluded=[],sources=[],seen=new Set();
  for(const root of roots){
