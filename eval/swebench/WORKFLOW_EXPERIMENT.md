@@ -56,3 +56,22 @@ node --env-file=.env.anthropic src/workflow-trial.js data/experiments/opus-v1 BU
 ```
 
 Set an authorized numeric budget before launching. Opus accounting conservatively charges all input, including cached tokens, at $8/M and output at $20/M, covering the published one-hour cache-write rate. Premium speed/residency options and multimodal input are rejected by the experimental budget gate. The general recording proxy has no model-ID restriction; these limits belong only to the paid experiment runner. Model availability was verified through Anthropic's Models API; a full run requires a separate explicit spending allowance.
+
+
+## Expanded GPT trial and discovery follow-up (2026-10-30)
+
+The $8 expanded-trial allocation stopped after 27 complete runs and one incomplete attempt out of 36 planned runs. Nine complete baseline/single-check/workflow blocks cover six distinct held-out issues (three issues have a second repetition). Repetitions are not independent issues. All 27 complete runs passed repository suites; independent issue-specific regressions are unavailable for these six issues.
+
+| Approach | Model calls | Reported total tokens | Elapsed seconds |
+| --- | ---: | ---: | ---: |
+| Baseline | 65 | 447,376 | 679.46 |
+| Single check | 65 | 528,316 | 746.07 |
+| Workflow | 63 | 482,501 | 797.14 |
+
+These totals include only complete three-arm blocks. Workflow saved two calls (3.1%) but used 7.9% more tokens and 17.3% more elapsed time including preparation/evaluation. The initial two-issue token reduction did not repeat in aggregate. Budget truncation and small samples limit interpretation. Conservative expanded-trial accounting: $7.64556 across 198 requests.
+
+The discovery collection exhausted its inventory with 331 requests: 40 completed runs, 48 failed attempts, and eight held-out issues. Analysis of completed runs covers 322 calls on 40 distinct issues; 39 passed local checks. The other nine requests belong to incomplete attempts and are excluded from the completed-trajectory analysis.
+
+Heuristic tags show initial search in 39/40 runs and initial workspace inspection in 38/40. These are frequently bundled with issue-specific search terms, so replacing only `pwd` or `git status` would not remove the whole call. Manual inspection plus a strict command-only filter finds nine turns on nine distinct issues containing only Git diff/status commands. Several ask for the actual patch, beyond the existing workflow's whitespace check and statistics.
+
+Next candidate: return a bounded patch-review packet (diff, whitespace check, status) once per changed patch, retaining model review and fallback. This is a candidate for an independent paired test, not nine demonstrated saved calls. Do not use the discovery issues to claim held-out performance. No learned router or replacement program was activated by this analysis.

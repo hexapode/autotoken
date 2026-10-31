@@ -14,7 +14,7 @@
 <div class="wrap">
   <header>
     <a class="brand" href="#" aria-label="Autotoken home"><span class="logo" aria-hidden="true">a<span>↗</span></span>Autotoken</a>
-    <nav aria-label="Main navigation"><a href="#idea">The idea</a><a href="#experiment">Experiment</a><a class="nav-github" href="https://github.com/hexapode/autotoken"><span class="desktop-only">View on </span>GitHub ↗</a></nav>
+    <nav aria-label="Main navigation"><a href="#try">Install</a><a href="#idea">The idea</a><a href="#experiment">Experiment</a><a class="nav-github" href="https://github.com/hexapode/autotoken"><span class="desktop-only">View on </span>GitHub ↗</a></nav>
   </header>
   <main id="main">
     <section class="hero" aria-labelledby="hero-title">
@@ -22,7 +22,7 @@
         <div class="eyebrow"><span class="dot"></span>AN EXPERIMENT IN REUSING CODE</div>
         <h1 id="hero-title">Turn repeated<br>tasks into <em>code.</em></h1>
         <p class="lede">Some tasks need a model.<br class="desktop-break"> Others need the same few commands.</p><p class="hero-description">We’re building a proxy that records what a model does, finds repeated tasks, and tests whether code can do them instead. A decision model would choose when to use that code.</p>
-        <div class="actions"><a class="button" href="#idea">How it works <span aria-hidden="true">↓</span></a><a href="#experiment">See the latest experiment</a></div>
+        <div class="actions"><a class="button" href="#try">Install and try it <span aria-hidden="true">↓</span></a><a href="#experiment">See the latest experiment</a></div>
         <p class="hero-note"><span class="live-dot"></span> Open-source research · Built in the open</p>
       </div>
       <div class="runtime">
@@ -41,59 +41,8 @@
         <div class="runtime-foot"><span>RECORD → FIND PATTERNS → TEST</span><span>Illustration, not a live model</span></div>
       </div>
     </section>
-    <div class="thesis"><div class="eyebrow"><span class="section-mark">↳</span> The hypothesis</div><p>We want to use models to find repeated work and write programs for it. Then we need to check whether those programs work on <em>new requests.</em></p></div>
-    <section class="section" id="idea" aria-labelledby="idea-title">
-      <div class="section-heading"><div><div class="eyebrow">01 / How we want it to work</div><h2 id="idea-title">Record the work.<br>Test what can be reused.</h2></div><p class="section-intro">We start with actual requests and tool results. Repeated examples help us find tasks that might be simple enough to turn into code.</p></div>
-      <div class="steps">
-        <article class="step"><span class="step-num">01 — OBSERVE</span><h3>Watch the work</h3><p>A proxy records requests, responses, tool actions, and results while the model keeps doing the job.</p></article>
-        <article class="step"><span class="step-num">02 — DISCOVER</span><h3>Find repetition</h3><p>A model compares examples and proposes a program for a task that appears more than once.</p></article>
-        <article class="step"><span class="step-num">03 — VALIDATE</span><h3>Test the program</h3><p>Limit what the program can do. Run tests, then compare its output with the model on new inputs without changing the answer users receive.</p></article>
-        <article class="step"><span class="step-num">04 — ROUTE</span><h3>Choose code or model</h3><p>A decision model chooses a tested program when it fits. If it is unsure, or the program fails, the request goes to the answer model.</p></article>
-      </div>
-      <div class="example">
-        <div class="example-copy"><div class="eyebrow">A small, concrete example</div><h3>Two requests can use the same code.</h3><p>“Sort these numbers.” “Put these values in ascending order.” A sorting program can handle either request with a new array.</p><p>The decision still requires care: “sort by absolute value” is a different task.</p></div>
-        <div class="code"><div class="label">EXAMPLE: SORT AN ARRAY</div><div>intent&nbsp;&nbsp; <span class="accent">sort numbers ascending</span></div><div>input&nbsp;&nbsp;&nbsp; <span class="accent">[9, 2, 1]</span></div><div>program&nbsp; numeric sort · ascending</div><div>output&nbsp;&nbsp; <span class="accent">[1, 2, 9]</span></div><div style="color:#a7b5b7;margin-top:10px">New input, same procedure. No answer-model call.</div></div>
-      </div>
-    </section>
-    <section class="section" id="experiment" aria-labelledby="experiment-title">
-      <div class="experiment"><span class="experiment-watermark" aria-hidden="true">{ }</span>
-        <div class="eyebrow">02 / Latest completed experiment</div><h2 id="experiment-title">What happened when we<br>ran checks automatically?</h2>
-        <p>We ran the same two coding tasks three ways: normally, with an automatic diff check, and with an automatic test-and-diff sequence.</p>
-        <div class="pipeline" aria-label="Pi coding agent to recording proxy to GPT model"><span>Pi coding agent</span><b aria-hidden="true">→</b><span class="proxy">Autotoken proxy</span><b aria-hidden="true">→</b><span>gpt-6.1-sol</span></div>
-        <div class="run-explorer" aria-labelledby="explorer-title">
-          <div class="explorer-heading"><h3 id="explorer-title">Explore recorded runs</h3><span>6 recorded runs · no live API calls</span></div>
-          <p class="explorer-intro">Choose a task and an approach to see what was actually recorded. The differences below compare separate runs; they do not prove that these commands caused the change.</p>
-          <div class="explorer-controls"><label for="run-issue">Task<select id="run-issue"><option value="both">Both tasks</option><option value="astroid">Astroid #1866</option><option value="pydicom">pydicom #1694</option></select></label><fieldset><legend>Approach</legend><div class="approach-buttons"><button type="button" data-arm="baseline" aria-pressed="false">Baseline</button><button type="button" data-arm="singleton" aria-pressed="false">Single check</button><button type="button" data-arm="workflow" aria-pressed="true">Workflow</button></div></fieldset></div>
-          <div class="explorer-results" aria-live="polite" aria-atomic="true"><div><span>Recorded model calls</span><strong id="recorded-calls">13</strong><small id="call-difference">3 fewer calls than baseline (18.8%)</small></div><div><span>Reported total tokens</span><strong id="recorded-tokens">64,983</strong><small id="token-difference">22,406 fewer tokens than baseline (25.6%)</small></div></div>
-          <div class="token-comparison"><div><span>Baseline tokens</span><b id="baseline-token-count">87,389</b><i><span id="baseline-token-bar" style="width:100%"></span></i></div><div><span id="selected-token-label">Workflow tokens</span><b id="selected-token-count">64,983</b><i><span id="selected-token-bar" style="width:74.36%"></span></i></div></div>
-          <div class="executed-commands"><span id="command-heading">Commands added by the workflow</span><pre id="run-commands">python -m pytest -q tests  # Astroid
-python -m pytest -q pydicom/tests  # pydicom
-git diff --check
-git diff --stat</pre><p id="command-note">The fixed rule triggered once in each task after successful tests on a changed checkout. It returned these results to the model, with a reminder not to repeat unchanged checks.</p></div>
-          <p class="explorer-footnote">Tokens include reported input and output tokens; cached input is already included. Changing these controls only reads the six results stored in this page.</p>
-        </div>
-        <p class="caveat">Two independent development issues: Astroid #1866 and pydicom #1694. Three approaches, one run of each per issue. Every final patch passed repository tests and an independent public-issue regression in a fresh checkout. These are local checks, not official SWE-bench scores.</p>
-        <div class="result-table"><table><caption>Recorded results · totals across two issues</caption><thead><tr><th scope="col">Approach</th><th scope="col">Model calls</th><th scope="col">Reported tokens</th></tr></thead><tbody><tr><th scope="row">Baseline</th><td>16</td><td>87,389</td></tr><tr><th scope="row">Single diff check</th><td>13</td><td>77,905</td></tr><tr><th scope="row">Validation workflow</th><td>13</td><td>64,983</td></tr></tbody></table></div>
-        <p class="caveat">The workflow did not beat the single check on call count and was slower on both issues in wall time including setup and evaluation. There is only one run of each approach per issue, and both modified approaches included a reminder to avoid repeated checks. We cannot isolate how much of the difference came from the added commands. <a href="https://github.com/hexapode/autotoken/blob/main/eval/swebench/WORKFLOW_EXPERIMENT.md">Read the protocol and results ↗</a></p>
-      </div>
-      <div class="findings"><div><h3>What we changed</h3><p>After a test command passes and the repository has changes, a fixed rule runs either <code>git diff --check</code> or the full suite plus diff checks and statistics. The agent receives those results with its tool output. If a check fails or cannot finish, the model gets the result and continues.</p><p>We chose this rule ourselves and added it to the tool executor. A learned model did not select it. The normal proxy still records requests without replacing model calls.</p></div><div><span class="badge next">EXPERIMENT IN PROGRESS</span><h3>Does the result repeat?</h3><p>We are running a larger test with six new issues, three approaches, and two attempts per approach: 36 planned runs. We will report those results separately.</p><p>Each run starts from a fresh checkout. We keep the training examples separate from evaluation tasks and record the model usage as well as the test results.</p></div></div>
-    </section>
-    <section class="section" aria-labelledby="status-title">
-      <div class="section-heading"><div><div class="eyebrow">03 / State of the project</div><h2 id="status-title">What works today,<br>and what we are still testing.</h2></div><p class="section-intro">The sorting prototype and coding experiment test different parts of the idea. A result in one does not show that the other works.</p></div>
-      <div class="status">
-        <article class="card"><span class="badge">IMPLEMENTED</span><h3>Small data tasks</h3><p>The first prototype can propose and route to small programs for tasks such as sorting. Programs must pass tests and checks on new inputs before activation. The demo uses fixed examples, not live models.</p></article>
-        <article class="card"><span class="badge">IMPLEMENTED</span><h3>Recording coding tasks</h3><p>We can run Pi through the proxy, record its tool calls, save its patches, and test them in fresh checkouts. We compare recordings to look for repeated steps.</p></article>
-        <article class="card"><span class="badge next">EARLY LIVE EVIDENCE</span><h3>Automatic test commands</h3><p>We tested an automatic sequence of test and diff commands in six runs. A larger trial is running. We do not yet know how much it helps across different tasks.</p></article>
-      </div>
-      <div class="questions">
-        <details><summary>Is this just a response cache?</summary><p>The goal is to reuse a procedure across new inputs, rather than replay an answer to a previous request. A sorting program can handle an array it has never seen. Its applicability still needs to be checked.</p></details>
-        <details><summary>Does it eliminate model calls?</summary><p>An active program can avoid an answer-model call, but the decision model still uses inference. Discovery and shadow evaluation add costs too. The small paired workflow trial used fewer model queries than baseline, but its fixed rule is not a learned router. General net savings have not been established.</p></details>
-        <details><summary>Can generated code run anything it wants?</summary><p>No. The data prototype can only use a small set of operations, such as sorting and counting. Coding-task proposals select from a fixed list of read-only commands. The workflow experiment runs a configured test suite and diff checks. The coding agent itself can still run local commands; local execution is not a sandbox.</p></details>
-        <details><summary>What would count as a convincing result?</summary><p>We would need to fix the programs before testing them on new tasks, repeat both the ordinary and modified runs, and preserve task success. We would also need lower total cost or time after counting the work of discovering programs and deciding when to use them.</p></details>
-      </div>
-    </section>
     <section class="section start" id="try" aria-labelledby="try-title">
-      <div><div class="eyebrow">04 / Install and try it</div><h2 id="try-title">Run the proxy<br>on your machine.</h2><p>You need Node.js 22.19 or later. Install from GitHub, then try the offline demo without an API key. Docker and Pi are not required.</p><p>The proxy records traffic. Installing it does not turn on automatic model-call replacement. Live requests use your provider account and its normal charges.</p></div>
+      <div><div class="eyebrow">01 / Install and try it</div><h2 id="try-title">Run the proxy<br>on your machine.</h2><p>You need Node.js 22.19 or later. Install from GitHub, then try the offline demo without an API key. Docker and Pi are not required.</p><p>The proxy records traffic. Installing it does not turn on automatic model-call replacement. Live requests use your provider account and its normal charges.</p></div>
       <div class="terminal" role="region" aria-label="Install and offline demo commands"><div class="terminal-top"><span>Install from GitHub</span><button id="copy-command" type="button" data-copy="install-commands">Copy commands ⧉</button></div><pre id="install-commands">npm install -g github:hexapode/autotoken
 autotoken demo</pre><p>The demo uses fixed examples to show the idea. It does not call a model or measure real savings.</p></div>
       <div class="install-steps">
@@ -117,6 +66,63 @@ autotoken proxy --provider compatible --upstream https://YOUR_PROVIDER/v1
 # Local Ollama
 autotoken proxy --provider ollama</pre><p>Chat Completions, Responses, and Anthropic Messages are supported. The model ID remains your client’s choice. See the <a href="https://github.com/hexapode/autotoken#readme">README</a> for setup details and the <a href="https://github.com/hexapode/autotoken/blob/main/eval/swebench/README.md">coding experiment guide</a> for Pi and repository tests.</p></details></div>
     </section>
+    <div class="thesis"><div class="eyebrow"><span class="section-mark">↳</span> The hypothesis</div><p>We want to use models to find repeated work and write programs for it. Then we need to check whether those programs work on <em>new requests.</em></p></div>
+    <section class="section" id="idea" aria-labelledby="idea-title">
+      <div class="section-heading"><div><div class="eyebrow">02 / How we want it to work</div><h2 id="idea-title">Record the work.<br>Test what can be reused.</h2></div><p class="section-intro">We start with actual requests and tool results. Repeated examples help us find tasks that might be simple enough to turn into code.</p></div>
+      <div class="steps">
+        <article class="step"><span class="step-num">01 — OBSERVE</span><h3>Watch the work</h3><p>A proxy records requests, responses, tool actions, and results while the model keeps doing the job.</p></article>
+        <article class="step"><span class="step-num">02 — DISCOVER</span><h3>Find repetition</h3><p>A model compares examples and proposes a program for a task that appears more than once.</p></article>
+        <article class="step"><span class="step-num">03 — VALIDATE</span><h3>Test the program</h3><p>Limit what the program can do. Run tests, then compare its output with the model on new inputs without changing the answer users receive.</p></article>
+        <article class="step"><span class="step-num">04 — ROUTE</span><h3>Choose code or model</h3><p>A decision model chooses a tested program when it fits. If it is unsure, or the program fails, the request goes to the answer model.</p></article>
+      </div>
+      <div class="example">
+        <div class="example-copy"><div class="eyebrow">A small, concrete example</div><h3>Two requests can use the same code.</h3><p>“Sort these numbers.” “Put these values in ascending order.” A sorting program can handle either request with a new array.</p><p>The decision still requires care: “sort by absolute value” is a different task.</p></div>
+        <div class="code"><div class="label">EXAMPLE: SORT AN ARRAY</div><div>intent&nbsp;&nbsp; <span class="accent">sort numbers ascending</span></div><div>input&nbsp;&nbsp;&nbsp; <span class="accent">[9, 2, 1]</span></div><div>program&nbsp; numeric sort · ascending</div><div>output&nbsp;&nbsp; <span class="accent">[1, 2, 9]</span></div><div style="color:#a7b5b7;margin-top:10px">New input, same procedure. No answer-model call.</div></div>
+      </div>
+    </section>
+    <section class="section" id="experiment" aria-labelledby="experiment-title">
+      <div class="experiment"><span class="experiment-watermark" aria-hidden="true">{ }</span>
+        <div class="eyebrow">03 / First completed experiment</div><h2 id="experiment-title">What happened when we<br>ran checks automatically?</h2>
+        <p>We ran the same two coding tasks three ways: normally, with an automatic diff check, and with an automatic test-and-diff sequence.</p>
+        <div class="pipeline" aria-label="Pi coding agent to recording proxy to GPT model"><span>Pi coding agent</span><b aria-hidden="true">→</b><span class="proxy">Autotoken proxy</span><b aria-hidden="true">→</b><span>gpt-6.1-sol</span></div>
+        <div class="run-explorer" aria-labelledby="explorer-title">
+          <div class="explorer-heading"><h3 id="explorer-title">Explore recorded runs</h3><span>6 recorded runs · no live API calls</span></div>
+          <p class="explorer-intro">Choose a task and an approach to see what was actually recorded. The differences below compare separate runs; they do not prove that these commands caused the change.</p>
+          <div class="explorer-controls"><label for="run-issue">Task<select id="run-issue"><option value="both">Both tasks</option><option value="astroid">Astroid #1866</option><option value="pydicom">pydicom #1694</option></select></label><fieldset><legend>Approach</legend><div class="approach-buttons"><button type="button" data-arm="baseline" aria-pressed="false">Baseline</button><button type="button" data-arm="singleton" aria-pressed="false">Single check</button><button type="button" data-arm="workflow" aria-pressed="true">Workflow</button></div></fieldset></div>
+          <div class="task-context" aria-live="polite">
+            <p>In each run, the coding agent had to fix a real bug in a fresh repository checkout. The approaches below change how it checks its patch.</p>
+            <article data-task="astroid"><h4>Astroid: keep the code analyzer from crashing</h4><p>Astroid examines Python code to infer what values expressions might produce. An expression such as <code>"{:d}".format(None)</code> made the analyzer itself crash.</p><p><strong>A correct fix:</strong> handle formatting it cannot infer without crashing. Python’s formatting rules stay the same.</p><p><strong>Our check:</strong> analyze two invalid formatting expressions without raising an exception, then run the repository tests.</p></article>
+            <article data-task="pydicom"><h4>pydicom: export valid data despite an invalid field</h4><p>pydicom converts medical-image metadata to JSON. A malformed integer field could stop the export even with <code>suppress_invalid_tags=True</code>.</p><p><strong>A correct fix:</strong> let export finish with suppression enabled and preserve valid fields. Without suppression, the error should still surface.</p><p><strong>Our check:</strong> export a dataset containing an invalid integer and a valid patient-name field, then run the repository tests.</p></article>
+          </div>
+          <div class="explorer-results" aria-live="polite" aria-atomic="true"><div><span>Recorded model calls</span><strong id="recorded-calls">13</strong><small id="call-difference">3 fewer calls than baseline (18.8%)</small></div><div><span>Reported total tokens</span><strong id="recorded-tokens">64,983</strong><small id="token-difference">22,406 fewer tokens than baseline (25.6%)</small></div></div>
+          <div class="token-comparison"><div><span>Baseline tokens</span><b id="baseline-token-count">87,389</b><i><span id="baseline-token-bar" style="width:100%"></span></i></div><div><span id="selected-token-label">Workflow tokens</span><b id="selected-token-count">64,983</b><i><span id="selected-token-bar" style="width:74.36%"></span></i></div></div>
+          <div class="executed-commands"><span id="command-heading">Commands added by the workflow</span><pre id="run-commands">python -m pytest -q tests  # Astroid
+python -m pytest -q pydicom/tests  # pydicom
+git diff --check
+git diff --stat</pre><p id="command-note">The fixed rule triggered once in each task after successful tests on a changed checkout. It returned these results to the model, with a reminder not to repeat unchanged checks.</p></div>
+          <p class="explorer-footnote">Tokens include reported input and output tokens; cached input is already included. Changing these controls only reads the six results stored in this page.</p>
+        </div>
+        <p class="caveat">Two independent development issues: Astroid #1866 and pydicom #1694. Three approaches, one run of each per issue. Every final patch passed repository tests and an independent public-issue regression in a fresh checkout. These are local checks, not official SWE-bench scores.</p>
+        <div class="result-table"><table><caption>Recorded results · totals across two issues</caption><thead><tr><th scope="col">Approach</th><th scope="col">Model calls</th><th scope="col">Reported tokens</th></tr></thead><tbody><tr><th scope="row">Baseline</th><td>16</td><td>87,389</td></tr><tr><th scope="row">Single diff check</th><td>13</td><td>77,905</td></tr><tr><th scope="row">Validation workflow</th><td>13</td><td>64,983</td></tr></tbody></table></div>
+        <p class="caveat">The workflow did not beat the single check on call count and was slower on both issues in wall time including setup and evaluation. There is only one run of each approach per issue, and both modified approaches included a reminder to avoid repeated checks. We cannot isolate how much of the difference came from the added commands. <a href="https://github.com/hexapode/autotoken/blob/main/eval/swebench/WORKFLOW_EXPERIMENT.md">Read the protocol and results ↗</a></p>
+      </div>
+      <div class="findings"><div><h3>What we changed</h3><p>After a test command passes and the repository has changes, a fixed rule runs either <code>git diff --check</code> or the full suite plus diff checks and statistics. The agent receives those results with its tool output. If a check fails or cannot finish, the model gets the result and continues.</p><p>We chose this rule ourselves and added it to the tool executor. A learned model did not select it. The normal proxy still records requests without replacing model calls.</p></div><div><span class="badge next">LARGER TEST · MIXED RESULTS</span><h3>Does the result repeat?</h3><p>The larger GPT experiment completed 27 of 36 planned runs before its budget guard stopped it. Across nine complete three-way comparisons on six issues, the workflow used 63 model calls versus 65 for baseline, but 7.9% more tokens and 17.3% more elapsed time. The early token savings did not repeat in aggregate.</p><p>These patches passed repository suites; we have not added independent bug-specific checks for these six issues. A separate 36-run Opus 5.5 experiment is now collecting traces with a $50 cap.</p><p>Each run starts from a fresh checkout. We keep the training examples separate from evaluation tasks and record the model usage as well as the test results.</p></div></div>
+    </section>
+    <section class="section" aria-labelledby="status-title">
+      <div class="section-heading"><div><div class="eyebrow">04 / State of the project</div><h2 id="status-title">What works today,<br>and what we are still testing.</h2></div><p class="section-intro">The sorting prototype and coding experiment test different parts of the idea. A result in one does not show that the other works.</p></div>
+      <div class="status">
+        <article class="card"><span class="badge">IMPLEMENTED</span><h3>Small data tasks</h3><p>The first prototype can propose and route to small programs for tasks such as sorting. Programs must pass tests and checks on new inputs before activation. The demo uses fixed examples, not live models.</p></article>
+        <article class="card"><span class="badge">IMPLEMENTED</span><h3>Recording coding tasks</h3><p>We can run Pi through the proxy, record its tool calls, save its patches, and test them in fresh checkouts. We compare recordings to look for repeated steps.</p></article>
+        <article class="card"><span class="badge next">EARLY LIVE EVIDENCE</span><h3>Automatic test commands</h3><p>We tested an automatic sequence of test and diff commands in six runs. A larger trial is running. We do not yet know how much it helps across different tasks.</p></article>
+      </div>
+      <div class="questions">
+        <details><summary>Is this just a response cache?</summary><p>The goal is to reuse a procedure across new inputs, rather than replay an answer to a previous request. A sorting program can handle an array it has never seen. Its applicability still needs to be checked.</p></details>
+        <details><summary>Does it eliminate model calls?</summary><p>An active program can avoid an answer-model call, but the decision model still uses inference. Discovery and shadow evaluation add costs too. The small paired workflow trial used fewer model queries than baseline, but its fixed rule is not a learned router. General net savings have not been established.</p></details>
+        <details><summary>Can generated code run anything it wants?</summary><p>No. The data prototype can only use a small set of operations, such as sorting and counting. Coding-task proposals select from a fixed list of read-only commands. The workflow experiment runs a configured test suite and diff checks. The coding agent itself can still run local commands; local execution is not a sandbox.</p></details>
+        <details><summary>What would count as a convincing result?</summary><p>We would need to fix the programs before testing them on new tasks, repeat both the ordinary and modified runs, and preserve task success. We would also need lower total cost or time after counting the work of discovering programs and deciding when to use them.</p></details>
+      </div>
+    </section>
+
   </main>
   <footer><a class="footer-brand" href="#main">Autotoken<span>↗</span></a><span>An open-source experiment in replacing<br>repeated model work with tested code.</span><a href="#main">Back to the idea ↑</a></footer>
 </div>

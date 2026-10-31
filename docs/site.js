@@ -41,6 +41,7 @@ function differenceText(current, baseline, unit) {
 function updateRecordedRun() {
   const issue = document.getElementById('run-issue').value;
   const issues = issue === 'both' ? ['astroid', 'pydicom'] : [issue];
+  for (const card of document.querySelectorAll('[data-task]')) card.hidden = !issues.includes(card.dataset.task);
   const sum = arm => issues.reduce((total, key) => ({ calls: total.calls + recordedRuns[key][arm].calls, tokens: total.tokens + recordedRuns[key][arm].tokens }), { calls: 0, tokens: 0 });
   const baseline = sum('baseline'); const selected = sum(selectedArm);
   document.getElementById('recorded-calls').textContent = formatNumber(selected.calls);
