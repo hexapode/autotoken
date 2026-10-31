@@ -726,3 +726,67 @@ in the public batch report; only test fixtures and aggregates are published.
 [Syntax/status](../../docs/candidate-diff-check-v3.json) ·
 [Edit/compile](../../docs/candidate-edit-compile-v3.json) ·
 [Missing-command repair](../../docs/candidate-command-repair-v3.json)
+
+### Read continuation, traceback context and edited-file review (round v4)
+
+Three separate agents each developed one new inert program on the same corpus.
+The shared discovery split was specified before work began:
+SHA256(`autotoken-v4:` + issue ID) modulo five equals zero. All models for an issue
+stay together: 97 discovery issues and 403 within-round validation issues. Rules
+were frozen before evaluating validation. This remains a reused research corpus,
+not untouched external task-quality evaluation.
+
+| Candidate | Proposals | Exact matches | Call % | Token % | Recorded tokens |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Bounded read continuation | 12,335 | 38 | 0.02927% | 0.01598% | 518,334 |
+| Edited-file diff review | 1,574 | 4 | 0.00308% | 0.00376% | 121,960 |
+| Deepest traceback source context | 862 | 0 | 0% | 0% | 0 |
+
+**Read continuation** detects a fully filled bounded Python source window whose
+last nonblank line remains indented. It proposes the next 100 lines with a
+one-line overlap, once, under registered-repository/regular-file/unchanged-state
+and output bounds. Indentation is weak evidence of a cut-off structure, not proof
+that more context is wanted. The 38 exact singleton matches span 36 issues; 24
+are in validation. Model counts are GPT 20, Sonnet eight, DeepSeek six, Gemini
+three and Opus one. Twenty-five matches contain observed reasoning/prose. A
+separate 489-call wider-coverage scenario accounts for 12,165,288 tokens; it is
+excluded from exact totals and does not account for extra context costs.
+
+**Edited-file review** uses the unchanged bounded source-edit detector, requires
+successful completion, derives the filename from that command and proposes
+`git diff -- <file>`. It canonicalizes harmless quotation, an optional `--` and
+trailing newline, but not bundles, redirects, partial/windowed output, full-repo
+reviews or additional filenames. Four exact calls match across four issues;
+three are in validation. They are two Gemini, one GPT and one Opus call, all with
+observed reasoning/prose. The runtime must disable external diff/textconv and
+verify repository/file state; historical commands are not executed.
+
+**Traceback context** accepts one failed Python traceback, excludes import/setup
+failures and test/reproduction paths, chooses the deepest repository source frame
+and proposes fixed ±50-line context (101 lines), bounded to 16 KB. No next read
+matches that exact range. Fifty-one next reads fall inside the wider proposed
+context (41 in validation), representing 1,595,165 recorded tokens. These are
+coverage opportunities, not equivalent output or net savings; historical file
+contents and output-cap feasibility are unverified.
+
+Exact proposal match rates are only 0.308% for continuation and 0.254% for diff
+review. These weak eligibility signals do not justify broad automatic routing.
+They add **42 matches / 640,294 tokens**: 0.03235% of corpus calls and 0.01974%
+of corpus tokens. The independently checked 11-program union is **613 calls /
+10,549,126 tokens**, or **0.47210% of calls / 0.32523% of tokens**, up from
+0.43975% / 0.30549%. No duplicate or adjacent-dependent targets occur in the exact
+union. Wider-coverage counts are not combined with it.
+
+All 11 classifiers are registered in the same batch runner. Its full-corpus
+results agree with the independently audited per-program reports. Classification
+took 32.5 seconds with four workers; a source-checksummed cache replay took
+4.9 seconds and retained identical call/token totals. The three new planners
+pass 22 fixtures; the existing eight batch/cache checks pass. No paid inference
+or recorded commands were executed. These remain gross counterfactual usage
+estimates before routing/execution/false-positive costs or downstream task effects.
+
+[Percentage and overlap audit](../../docs/program-round-v4-summary.json) ·
+[Full 11-program batch](../../docs/program-round-v4-batch.json) ·
+[Read continuation](../../docs/candidate-read-continuation-v4.json) ·
+[Edited-file review](../../docs/candidate-patch-review-v4.json) ·
+[Traceback context](../../docs/candidate-traceback-context-v4.json)

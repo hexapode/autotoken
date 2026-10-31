@@ -38,7 +38,7 @@ The discovery corpus also includes **300 public trajectories / 11,525 assistant 
 The offline batch runner evaluates the program eligibility guards and argument
 planners without calling a model or executing recorded commands. The current
 corpus has **2,498 trajectories / 129,846 recorded responses** across five models
-and 500 issues. Four workers run all eight classifiers in about **29 seconds** on our machine;
+and 500 issues. Four workers run all eleven classifiers in about **33 seconds** on our machine;
 a checksum-verified cached replay takes about **5 seconds**.
 Results are cached by trace checksum and the selected program bundle's source
 hashes; changed code automatically invalidates that bundle's cache.
@@ -49,7 +49,7 @@ From a source checkout, using Python 3.9 or later (standard library only):
 # Download ~1.67 GB of pinned public artifacts to an external volume.
 python3 scripts/download-official-traces.py --out /path/to/traces --workers 16
 
-# Run all eight classifiers. The SQLite cache and raw data stay local.
+# Run all eleven classifiers. The SQLite cache and raw data stay local.
 python3 scripts/batch-program-replay.py \
   --manifest /path/to/traces/manifest.json \
   --cache /path/to/traces/replay.sqlite \
@@ -70,17 +70,19 @@ while rechecking source bytes. `--no-cache` forces evaluation; `--limit 100`
 provides a small smoke run. Errors and unsupported usage formats are reported,
 not silently counted as zero opportunities. No provider key is needed.
 
-The expanded replay finds **571 exact whole-call matches / 9,908,832 recorded
-tokens**: **0.44% of calls / 0.31% of tokens**, before routing and program costs.
-The four new candidates add 112 matches; their proposal match rates range from
-0.7% to 82%, so they are not ready for unconditional routing. Another 1,695 wider-read opportunities
+The expanded replay finds **613 exact whole-call matches / 10,549,126 recorded
+tokens**: **0.47% of calls / 0.33% of tokens**, before routing and program costs.
+The latest three candidates add 42 matches; their low proposal match rates do
+not justify unconditional routing. Earlier candidates range from 0.7% to 82%. Another 1,695 wider-read opportunities
 are reported separately. A next-action match does not prove that reasoning or
-task outcomes survive removal. [Per-program results and percentages](docs/program-round-v3-summary.json)
+task outcomes survive removal. [Per-program results and percentages](docs/program-round-v4-summary.json)
 and [source provenance](docs/usage-traces-scale-summary.json) include model
 breakdowns, missing-response accounting and overlap limits. The learned router
 below remains a separate experiment; this batch uses deterministic program guards.
 New program IDs include `syntax_check_status_v3`, `edit_compile_v3`,
 `inspect_unique_small_file_v3` and `missing_rg_literal_search_repair_v3`.
+The latest additions are `traceback_context_v4`, `edited_file_patch_review_v4`
+and `bounded_read_continuation_v4`.
 
 ## Install
 

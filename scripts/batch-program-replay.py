@@ -20,6 +20,8 @@ SOURCES=['batch-program-replay.py','trace_batch_core.py','estimate-recorded-usag
 
 PLUGIN_FILES={'inspect_unique_small_file_v3':'candidate-inspect-file-v3.py','syntax_check_status_v3':'candidate-diff-check-v3.py','missing_rg_literal_search_repair_v3':'candidate-command-repair-v3.py','edit_compile_v3':'candidate-edit-compile-v3.py'}
 PROGRAMS.update({'inspect_unique_small_file_v3':'Read a uniquely identified small file','syntax_check_status_v3':'Inspect status after a syntax check','missing_rg_literal_search_repair_v3':'Repair a missing ripgrep command','edit_compile_v3':'Check syntax after a source edit'})
+PLUGIN_FILES.update({'traceback_context_v4':'candidate-traceback-context-v4.py','edited_file_patch_review_v4':'candidate-patch-review-v4.py','bounded_read_continuation_v4':'candidate-read-continuation-v4.py'})
+PROGRAMS.update({'traceback_context_v4':'Read source context from a traceback','edited_file_patch_review_v4':'Review the edited file diff','bounded_read_continuation_v4':'Continue a bounded source read'})
 SOURCES.extend(PLUGIN_FILES.values())
 PLUGINS={name:module('plugin_'+name,file) for name,file in PLUGIN_FILES.items()}
 
