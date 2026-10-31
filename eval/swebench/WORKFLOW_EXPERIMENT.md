@@ -637,3 +637,92 @@ See the [README commands](../../README.md#run-program-classifiers-on-thousands-o
 [cache benchmark](../../docs/scale-replay-benchmark.json). Raw trajectories and
 cached per-event evidence remain outside the repository. No paid inference was
 used to acquire or classify this public corpus.
+
+### Four exploratory programs and percentage gains (round v3)
+
+Four separate agents each developed one new inert program, then replayed it over
+all 2,498 trajectories / 129,846 responses. Percentages divide by the full corpus
+(3,243,603,296 input/output tokens), not by the number of proposals. A separate
+accounting pass verifies each positive event against its original singleton
+source/target responses, usage and cost, and compares the prior programs against
+their frozen cache entries. No recorded command or paid inference is executed.
+
+| New candidate | Matches / proposals | Call % | Token % | Recorded tokens |
+| --- | ---: | ---: | ---: | ---: |
+| Syntax check → repository status | 42 / 382 | 0.03235% | 0.03434% | 1,113,702 |
+| Source edit → syntax check | 30 / 1,574 | 0.02310% | 0.02927% | 949,349 |
+| Unique small-file inspection | 31 / 4,191 | 0.02387% | 0.01027% | 333,263 |
+| Missing `rg` → literal `grep` retry | 9 / 11 | 0.00693% | 0.00111% | 36,046 |
+
+**Syntax/status** chooses the fixed `git status --porcelain` operation after a
+successful standalone `py_compile` or bounded `compileall -q` invocation on
+explicit repository Python files. It never predicts future filenames from the
+label, and does not credit redirected or bundled status commands. All 42 matches
+are GPT-5.2 calls containing observed reasoning/prose. The match rate is 10.99%,
+so automatic status output after every syntax check is not justified by replay.
+
+**Edit/compile** reuses the bounded source-edit detector and derives the Python
+filename from the successful edit, then predicts `python -m py_compile` on that
+file. Multi-tool, bundled, redirected and alternative compile commands are
+excluded. All 30 matches are GPT-5.2; nine contain observed reasoning/prose. Its
+1.91% match rate limits the case for broad routing even though coverage is real.
+The source edit and filesystem state are not reconstructed or executed.
+
+**Small-file inspection** derives a unique file from a prior search and proposes
+a full read only under runtime regular-file, no-symlink, unchanged-state,
+16 KB and 250-line checks. Thirty-one next singleton `cat` calls match across
+30 issues; the 0.74% match rate is too low for unconditional use. A separate
+36-call EOF-equivalent head/sed scenario accounts for 519,026 tokens and is not
+added to exact totals. All exact matches contain reasoning/prose. Historical
+filesystem guards remain unverified.
+
+**Missing-command repair** requires an exact native exit-127 `rg: command not
+found` result, a plain literal pattern and at most four explicit repository file
+paths. It predicts a registered `grep` invocation with the same normalized cwd,
+pattern, files and line-number flag. Shell bundles, directories, regex translation,
+unsupported options and implicit paths abstain. Nine of 11 proposals match, all
+GPT-5.2. That 81.8% match rate is the strongest of this round, but only 0.00111%
+of corpus tokens are represented. Matching a command is not an output-equivalence
+or downstream-quality proof; runtime file/output/state bounds still apply.
+
+The common split is SHA256(`autotoken-v3:` + issue ID) modulo five, with remainder
+zero assigned discovery and all model runs for an issue grouped together. Three
+agents began initial scans before the common seed was specified. Their initially
+inspected issues are also assigned discovery; validation excludes the union.
+This prevents exploratory exposure from being mislabeled as validation:
+
+| Candidate | Discovery / validation issues | Validation exact matches |
+| --- | ---: | ---: |
+| Small-file inspection | 177 / 323 | 23 |
+| Syntax/status | 157 / 343 | 32 |
+| Missing-command repair | 164 / 336 | 8 |
+| Edit/compile | 88 / 412 | 21 |
+
+Rules were fixed before evaluating each remaining subset. These are within-round
+partitions of a corpus already used by the project, not untouched external task
+validation. Per-model and per-partition token accounting is in each report.
+
+The four new programs add **112 exact matches / 2,432,360 tokens**: 0.08626% of
+calls and 0.07499% of tokens. Together with the earlier four, the exact union is
+**571 calls / 9,908,832 tokens across 240 issues**: **0.43975% of calls and
+0.30549% of tokens**, up from 0.35350% and 0.23050%. No duplicate targets or
+adjacent dependent substitutions occur in these positive events. The checker
+would remove them if present. This is gross conditional usage, not net savings:
+routing overhead, false positives, execution costs, reasoning loss, task quality
+and changed future cache behavior remain unmeasured.
+
+All eight program IDs are registered in `scripts/batch-program-replay.py` and can
+be selected individually with `--program`. Its outputs agree with the independent
+per-program/accounting pass. A fresh classifier-cache pass took 29.4 seconds with
+four workers; a verified cached replay took 5.2 seconds and produced identical
+counts/token totals. The four new planners pass 28 fixtures, accounting passes
+three, and the updated batch/cache suite passes eight. Source hashes are pinned
+in the public batch report; only test fixtures and aggregates are published.
+
+[Percentage/overlap audit](../../docs/program-round-v3-summary.json) ·
+[Eight-program batch](../../docs/program-round-v3-batch.json) ·
+[Timing check](../../docs/program-round-v3-benchmark.json) ·
+[Small-file program](../../docs/candidate-inspect-file-v3.json) ·
+[Syntax/status](../../docs/candidate-diff-check-v3.json) ·
+[Edit/compile](../../docs/candidate-edit-compile-v3.json) ·
+[Missing-command repair](../../docs/candidate-command-repair-v3.json)

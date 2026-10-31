@@ -25,6 +25,9 @@ class Checks(unittest.TestCase):
  def test_failed_last_write_is_not_a_proposal(self):
   raw=fixture();raw['messages']=raw['messages'][:2];raw['messages'][1]['content']=OK.replace('>0<','>1<')
   row=b.classify(raw,'model',list(b.PROGRAMS));self.assertEqual(row['stats']['write_then_run_v2']['proposals'],0)
+ def test_new_plugin_can_run_alone(self):
+  raw=fixture();raw['messages'][0]=assistant('a','python -m py_compile a.py');raw['messages'][2]=assistant('b','git status --porcelain')
+  row=b.classify(raw,'model',['syntax_check_status_v3']);self.assertEqual(row['stats']['syntax_check_status_v3']['exactMatches'],1);self.assertEqual(len(row['stats']),1);self.assertEqual(row['events'][0]['usage']['totalTokens'],120)
  def test_resume_cache_and_tampered_cached_source(self):
   with tempfile.TemporaryDirectory() as d:
    root=pathlib.Path(d);trace=root/'one.traj.json';trace.write_text(json.dumps(fixture()))

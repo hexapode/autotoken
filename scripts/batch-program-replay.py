@@ -17,6 +17,12 @@ a=module('batch_union','aggregate-candidate-estimates.py')
 PROGRAMS={'write_then_run_v2':'Write a script and run it','search_read_v2':'Read context around the only search hit','registered_test_rerun_v2':'Rerun a previously passing test','registered_failed_test_rerun_v2':'Rerun a failed assertion regression'}
 SOURCES=['batch-program-replay.py','trace_batch_core.py','estimate-recorded-usage.py','mine-public-mini.py','candidate-write-run-v2.py','candidate-search-read-v2.py','candidate-rerun-v2.py','candidate-failed-rerun-v2.py','aggregate-candidate-estimates.py']
 
+
+PLUGIN_FILES={'inspect_unique_small_file_v3':'candidate-inspect-file-v3.py','syntax_check_status_v3':'candidate-diff-check-v3.py','missing_rg_literal_search_repair_v3':'candidate-command-repair-v3.py','edit_compile_v3':'candidate-edit-compile-v3.py'}
+PROGRAMS.update({'inspect_unique_small_file_v3':'Read a uniquely identified small file','syntax_check_status_v3':'Inspect status after a syntax check','missing_rg_literal_search_repair_v3':'Repair a missing ripgrep command','edit_compile_v3':'Check syntax after a source edit'})
+SOURCES.extend(PLUGIN_FILES.values())
+PLUGINS={name:module('plugin_'+name,file) for name,file in PLUGIN_FILES.items()}
+
 def hash_stream(stream):
  digest=hashlib.sha256()
  for chunk in iter(lambda:stream.read(1024*1024),b''):digest.update(chunk)
@@ -44,6 +50,7 @@ def classify(raw,label,programs):
   if not current:continue
   nxt=turns[i+1];nextaction=singleton(nxt)
   for program in programs:
+   if program in PLUGINS:continue
    proposal=None;kind=None
    if program=='write_then_run_v2':
     proposal=w.plan(current['command'],current['results'][0])
@@ -63,6 +70,21 @@ def classify(raw,label,programs):
    targets[program].add(i+1)
    stats[program]['exactMatches' if kind=='exact' else 'coverageOnlyMatches']+=1
    events.append({'program':program,'cohort':label,'instance':instance,'sourceOrdinal':i,'targetOrdinal':i+1,'matchType':kind,'usage':nxt['usage'],'reportedCost':nxt['reportedCost'],'reasoningOrProse':w.has_reasoning(raw,nxt)})
+ for program in programs:
+  if program not in PLUGINS:continue
+  plugin_turns,proposals,plugin_events,_=PLUGINS[program].analyze(raw,label)
+  if len(plugin_turns)!=len(turns):raise ValueError('Plugin response normalization mismatch')
+  stats[program]['proposals']=len(proposals)
+  for e in plugin_events:
+   kind=e.get('matchType','exact')
+   if kind not in ['exact','coverage_only','equivalent_eof']:raise ValueError('Unknown plugin match type')
+   target=turns[e['targetOrdinal']]
+   if e['usage']!=target['usage'] or e.get('reportedCost')!=target['reportedCost']:raise ValueError('Plugin usage mismatch')
+   key={'exact':'exactMatches','coverage_only':'coverageOnlyMatches','equivalent_eof':'equivalentEOFMatches'}[kind]
+   stats[program][key]=stats[program].get(key,0)+1
+   msg=raw['messages'][target['sourceMessageIndex']]
+   observed_reasoning=any(x.get('type')!='function_call' for x in msg.get('output',[])) if msg.get('object')=='response' else bool(msg.get('content')) or bool(msg.get('reasoning_content')) or ((target['usage'] or {}).get('reasoningOutputTokens') or 0)>0
+   events.append({**e,'program':program,'matchType':kind,'reasoningOrProse':observed_reasoning})
  # Write/run's original standalone analyzer also counts a supported last write
  # as a proposal without a next response; preserve that denominator.
  if turns and 'write_then_run_v2' in programs:
@@ -94,10 +116,10 @@ def merge_usage(rows):
 def summarize(rows,programs):
  events=[e for row in rows for e in row['events']];denominator=merge_usage([row['usage'] for row in rows]);reports=[]
  for program in programs:
-  exact=[e for e in events if e['program']==program and e['matchType']=='exact'];coverage=[e for e in events if e['program']==program and e['matchType']=='coverage_only']
+  exact=[e for e in events if e['program']==program and e['matchType']=='exact'];coverage=[e for e in events if e['program']==program and e['matchType']=='coverage_only'];equivalent=[e for e in events if e['program']==program and e['matchType']=='equivalent_eof']
   counts=collections.Counter({'proposals':0,'exactMatches':0,'coverageOnlyMatches':0,'overlapExcluded':0})
   for row in rows:counts.update(row['stats'][program])
-  reports.append({'program':program,'title':PROGRAMS[program],**dict(counts),'matchedIssues':len({e['instance'] for e in exact}),'matchedUsage':u.sums(exact),'matchesWithReasoningOrProse':sum(e['reasoningOrProse'] for e in exact),'coverageOnly':{'matchedIssues':len({e['instance'] for e in coverage}),'matchedUsage':u.sums(coverage),'excludedFromExactUnion':True,'extraContextCostMeasured':False},'cohorts':{label:{'proposals':sum(row['stats'][program]['proposals'] for row in rows if row['cohort']==label),'matchedUsage':u.sums([e for e in exact if e['cohort']==label]),'coverageOnlyUsage':u.sums([e for e in coverage if e['cohort']==label])} for label in sorted({row['cohort'] for row in rows})}})
+  reports.append({'program':program,'title':PROGRAMS[program],**dict(counts),'matchedIssues':len({e['instance'] for e in exact}),'matchedUsage':u.sums(exact),'matchesWithReasoningOrProse':sum(e['reasoningOrProse'] for e in exact),'equivalentEOF':{'matchedUsage':u.sums(equivalent),'excludedFromExactUnion':True},'coverageOnly':{'matchedIssues':len({e['instance'] for e in coverage}),'matchedUsage':u.sums(coverage),'excludedFromExactUnion':True,'extraContextCostMeasured':False},'cohorts':{label:{'proposals':sum(row['stats'][program]['proposals'] for row in rows if row['cohort']==label),'matchedUsage':u.sums([e for e in exact if e['cohort']==label]),'coverageOnlyUsage':u.sums([e for e in coverage if e['cohort']==label])} for label in sorted({row['cohort'] for row in rows})}})
  selected,duplicates,chains=a.select_union([e for e in events if e['matchType']=='exact'])
  return {'reportedApiCalls':sum(row['reportedApiCalls'] for row in rows if type(row.get('reportedApiCalls')) is int),'trajectoriesWithReportedApiCalls':sum(type(row.get('reportedApiCalls')) is int for row in rows),'unrecordedResponseCount':sum(max(0,row['reportedApiCalls']-row['usage']['calls']) for row in rows if type(row.get('reportedApiCalls')) is int),'trajectoriesWithCounterMismatch':sum(row['reportedApiCalls']!=row['usage']['calls'] for row in rows if type(row.get('reportedApiCalls')) is int),'trajectories':len(rows),'uniqueIssues':len({row['instance'] for row in rows}),'denominator':denominator,'diagnostics':dict(sum((collections.Counter(row['diagnostics']) for row in rows),collections.Counter())),'candidates':reports,'union':{'matchedUsage':u.sums(selected),'matchedIssues':len({e['instance'] for e in selected}),'duplicateTargetsRemoved':duplicates,'dependentChainsExcluded':chains},'cohorts':{label:{'trajectories':sum(row['cohort']==label for row in rows),'usage':merge_usage([row['usage'] for row in rows if row['cohort']==label])} for label in sorted({row['cohort'] for row in rows})}}
 
@@ -147,7 +169,7 @@ def main():
     if (len(rows)+len(errors))%100==0:print(json.dumps({'processed':len(rows),'errors':len(errors),'cacheHits':hits,'total':len(entries)}),flush=True)
    fill()
  elapsed=time.perf_counter()-started;summary=summarize(rows,programs);calls=summary['denominator'].get('calls',0)
- report={'version':1,'kind':'offline-program-classifier-batch-replay','classifier':'Deterministic eligibility guards and argument planners; no model API or learned router invoked.','status':'complete' if not errors else 'complete-with-errors','requestedTrajectories':len(entries),'failedTrajectories':len(errors),'errorsByType':dict(collections.Counter(e['errorType'] for e in errors)),'sources':manifest.get('sources',[]),'sourceManifestSha256':hashlib.sha256(args.manifest.read_bytes()).hexdigest(),'policyHash':ph,'policySources':hashes,'performance':{'workers':args.workers,'wallSeconds':elapsed,'cacheHits':hits,'classifiedTrajectories':len(rows)-hits,'trajectoriesPerSecond':len(rows)/elapsed,'responsesPerSecond':calls/elapsed,'workerSecondsNewWork':sum(row.get('workerSeconds',0) for row in rows) if not hits else None},**summary,'limitations':['Frozen policies from the earlier100-trace discovery sample, which overlaps this larger corpus; this is not fully held-out validation.','Match means predicted next whole singleton response, not proof that reasoning or task quality can be preserved.','Recorded usage belongs to original calls; avoided usage is a conditional gross estimate. No routing/program/fallback cost or future cache effect is subtracted.','Cached input and reasoning are subsets; never add them again to total tokens.','Coverage-only search reads can add context and hit output caps; excluded from exact totals.','Execution requires opt-in and state/hash checks not reconstructable from historical traces. No deployment savings credited.','Only recognized bash-tool shapes are supported. Unsupported patterns abstain; parser errors are reported, not counted as zero-opportunity traces.','Source-reported costs are metadata, not our spending or independently verified invoices.','No source commands or scripts are executed, and no paid model requests are made.']}
+ report={'version':1,'kind':'offline-program-classifier-batch-replay','classifier':'Deterministic eligibility guards and argument planners; no model API or learned router invoked.','status':'complete' if not errors else 'complete-with-errors','requestedTrajectories':len(entries),'failedTrajectories':len(errors),'errorsByType':dict(collections.Counter(e['errorType'] for e in errors)),'sources':manifest.get('sources',[]),'sourceManifestSha256':hashlib.sha256(args.manifest.read_bytes()).hexdigest(),'policyHash':ph,'policySources':hashes,'performance':{'workers':args.workers,'wallSeconds':elapsed,'cacheHits':hits,'classifiedTrajectories':len(rows)-hits,'trajectoriesPerSecond':len(rows)/elapsed,'responsesPerSecond':calls/elapsed,'workerSecondsNewWork':sum(row.get('workerSeconds',0) for row in rows) if not hits else None},**summary,'limitations':['Policies developed on overlapping discovery subsets; see per-program split reports. This is not fully held-out validation.','Match means predicted next whole singleton response, not proof that reasoning or task quality can be preserved.','Recorded usage belongs to original calls; avoided usage is a conditional gross estimate. No routing/program/fallback cost or future cache effect is subtracted.','Cached input and reasoning are subsets; never add them again to total tokens.','Coverage-only search reads can add context and hit output caps; excluded from exact totals.','Execution requires opt-in and state/hash checks not reconstructable from historical traces. No deployment savings credited.','Only recognized bash-tool shapes are supported. Unsupported patterns abstain; parser errors are reported, not counted as zero-opportunity traces.','Source-reported costs are metadata, not our spending or independently verified invoices.','No source commands or scripts are executed, and no paid model requests are made.']}
  if args.reference_manifest:
   reference=json.loads(args.reference_manifest.read_text());known={entry['instanceId'] for entry in reference['files']}
   report['referenceComparison']={'referenceManifestSha256':hashlib.sha256(args.reference_manifest.read_bytes()).hexdigest(),'knownIssueCount':len(known),'previouslySampledIssues':summarize([row for row in rows if row['instance'] in known],programs),'otherIssues':summarize([row for row in rows if row['instance'] not in known],programs),'interpretation':'Issue-disjoint from the specified earlier sample, not a claim of untouched external validation.'}

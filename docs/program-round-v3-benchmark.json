@@ -1,0 +1,37 @@
+{
+  "kind": "eight-program-classifier-cache-benchmark",
+  "policyHash": "2d777d1139a763e7fde7ca0953d8b1655fe56748af70fdd0d74eba6383c98bbe",
+  "sourceManifestSha256": "73cccd8079f5c3150015207a7d102f1a4409c7996f0ea9ae1305f1b45239247b",
+  "trajectories": 2498,
+  "responses": 129846,
+  "programs": 8,
+  "freshClassification": {
+    "workers": 4,
+    "wallSeconds": 29.359322208000002,
+    "cacheHits": 0,
+    "classifiedTrajectories": 2498,
+    "trajectoriesPerSecond": 85.08370807413702,
+    "responsesPerSecond": 4422.64978326437,
+    "workerSecondsNewWork": 78.6022450389999
+  },
+  "cachedReplay": {
+    "workers": 4,
+    "wallSeconds": 5.205632583,
+    "cacheHits": 2498,
+    "classifiedTrajectories": 0,
+    "trajectoriesPerSecond": 479.86483105966835,
+    "responsesPerSecond": 24943.366234497076,
+    "workerSecondsNewWork": null
+  },
+  "countsAndTokenUsageIdentical": true,
+  "reportedCostAgreementTolerance": {
+    "relative": 1e-12,
+    "absolute": 1e-09
+  },
+  "notes": [
+    "Fresh classification cache, not a cold filesystem.",
+    "Source bytes rehashed on cached replay.",
+    "No downloads, model inference or recorded commands executed.",
+    "Classifier throughput does not demonstrate live substitution latency or quality."
+  ]
+}
