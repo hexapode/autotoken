@@ -29,7 +29,7 @@ export async function snapshotCorpus(roots){
    }
    if(manifest.state==='complete'&&records.length&&manifest.options?.instance){
     const run=extractRun(manifest,records,directory);
-    runs.push({...run,startedAt:manifest.startedAt,arm:manifest.options.workflowArm||'baseline',sourceRoot:resolve(root)});source.finishedRuns++;
+    runs.push({...run,startedAt:manifest.startedAt,arm:manifest.options.programArm||manifest.options.workflowArm||'baseline',sourceRoot:resolve(root)});source.finishedRuns++;
    }
   }
  }

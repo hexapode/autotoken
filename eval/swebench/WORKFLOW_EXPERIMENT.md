@@ -159,3 +159,24 @@ The first accelerated burst finished in 246.974 seconds (4m 7s): 308 completed p
 In those 36 completed runs, heuristic tags identify 17 pure search-then-file-read transitions across 13 distinct issues, while the strict standalone Git-review matcher finds zero turns. Inspection shows many edits/tests/diff checks already bundled in the same command. A bounded search-with-source-context program is therefore the next candidate, not an established 17-call saving. Its output relevance, token overhead, and downstream correctness still require independent evaluation.
 
 After adding this cohort and the final initial Opus run, the local corpus contains 1,149 records and 1,083 scored decisions from 146 finished runs over 48 distinct issues. Grouped replay uses 769 baseline decisions and 314 treatment diagnostics. The existing patch-review classifier continues to abstain at its gated thresholds; the additional Opus negatives also make its 0.1 diagnostic policy abstain. Repeated runs increase observations without increasing the number of independent issues.
+
+## Candidate programs for the demo
+
+Three subagents each built a bounded program, with separate tests and frozen issue-level replay. The programs are `search-context.js`, `read-context.js`, and `patch-review.js`. They have no global proxy activation. The public demo runs deterministic search/context code on editable in-memory sample text and a simple text-diff preview; repository-backed variants run through `autotoken demo-programs`. Program buttons are explicit choices, not a learned-router demonstration.
+
+Primary search replay uses the previously specified ±20-line windows, at most five files / 200 lines, and only completed search output to choose ranges. Existing all-traces-v1 fold0 is test, fold1 calibration, and folds2–4 discovery, across all providers/repetitions of an issue. Of 62 search-tagged held-out baseline turns, six support a bounded proposal. Two have a supported pure next-read label; one is fully range-covered and one partially covered. The full coverage occurs on pydicom1375: the proposed window includes the subsequent requested lines138–160. Discovery has four fully covered next-read turns and calibration two. Unsupported mixed shell commands abstain. The six test proposals add806 lines beyond recorded search evidence, so context overhead is material.
+
+An independently implemented exploratory miner used a different ±40 policy and stricter parsing: its held-out search candidate covered zero of eight opportunities. These results are not pooled or treated as interchangeable. Expanded reads (fixed ±40, cap200) cover no follow-up pure-read turns among three held-out opportunities and add240 proposed lines. Patch review is compatible with three Git-only held-out turns across three issues out of156 baseline decisions, with zero exact command matches. None of these replay labels establish downstream task success or saved calls.
+
+### Live development probe
+
+A separate, opt-in Pi extension appends bounded source context after eligible successful searches. Its tool schema and description match baseline, and it adds no behavioral reminder. Both arms ran concurrently from fresh local checkouts on `marshmallow-code__marshmallow-1524` with Opus5.5 medium effort. This issue was previously inspected and belongs to the existing calibration group; this is a deliberately selected development mechanism check, not independent evaluation. One rollout per arm:
+
+| Arm | Calls | Reported total tokens | Repository suite | Public-issue regression |
+| --- | ---: | ---: | --- | --- |
+| Baseline | 8 | 33,954 | Pass | Pass |
+| Search context | 5 | 30,963 | Pass | Pass |
+
+The context program triggered twice, appending10,020 bytes. The probe used $0.563712 in conservative accounting, within a separately reserved $3 portion of the existing Anthropic authorization. Total-token difference is -2,991 (-8.8%); call difference is -3 (-37.5%). Neither percentage is a general estimate of savings.
+
+An independent check ran the identical issue regression on the pristine base commit `7015fc4333a2f32cd58c3465296e834acd4496ff`: it fails on the trailing-newline email. Both final patches reject the three invalid public-issue email examples while accepting the valid email. Full repository suites also pass. Model randomness, the deliberately chosen issue, and a single rollout per arm prevent causal or generalization claims. Repeated independent issues and full routing costs are still required.

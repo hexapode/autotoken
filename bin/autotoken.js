@@ -12,6 +12,7 @@ const help=`Autotoken — record LLM traffic and test reusable programs
 Usage:
   autotoken init                         Create local config and proxy token
   autotoken demo                         Run the offline learning demo
+  autotoken demo-programs [--serve]       Run three real program prototypes
   autotoken proxy [options]              Start the recording proxy
   autotoken traces DIRECTORY             Summarize recorded requests
   autotoken eval                         Run the scripted evaluation
@@ -52,9 +53,9 @@ try {
    server.on('error',e=>{console.error(`Proxy failed: ${e.code || 'SERVER_ERROR'}`);process.exitCode=1;});
    server.listen(config.port,'127.0.0.1',()=>console.log(`Autotoken recording proxy (${config.provider}): http://127.0.0.1:${config.port}\nTraces: ${config.directory}\nNo model restrictions; use your provider's model ID.`));
    const stop=()=>{server.closeAllConnections();server.close();};process.once('SIGINT',stop);process.once('SIGTERM',stop);
-  } else if(['demo','traces','eval','router','router-replay','router-corpus'].includes(command)) {
-   if((command==='traces'&&args.length!==1)||(['demo','eval'].includes(command)&&args.length)||(command==='router'&&(args.length<1||args.length>3))||(command==='router-replay'&&(args.length<2||args.length>3))||(command==='router-corpus'&&args.length<1))throw new Error(`Invalid ${command} arguments`);
-   const script={demo:'demo.js',traces:'trace.js',eval:'evaluate.js',router:'decision-server.js','router-replay':'router-experiment.js','router-corpus':'router-corpus.js'}[command];
+  } else if(['demo','demo-programs','traces','eval','router','router-replay','router-corpus'].includes(command)) {
+   if((command==='traces'&&args.length!==1)||(['demo','eval'].includes(command)&&args.length)||(command==='router'&&(args.length<1||args.length>3))||(command==='router-replay'&&(args.length<2||args.length>3))||(command==='router-corpus'&&args.length<1)||(command==='demo-programs'&&(args.length>1||(args.length===1&&args[0]!=='--serve'))))throw new Error(`Invalid ${command} arguments`);
+   const script={demo:'demo.js','demo-programs':'program-demo.js',traces:'trace.js',eval:'evaluate.js',router:'decision-server.js','router-replay':'router-experiment.js','router-corpus':'router-corpus.js'}[command];
    const child=spawn(process.execPath,[fileURLToPath(new URL('../src/'+script,import.meta.url)),...args],{stdio:'inherit',env:process.env});
    child.on('error',()=>{console.error('Could not start command');process.exitCode=1;});
    child.on('exit',(code)=>{process.exitCode=code ?? 1;});

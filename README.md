@@ -16,6 +16,19 @@ The [trace-router experiment](eval/swebench/WORKFLOW_EXPERIMENT.md#trace-trained
 
 The [project website](https://hexapode.github.io/autotoken/) explains the loop and experiments. [Install below](#install), [try the trace router](#train-a-router-on-recorded-coding-runs), or start with [Pi setup](examples/pi/README.md). The [SWE-bench runner](eval/swebench/README.md) supports Docker evaluation and an explicitly separate local pilot with repository tests. Fixed workflow comparisons remain separate from learned routing.
 
+## Try the program demo
+
+[Open the public walkthrough](https://hexapode.github.io/autotoken/demo.html), or run the actual bounded programs on a local fixture repository:
+
+```sh
+autotoken demo-programs --serve
+# Open http://127.0.0.1:3003
+```
+
+A single development comparison of search-context used **8 → 5 model calls** and **33,954 → 30,963 tokens**; both fixes passed repository tests and the public-issue regression. This was a previously seen issue and needs replication.
+
+No API key or model calls are required for the demo. Search-with-context, expanded reads, patch review, and explicit abstention are executable. The public page executes search and context planning on editable sample code in your browser and includes a simple text-diff preview. The CLI executes repository-backed variants, including Git patch review. Buttons choose programs explicitly, so this is not a demonstration of an autonomous learned router.
+
 ## Install
 
 Node.js 22.19 or later is required. The CLI has no runtime npm dependencies. Install from the public GitHub repository:
