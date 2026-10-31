@@ -232,3 +232,12 @@ The local-only service defaults to port 3002. Authenticate with `Authorization: 
 Set `ROUTER_BACKEND=api`, `ROUTER_PROVIDER=anthropic|openai|compatible`, `ROUTER_MODEL`, the corresponding API key, and optionally `ROUTER_BASE_URL` to try a hosted decision model. This makes paid API calls using that account; it does not share the separate SWE experiment budget. Program IDs and arguments are checked locally, and provider errors or malformed choices fall back. The adapter has mocked provider tests; the replay above evaluates local classifiers, not hosted routing accuracy.
 
 Every accepted decision/outcome is logged privately under `.autotoken/router/`. Candidate updates are saved in `candidate.json`; restarting with that file evaluates its weights as a new shadow snapshot. Keep raw traces and keys out of version control. See [the replay protocol](eval/swebench/WORKFLOW_EXPERIMENT.md#trace-trained-router-replay) for results and limits.
+
+
+To replay multiple trace collections together, use issue-grouped cross-validation:
+
+```sh
+autotoken router-corpus .autotoken/corpus-replay PATH_TO_COLLECTION PATH_TO_ANOTHER_TRIAL
+```
+
+All providers, repetitions, and approaches for the same issue stay in one fold. Baseline runs train and calibrate the router; intervention runs are scored separately. Completed runs are snapshotted, duplicate trace IDs removed, and unfinished/failed runs listed in the exclusion audit. Outputs stay local; use a new output directory for each replay. To reproduce a frozen snapshot, run `autotoken router-corpus NEW_OUTPUT --snapshot PREVIOUS_OUTPUT/snapshot.json`. This simulates routing and program proposals, not downstream execution or realized savings.

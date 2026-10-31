@@ -124,3 +124,22 @@ node src/router-experiment.js data/analysis/discovery-final/analysis.json \
 Local artifacts include the split manifest, threshold curves, metrics, program source, and both router snapshots. The decision service is available through `autotoken router ROUTER_JSON` and can use the local classifier or a hosted Anthropic/OpenAI-compatible decision adapter. Hosted adapters have mocked tests, not measured routing accuracy in this replay. Its authenticated outcome endpoint updates a separate candidate, excludes known held-out issues, and records the evidence type. Replay labels cannot activate a policy. A contextual-bandit policy is not implemented.
 
 Next requirement before live replacement: more independently labeled opportunities, meaningful bug-specific outcomes, and a paired comparison that counts decision cost, fallbacks, and program execution. Expanding supported programs may yield more useful training examples than lowering the routing threshold.
+
+
+## All-trace grouped replay
+
+A subsequent snapshot combines the pilot, discovery collection, both GPT workflow trials, and available completed Opus runs. It audits 830 trace records and scores 806 decisions from 109 finished runs across 48 issues; 24 records from unfinished/failed runs are excluded and retained in the audit. The Opus snapshot contains 240 attempts, 238 complete responses, and 34 finished runs. Collection was still in progress at snapshot time.
+
+Five deterministic issue folds (`all-traces-v1:` SHA-256 ordering, round-robin assignment) rotate test and calibration roles. Every provider, repetition, and arm of the same issue stays together. Each issue appears in the test role exactly once. Baseline data alone trains and calibrates; fixed-workflow interventions are diagnostic only. Feature definitions, program template, learning rates, epoch counts, and threshold grid are unchanged from the first replay. Previously inspected traces make this cross-validation rather than a pristine external benchmark.
+
+There are 499 baseline decisions with 14 compatible Git-review turns, plus 307 treatment decisions with seven compatible turns. Neither batch nor one-pass online routing qualifies in any calibration fold; both gated policies abstain throughout. At the previously defined exploratory 0.1 threshold, the batch router selects 46 baseline turns: 14 compatible and 32 incompatible (30.4% precision, 100% compatibility recall). The one-pass online router selects none. Exact command matches remain zero, and realized savings remain unmeasured.
+
+This validates data plumbing, grouping, and replay behavior; it does not validate live program substitution. Incompatible labels do not establish actual task harm, and compatible labels do not establish identical output or success. The snapshot includes finished runs regardless of local-suite outcome to avoid silently filtering evaluation to successful tasks. Unfinished runs are audited separately. A better routing signal or additional useful programs is needed before live replacement.
+
+```sh
+node src/router-corpus.js data/experiments/router-all-traces-v1
+# Or specify individual collections explicitly:
+autotoken router-corpus .autotoken/replay PATH_TO_COLLECTION PATH_TO_TRIAL
+```
+
+The local report includes source counts, issue assignments, per-fold policies, provider-specific metrics, treatment diagnostics, and exclusions. The frozen snapshot permits reproduction even while more traces arrive. No new paid model calls are needed.
