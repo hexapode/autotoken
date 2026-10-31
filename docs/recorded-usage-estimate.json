@@ -1,0 +1,164 @@
+{
+  "version": 1,
+  "kind": "recorded_usage_counterfactual_replay_not_measured_savings",
+  "sources": [
+    {
+      "label": "sonnet45",
+      "submission": "20260217_mini-v2.0.0_claude-4-5-sonnet-high",
+      "metadataURL": "https://raw.githubusercontent.com/SWE-bench/experiments/40f164d5b8f1d249bf95a6df8b74b577fd8e519d/evaluation/verified/20260217_mini-v2.0.0_claude-4-5-sonnet-high/metadata.yaml",
+      "githubRevision": "40f164d5b8f1d249bf95a6df8b74b577fd8e519d",
+      "trajectoryPrefix": "https://swe-bench-submissions.s3.amazonaws.com/bash-only/20260217_mini-v2.0.0_claude-4-5-sonnet-high/trajs/",
+      "availableTrajectories": 500,
+      "availableBytes": 298722547,
+      "selectedTrajectories": 50,
+      "licenseStatus": "No dataset license asserted; raw artifacts kept private; source attribution preserved."
+    },
+    {
+      "label": "gpt52",
+      "submission": "20260217_mini-v2.0.0_gpt-5-2-high",
+      "metadataURL": "https://raw.githubusercontent.com/SWE-bench/experiments/40f164d5b8f1d249bf95a6df8b74b577fd8e519d/evaluation/verified/20260217_mini-v2.0.0_gpt-5-2-high/metadata.yaml",
+      "githubRevision": "40f164d5b8f1d249bf95a6df8b74b577fd8e519d",
+      "trajectoryPrefix": "https://swe-bench-submissions.s3.amazonaws.com/bash-only/20260217_mini-v2.0.0_gpt-5-2-high/trajs/",
+      "availableTrajectories": 500,
+      "availableBytes": 129942497,
+      "selectedTrajectories": 50,
+      "licenseStatus": "No dataset license asserted; raw artifacts kept private; source attribution preserved."
+    }
+  ],
+  "selection": "50 per model, repository round-robin; within repo SHA256(autotoken-usage-v1:instanceId); source outcomes not consulted",
+  "program": "frozen mini write_then_run: python registered; exact whole singleton source and next action; observed results",
+  "plannerSha256": "c7b4b31df1be3ecd64c37d3e9884da054e8680ebaeb6c2c25ec281a3c2405e38",
+  "cohorts": {
+    "sonnet45": {
+      "trajectories": 50,
+      "issues": 50,
+      "usage": {
+        "calls": 2422,
+        "callsWithUsage": 2422,
+        "inputTokens": 52126432,
+        "inputTokensReportedCalls": 2422,
+        "outputTokens": 717714,
+        "outputTokensReportedCalls": 2422,
+        "totalTokens": 52844146,
+        "totalTokensReportedCalls": 2422,
+        "cachedInputTokens": 50318512,
+        "cachedInputTokensReportedCalls": 2422,
+        "cacheCreationInputTokens": 1801215,
+        "cacheCreationInputTokensReportedCalls": 2422,
+        "reasoningOutputTokens": 147146,
+        "reasoningOutputTokensReportedCalls": 2422,
+        "sourceReportedCostSum": 32.63593485000005,
+        "callsWithReportedCost": 2422
+      },
+      "reportedApiCalls": 2423,
+      "trajectoriesWithMatchingApiCallCount": 49,
+      "multiToolCalls": 312,
+      "diagnostics": {
+        "nativeToolActions": 2751,
+        "recognizedBashCommandActions": 2751,
+        "singletonBashCalls": 2110,
+        "singletonBashWithAlignedResult": 2060,
+        "singletonCatHeredocSyntax": 451,
+        "catHeredocRejectedByFrozenGrammarOrPath": 451,
+        "singletonSuccessfulBashResult": 1784,
+        "singletonMissingOrAmbiguousResult": 50
+      },
+      "usageFormatCounts": {
+        "chat_prompt_completion": 2422
+      },
+      "proposals": 0,
+      "nextMultiToolTurnsExcluded": 0,
+      "optimisticMatchedCalls": {
+        "calls": 0,
+        "callsWithUsage": 0,
+        "inputTokens": 0,
+        "inputTokensReportedCalls": 0,
+        "outputTokens": 0,
+        "outputTokensReportedCalls": 0,
+        "totalTokens": 0,
+        "totalTokensReportedCalls": 0,
+        "cachedInputTokens": 0,
+        "cachedInputTokensReportedCalls": 0,
+        "cacheCreationInputTokens": 0,
+        "cacheCreationInputTokensReportedCalls": 0,
+        "reasoningOutputTokens": 0,
+        "reasoningOutputTokensReportedCalls": 0,
+        "sourceReportedCostSum": 0,
+        "callsWithReportedCost": 0
+      },
+      "matchedIssues": 0,
+      "conservativeMatchedCalls": 0
+    },
+    "gpt52": {
+      "trajectories": 50,
+      "issues": 50,
+      "usage": {
+        "calls": 1945,
+        "callsWithUsage": 1945,
+        "inputTokens": 40065726,
+        "inputTokensReportedCalls": 1945,
+        "outputTokens": 740263,
+        "outputTokensReportedCalls": 1945,
+        "totalTokens": 40805989,
+        "totalTokensReportedCalls": 1945,
+        "cachedInputTokens": 34515072,
+        "cachedInputTokensReportedCalls": 1945,
+        "cacheCreationInputTokens": 0,
+        "cacheCreationInputTokensReportedCalls": 0,
+        "reasoningOutputTokens": 535811,
+        "reasoningOutputTokensReportedCalls": 1945,
+        "sourceReportedCostSum": 26.117464100000017,
+        "callsWithReportedCost": 1945
+      },
+      "reportedApiCalls": 1945,
+      "trajectoriesWithMatchingApiCallCount": 50,
+      "multiToolCalls": 52,
+      "diagnostics": {
+        "nativeToolActions": 2075,
+        "recognizedBashCommandActions": 2075,
+        "singletonBashCalls": 1893,
+        "singletonBashWithAlignedResult": 1843,
+        "singletonSuccessfulBashResult": 1636,
+        "singletonMissingOrAmbiguousResult": 50,
+        "singletonCatHeredocSyntax": 43,
+        "catHeredocRejectedByFrozenGrammarOrPath": 43
+      },
+      "usageFormatCounts": {
+        "responses_input_output": 1945
+      },
+      "proposals": 0,
+      "nextMultiToolTurnsExcluded": 0,
+      "optimisticMatchedCalls": {
+        "calls": 0,
+        "callsWithUsage": 0,
+        "inputTokens": 0,
+        "inputTokensReportedCalls": 0,
+        "outputTokens": 0,
+        "outputTokensReportedCalls": 0,
+        "totalTokens": 0,
+        "totalTokensReportedCalls": 0,
+        "cachedInputTokens": 0,
+        "cachedInputTokensReportedCalls": 0,
+        "cacheCreationInputTokens": 0,
+        "cacheCreationInputTokensReportedCalls": 0,
+        "reasoningOutputTokens": 0,
+        "reasoningOutputTokensReportedCalls": 0,
+        "sourceReportedCostSum": 0,
+        "callsWithReportedCost": 0
+      },
+      "matchedIssues": 0,
+      "conservativeMatchedCalls": 0
+    }
+  },
+  "limitations": [
+    "Separate sample: do not combine with the original300 discovery traces or their token-proxy denominator.",
+    "Recorded input/output usage belongs to original model calls; saved tokens are conditional counterfactual estimates, not measured savings.",
+    "Input totals already include cached and cache-creation tokens; those details are reported separately and never added again.",
+    "One native Responses object is one model call, regardless of how many tool calls it contains.",
+    "Frozen shell grammar, paths and interpreter policy unchanged; incompatible commands are abstentions, not estimated savings.",
+    "Write-and-run requires explicit opt-in and unchanged-file hash check, absent from these historical traces. Conservative deployment credit is therefore zero.",
+    "No router/discovery/fallback overhead, downstream history effects or hypothetical cost recalculation included.",
+    "Reported costs are source metadata, not verified invoices; zero may mean unpriced.",
+    "Source task outcomes are not independently verified; no recorded commands executed."
+  ]
+}

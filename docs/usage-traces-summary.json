@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "kind": "public-coding-traces-with-recorded-per-call-usage",
+  "trajectories": 100,
+  "uniqueIssues": 50,
+  "repositories": 12,
+  "downloadBytes": 44044071,
+  "recordedResponses": 4367,
+  "responsesWithUsage": 4367,
+  "reportedApiCalls": 4368,
+  "inputTokens": 92192158,
+  "outputTokens": 1457977,
+  "cachedInputTokens": 84833584,
+  "cacheCreationInputTokens": 1801215,
+  "reasoningOutputTokens": 682957,
+  "recordedCostUsd": 58.75339895,
+  "selection": "50 per model, repository round-robin; within repo SHA256(autotoken-usage-v1:instanceId); source outcomes not consulted",
+  "sources": [
+    {
+      "model": "Claude Sonnet 4.5 (high)",
+      "harness": "mini-SWE-agent 2.0.0",
+      "submission": "20260217_mini-v2.0.0_claude-4-5-sonnet-high",
+      "metadataUrl": "https://raw.githubusercontent.com/SWE-bench/experiments/40f164d5b8f1d249bf95a6df8b74b577fd8e519d/evaluation/verified/20260217_mini-v2.0.0_claude-4-5-sonnet-high/metadata.yaml",
+      "sourceRevision": "40f164d5b8f1d249bf95a6df8b74b577fd8e519d",
+      "trajectoryPrefix": "https://swe-bench-submissions.s3.amazonaws.com/bash-only/20260217_mini-v2.0.0_claude-4-5-sonnet-high/trajs/",
+      "availableTrajectories": 500,
+      "sampledTrajectories": 50,
+      "repositories": 12,
+      "recordedResponses": 2422,
+      "responsesWithUsage": 2422,
+      "reportedApiCalls": 2423,
+      "inputTokens": 52126432,
+      "outputTokens": 717714,
+      "cachedInputTokens": 50318512,
+      "cacheCreationInputTokens": 1801215,
+      "reasoningOutputTokens": 147146,
+      "recordedCostUsd": 32.63593485
+    },
+    {
+      "model": "GPT-5.2 (high)",
+      "harness": "mini-SWE-agent 2.0.0",
+      "submission": "20260217_mini-v2.0.0_gpt-5-2-high",
+      "metadataUrl": "https://raw.githubusercontent.com/SWE-bench/experiments/40f164d5b8f1d249bf95a6df8b74b577fd8e519d/evaluation/verified/20260217_mini-v2.0.0_gpt-5-2-high/metadata.yaml",
+      "sourceRevision": "40f164d5b8f1d249bf95a6df8b74b577fd8e519d",
+      "trajectoryPrefix": "https://swe-bench-submissions.s3.amazonaws.com/bash-only/20260217_mini-v2.0.0_gpt-5-2-high/trajs/",
+      "availableTrajectories": 500,
+      "sampledTrajectories": 50,
+      "repositories": 12,
+      "recordedResponses": 1945,
+      "responsesWithUsage": 1945,
+      "reportedApiCalls": 1945,
+      "inputTokens": 40065726,
+      "outputTokens": 740263,
+      "cachedInputTokens": 34515072,
+      "cacheCreationInputTokens": 0,
+      "reasoningOutputTokens": 535811,
+      "recordedCostUsd": 26.1174641
+    }
+  ],
+  "usageFields": {
+    "sonnet": "messages[role=assistant].extra.response.usage; per-call cost in extra.cost",
+    "gpt": "messages[object=response].usage; per-call cost in extra.cost"
+  },
+  "accounting": [
+    "Input totals already include cached input and cache creation; never add those subsets again.",
+    "Reasoning output is a subset of completion/output tokens, not an additional chargeable token count.",
+    "Recorded cost is the source harness reported cost; it is not our spending or independently reconciled provider billing.",
+    "One Sonnet trajectory (scikit-learn__scikit-learn-13124) reports 54 API calls but contains 53 response records. Missing usage is not imputed.",
+    "Full conversations and tool outputs are retained privately. GPT response objects can contain multiple tool calls; a tool call is not a separate model request.",
+    "Sampling did not inspect outcomes; this sample was not checked for disjointness from previous discovery samples. Do not label it held-out evaluation."
+  ]
+}

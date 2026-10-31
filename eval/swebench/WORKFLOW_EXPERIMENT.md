@@ -405,3 +405,91 @@ node --test test/read-range-tool.test.js test/dataset-oracle.test.js test/swe-ru
 node --env-file=.env.anthropic src/read-range-trial.js /path/to/preflight
 node scripts/read-range-report.mjs data/experiments/read-range-live-v1
 ```
+
+### Estimating potential savings across the public sample
+
+`scripts/estimate-trace-savings.py` reruns the three native-harness miners and
+counts compatible whole assistant turns, not arbitrary tool calls. Four programs
+cover unique-file navigation, unique-line navigation, range repair and write/run.
+It rejects multiple-action turns, missing results, overlapping target turns and
+chains depending on an already removed source turn. Future actions are replay
+labels; planners use only prior observations. Seven fixture checks pass.
+
+Across 300 trajectories / 11,525 assistant turns, the strict scenario finds
+34 exact action-only matches (0.30%). A broader scenario finds 572 (4.96%):
+39 file opens, 22 line navigations, 42 range repairs and 469 write/run actions.
+The latter assumes accompanying reasoning is dispensable on 530 turns and
+script execution is explicitly enabled. Neither scenario establishes live savings.
+
+No per-call usage fields are present in this normalized sample. Using tiktoken
+0.12.0 with `cl100k_base` on visible payloads gives a gross reference-token proxy:
+
+| Scenario | Removed visible output | Skipped-request input | Total |
+| --- | ---: | ---: | ---: |
+| Strict | 1,491 | 1,020,102 | 1,021,593 |
+| Broader assumptions | 20,369 | 6,957,955 | 6,978,324 |
+
+These totals are 0.42% and 2.87% of the full-history corpus token proxy. Input
+counts assume all visible preceding messages and available schemas are sent on
+every request; compaction, caching, provider tokenizers, framing and hidden
+reasoning are unknown. No downstream context-shortening benefit is compounded.
+Tool results still go to the model and are not counted as removed output.
+Router/discovery overhead, false-positive costs and changed trajectories are not
+modeled. These are conditional gross opportunity estimates, not statistical
+bounds, invoiced savings or held-out results. Other local programs receive no
+credit on incompatible native harness tools.
+
+```sh
+python3 scripts/estimate-trace-savings.py --help
+python3 scripts/estimate-trace-savings-test.py
+```
+
+[Public aggregate and method](../../docs/trace-savings-estimate.json) include
+source/planner hashes; private per-event evidence remains outside the repository.
+
+The trial finished all 36 scheduled attempts with 317 provider requests and
+$16.472624 conservative usage, below its allocation. **No automatic repair
+triggered in any run**, so it demonstrates no causal call savings. Three strict
+primary pairs on issue 890 passed both checks in both arms: baseline 25 calls /
+108,769 tokens; treatment 28 calls / 139,428 tokens. With zero triggers these
+differences are sampling variation. The primary run state completed cleanly for
+19/36 attempts; other attempts retain their inference/evaluation failures.
+
+A separate post-hoc evaluation repair, `scripts/read-range-oracle-recheck.mjs`,
+verifies test-patch conflicts and evaluates only the retained non-test fix against
+identical dataset tests. Ten such fixes passed; six submissions already passed
+the original oracle. One strict run did not finish inference cleanly and another
+failed its original bug test. Supplemental checks do not replace the primary
+results or validate omitted agent test edits. The runtime and original manifests
+remain unchanged. [Public result](../../docs/read-range-live-summary.json).
+
+### Full traces with recorded per-call usage
+
+A separate sample downloads 50 Sonnet 4.5 and 50 GPT-5.2 mini-SWE-agent v2
+trajectories from the official SWE-bench experiment submissions. Selection uses
+repository round-robin and a fixed hash order within repository, without consulting
+outcomes. The two model cohorts cover the same 50 issues across 12 repositories;
+they are not 100 independent issues. Sources are pinned to experiments revision
+`40f164d5b8f1d249bf95a6df8b74b577fd8e519d`; individual S3 files have private
+SHA256/ETag provenance. About 44 MB of raw files remain on the external volume.
+
+All 4,367 recorded responses carry usage: 92,192,158 input and 1,457,977 output
+tokens, with cache/reasoning detail and recorded costs. One Sonnet trajectory
+reports an additional API call whose response is missing; no usage is imputed.
+Cached input is a subset of the normalized input total, not added again.
+
+`scripts/estimate-recorded-usage.py` preserves native Responses objects as a
+single call even when they contain multiple tool calls. It tests the unchanged
+mini write/run planner and counts only singleton whole-response matches with
+observed tool results. The current frozen policy produces zero supported
+proposals in this official sample. The adapter recognizes all 4,826 native bash
+actions; 494 cat/heredoc actions fall outside the frozen shell grammar or path
+policy. Zero matches therefore do not establish that the workflow pattern is
+absent. This is a portability/coverage result, not a
+reason to transfer discovery savings to newer harnesses. Other native-harness
+programs are not silently applied to these bash-tool traces. Provider usage makes
+matched-call token accounting more precise, but removing a call still requires
+live task-quality validation.
+
+[Source summary](../../docs/usage-traces-summary.json) ·
+[Recorded-usage replay](../../docs/recorded-usage-estimate.json)

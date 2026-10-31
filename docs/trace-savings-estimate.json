@@ -1,0 +1,226 @@
+{
+  "denominator": {
+    "trajectories": 300,
+    "issues": 298,
+    "repoBaseGroups": 268,
+    "recordsWithUsage": 0,
+    "assistantTurns": 11525,
+    "actions": 11516,
+    "visibleOutputTokenProxy": 2151113,
+    "requestInputTokenProxy": 241387025
+  },
+  "programs": [
+    {
+      "program": "unique_file_navigation",
+      "harness": "swe-agent",
+      "proposals": 62,
+      "matchedWholeActions": 39,
+      "exactMatchedWholeActions": 39,
+      "equivalentEOFMatches": 0,
+      "conservative": {
+        "potentialAssistantTurnsReplaced": 0,
+        "trajectories": 0,
+        "issues": 0,
+        "repoBaseGroups": 0,
+        "visibleOutputTokenProxy": 0,
+        "skippedRequestInputTokenProxy": 0,
+        "totalGrossTokenProxy": 0,
+        "nonemptyReasoningOrProseTurns": 0
+      },
+      "optimisticScenario": {
+        "potentialAssistantTurnsReplaced": 39,
+        "trajectories": 26,
+        "issues": 26,
+        "repoBaseGroups": 26,
+        "visibleOutputTokenProxy": 2254,
+        "skippedRequestInputTokenProxy": 262595,
+        "totalGrossTokenProxy": 264849,
+        "nonemptyReasoningOrProseTurns": 39
+      }
+    },
+    {
+      "program": "unique_match_navigation",
+      "harness": "swe-agent",
+      "proposals": 23,
+      "matchedWholeActions": 22,
+      "exactMatchedWholeActions": 22,
+      "equivalentEOFMatches": 0,
+      "conservative": {
+        "potentialAssistantTurnsReplaced": 0,
+        "trajectories": 0,
+        "issues": 0,
+        "repoBaseGroups": 0,
+        "visibleOutputTokenProxy": 0,
+        "skippedRequestInputTokenProxy": 0,
+        "totalGrossTokenProxy": 0,
+        "nonemptyReasoningOrProseTurns": 0
+      },
+      "optimisticScenario": {
+        "potentialAssistantTurnsReplaced": 22,
+        "trajectories": 21,
+        "issues": 21,
+        "repoBaseGroups": 21,
+        "visibleOutputTokenProxy": 956,
+        "skippedRequestInputTokenProxy": 122706,
+        "totalGrossTokenProxy": 123662,
+        "nonemptyReasoningOrProseTurns": 22
+      }
+    },
+    {
+      "program": "view_range_repair",
+      "harness": "openhands",
+      "proposals": 49,
+      "matchedWholeActions": 42,
+      "exactMatchedWholeActions": 34,
+      "equivalentEOFMatches": 8,
+      "conservative": {
+        "potentialAssistantTurnsReplaced": 34,
+        "trajectories": 21,
+        "issues": 21,
+        "repoBaseGroups": 21,
+        "visibleOutputTokenProxy": 1491,
+        "skippedRequestInputTokenProxy": 1020102,
+        "totalGrossTokenProxy": 1021593,
+        "nonemptyReasoningOrProseTurns": 0
+      },
+      "optimisticScenario": {
+        "potentialAssistantTurnsReplaced": 42,
+        "trajectories": 28,
+        "issues": 28,
+        "repoBaseGroups": 28,
+        "visibleOutputTokenProxy": 1849,
+        "skippedRequestInputTokenProxy": 1214217,
+        "totalGrossTokenProxy": 1216066,
+        "nonemptyReasoningOrProseTurns": 0
+      }
+    },
+    {
+      "program": "write_then_run",
+      "harness": "mini-swe-agent-plus",
+      "proposals": 584,
+      "matchedWholeActions": 469,
+      "exactMatchedWholeActions": 469,
+      "equivalentEOFMatches": 0,
+      "conservative": {
+        "potentialAssistantTurnsReplaced": 0,
+        "trajectories": 0,
+        "issues": 0,
+        "repoBaseGroups": 0,
+        "visibleOutputTokenProxy": 0,
+        "skippedRequestInputTokenProxy": 0,
+        "totalGrossTokenProxy": 0,
+        "nonemptyReasoningOrProseTurns": 0
+      },
+      "optimisticScenario": {
+        "potentialAssistantTurnsReplaced": 469,
+        "trajectories": 83,
+        "issues": 83,
+        "repoBaseGroups": 61,
+        "visibleOutputTokenProxy": 15310,
+        "skippedRequestInputTokenProxy": 5358437,
+        "totalGrossTokenProxy": 5373747,
+        "nonemptyReasoningOrProseTurns": 469
+      }
+    }
+  ],
+  "aggregate": {
+    "conservative": {
+      "potentialAssistantTurnsReplaced": 34,
+      "trajectories": 21,
+      "issues": 21,
+      "repoBaseGroups": 21,
+      "visibleOutputTokenProxy": 1491,
+      "skippedRequestInputTokenProxy": 1020102,
+      "totalGrossTokenProxy": 1021593,
+      "nonemptyReasoningOrProseTurns": 0,
+      "assistantTurnPercent": 0.2950108459869848,
+      "grossTokenProxyPercent": 0.41947967919505075
+    },
+    "optimisticScenario": {
+      "potentialAssistantTurnsReplaced": 572,
+      "trajectories": 152,
+      "issues": 152,
+      "repoBaseGroups": 130,
+      "visibleOutputTokenProxy": 20369,
+      "skippedRequestInputTokenProxy": 6957955,
+      "totalGrossTokenProxy": 6978324,
+      "nonemptyReasoningOrProseTurns": 530,
+      "assistantTurnPercent": 4.963123644251627,
+      "grossTokenProxyPercent": 2.8653926885159975
+    }
+  },
+  "matchedEventsBeforeDeduplication": 572,
+  "eventsRemovedByOverlap": 0,
+  "byHarness": {
+    "mini-swe-agent-plus": {
+      "assistantTurns": 3280,
+      "optimisticScenario": {
+        "potentialAssistantTurnsReplaced": 469,
+        "trajectories": 83,
+        "issues": 83,
+        "repoBaseGroups": 61,
+        "visibleOutputTokenProxy": 15310,
+        "skippedRequestInputTokenProxy": 5358437,
+        "totalGrossTokenProxy": 5373747,
+        "nonemptyReasoningOrProseTurns": 469
+      }
+    },
+    "openhands": {
+      "assistantTurns": 5929,
+      "optimisticScenario": {
+        "potentialAssistantTurnsReplaced": 42,
+        "trajectories": 28,
+        "issues": 28,
+        "repoBaseGroups": 28,
+        "visibleOutputTokenProxy": 1849,
+        "skippedRequestInputTokenProxy": 1214217,
+        "totalGrossTokenProxy": 1216066,
+        "nonemptyReasoningOrProseTurns": 0
+      }
+    },
+    "swe-agent": {
+      "assistantTurns": 2316,
+      "optimisticScenario": {
+        "potentialAssistantTurnsReplaced": 61,
+        "trajectories": 41,
+        "issues": 41,
+        "repoBaseGroups": 41,
+        "visibleOutputTokenProxy": 3210,
+        "skippedRequestInputTokenProxy": 385301,
+        "totalGrossTokenProxy": 388511,
+        "nonemptyReasoningOrProseTurns": 61
+      }
+    }
+  },
+  "version": 1,
+  "kind": "counterfactual_replay_estimate_not_measured_savings",
+  "tokenMethod": {
+    "referenceEncoding": "cl100k_base",
+    "tiktokenVersion": "0.12.0",
+    "nativeModelTokenizer": false,
+    "recordedUsageAvailable": false,
+    "input": "Sum reference-token lengths of visible prior message payloads plus tool schema, assuming full history at every assistant turn. Excludes chat framing/hidden reasoning; actual context compaction and caching unknown.",
+    "output": "Reference tokens in visible assistant text and structured function name/arguments, counted once. Not provider billing tokens."
+  },
+  "scenarios": {
+    "conservative": "Exact whole action, no extra assistant prose/reasoning, observed result, and no unobserved script-execution opt-in. Still a conditional turn-replacement estimate; hidden reasoning and task outcomes are unknown.",
+    "optimisticScenario": "Whole action matches including equivalent EOF reads, assuming accompanying reasoning is dispensable and script write-and-run is explicitly enabled. An opportunity ceiling among supported matches, not a statistical bound or deployment forecast."
+  },
+  "limitations": [
+    "Zero causally demonstrated saved calls in this replay; assistant turns are only a one-call-per-turn proxy.",
+    "Planners see prior tool results; future actions are labels only. Nonmatching proposals may change behavior and are not scored as savings.",
+    "Deduplicates target turns and rejects chains that depend on an already removed source turn.",
+    "Token estimates are gross: router/discovery cost, fallback, extra schema/output, cache pricing and changed trajectories are not modeled.",
+    "Tool results must still be returned to the model; their bytes are not counted as saved output.",
+    "No downstream context-shortening benefit is added; hypothetical future input savings would otherwise compound uncertain assumptions.",
+    "These are discovery traces used to develop the policies, not held-out evaluation; issue variants share repository/base groups.",
+    "Write-and-run requires opt-in, registered interpreter and file-hash checks; these policies are not observed in the source traces. Recorded scripts are never executed.",
+    "Other local programs are not credited on incompatible native harness tools."
+  ],
+  "sourceSha256": "99ec29f86a9c8f5ec8f3ca14f33306cd8d03c840549e4bf0b0c62d2c9ab64ee2",
+  "plannerSha256": {
+    "scripts/mine-public-swe-agent-plan.mjs": "f51ac476b820a8558ce897e78b2d35859be4f9a82aaac139504dbd721773d607",
+    "scripts/mine-public-openhands.py": "5583defea67806964d9665018186d21880aa625bfb544d742f7982f7c92a4a41",
+    "scripts/mine-public-mini.py": "c7b4b31df1be3ecd64c37d3e9884da054e8680ebaeb6c2c25ec281a3c2405e38"
+  }
+}
