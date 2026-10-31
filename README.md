@@ -1,12 +1,20 @@
 # Autotoken
 
-A local experiment in replacing repeated LLM work with deterministic programs. General requests go through the proxy; the learner discovers recurring data transformations, proposes bounded programs, and evaluates them in shadow mode. A decision model selects a registered program or abstains.
+Autotoken learns which repeated model tasks can become reusable programs, and when to use them.
 
-For the coding-agent experiment, a separate **Pi recording proxy** now preserves Responses API and Chat Completions requests, tool calls/results, streamed responses, and per-request traces. Start with [Pi setup and verification](examples/pi/README.md). This path is record-only. The [SWE-bench baseline runner](eval/swebench/README.md) supports isolated Docker tasks with official evaluation and an explicit Docker-free local pilot with repository tests. Both export patches and traces; learned action substitution is not yet implemented. A resumable `swe:collect` runner supports larger discovery collections with per-request budget accounting; see the [collection instructions](eval/swebench/README.md#larger-discovery-collection).
+**Spot a pattern → write a program → test it → route requests → learn from the outcome.**
 
-Public project: [hexapode/autotoken](https://github.com/hexapode/autotoken). The static explainer lives in [`docs/index.html`](docs/index.html).
+1. **Observe:** record requests, context, tool calls, results, and usage through a proxy.
+2. **Discover and write:** find recurring procedures and try a program with explicit inputs, outputs, and conditions for use. A small workflow may replace more work than one command.
+3. **Test:** check new inputs and separate issues; compare task quality and total cost with the normal model path.
+4. **Route:** a decision model chooses an eligible program and validated arguments, or falls back to the main model.
+5. **Learn:** use verified outcomes to improve the program catalog and train the router. Incremental updates go to a candidate policy; evaluation comes before promotion.
 
-An [exploratory workflow comparison](eval/swebench/WORKFLOW_EXPERIMENT.md) tests automatic validation against single-check and baseline arms on independent issues. This intervention is confined to the experiment.
+The goal is this whole loop. Today we have a multi-provider recording proxy, a bounded data-program prototype, coding-workflow experiments, and a shadow decision API with batch and online classifier training. Automatic activation of learned coding workflows is **not** implemented.
+
+The [trace-router experiment](eval/swebench/WORKFLOW_EXPERIMENT.md#trace-trained-router-replay) trains and evaluates routing on recorded coding tasks, using separate issues for testing. It is not yet reliable enough for activation. Replay measures candidate opportunities; it does not demonstrate saved calls or preserved task quality. Detailed methods and results live in the research notes.
+
+The [project website](https://hexapode.github.io/autotoken/) explains the loop and experiments. [Install below](#install), [try the trace router](#train-a-router-on-recorded-coding-runs), or start with [Pi setup](examples/pi/README.md). The [SWE-bench runner](eval/swebench/README.md) supports Docker evaluation and an explicitly separate local pilot with repository tests. Fixed workflow comparisons remain separate from learned routing.
 
 ## Install
 
@@ -198,3 +206,29 @@ Usage is separated into setup, proxy test, baseline test, and proxy including se
 Exit status is nonzero for operational failures or incorrect program responses. Zero does **not** imply sufficient coverage or answer accuracy: inspect both before accepting a result. No automatic minimum coverage threshold is imposed.
 
 Relevant code: `src/evaluate.js`, `eval/dataset.json`, and `test/evaluate.test.js`.
+
+### Train a router on recorded coding runs
+
+The experimental decision service uses the same interface for a local classifier or a model API. It returns **shadow proposals**; it does not replace traffic in the recording proxy. The first replay failed its promotion gate, so automatic activation is deliberately unavailable.
+
+```sh
+node src/trajectory-analysis.js data/collections/discovery-25usd data/analysis/discovery-final
+
+autotoken router-replay data/analysis/discovery-final/analysis.json \
+  .autotoken/router-experiment data/experiments/workflow-expanded-v2
+
+# PROXY_TOKEN comes from .autotoken.env created by autotoken init.
+autotoken router .autotoken/router-experiment/router.json
+```
+
+The optional third replay argument supplies separate baseline evaluation runs. Replay generates `report.json`, a restricted `patch-review.js` program, `router.json` (batch-trained), and `online-router.json` (one training pass). Splits are by issue, before fitting. Evaluation labels never update weights. No paid API calls occur during replay.
+
+The local-only service defaults to port 3002. Authenticate with `Authorization: Bearer YOUR_LOCAL_PROXY_TOKEN`:
+
+- `POST /decision`: `{ "issueId": "your-issue", "context": { "ordinal": 1, "history": [] } }`. Each history item contains earlier `actions: [{command, result}]`. Never include the target response. The result includes `requestId`, `shadowDecision`, and a proposed tool action; its effective route remains `model`.
+- `POST /outcomes`: `{ "requestId": "returned-id", "evidence": "replay-action-match", "compatible": true }`. Use a recorded action checked against the program's contract, not a model's confidence. This updates and persists a **candidate only**, rejects repeated feedback and known held-out issues, and never changes the serving snapshot. This label measures action compatibility, not task success. Pending IDs expire after 1,000 decisions or a restart.
+- `GET /health`: backend and candidate update count.
+
+Set `ROUTER_BACKEND=api`, `ROUTER_PROVIDER=anthropic|openai|compatible`, `ROUTER_MODEL`, the corresponding API key, and optionally `ROUTER_BASE_URL` to try a hosted decision model. This makes paid API calls using that account; it does not share the separate SWE experiment budget. Program IDs and arguments are checked locally, and provider errors or malformed choices fall back. The adapter has mocked provider tests; the replay above evaluates local classifiers, not hosted routing accuracy.
+
+Every accepted decision/outcome is logged privately under `.autotoken/router/`. Candidate updates are saved in `candidate.json`; restarting with that file evaluates its weights as a new shadow snapshot. Keep raw traces and keys out of version control. See [the replay protocol](eval/swebench/WORKFLOW_EXPERIMENT.md#trace-trained-router-replay) for results and limits.

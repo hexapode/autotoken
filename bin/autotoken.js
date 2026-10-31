@@ -15,6 +15,8 @@ Usage:
   autotoken proxy [options]              Start the recording proxy
   autotoken traces DIRECTORY             Summarize recorded requests
   autotoken eval                         Run the scripted evaluation
+  autotoken router-replay ANALYSIS OUT [TRIAL]  Train and test a trace router offline
+  autotoken router ROUTER_JSON [STATE] [PORT]   Start shadow decision API
   autotoken --version
 
 Proxy options:
@@ -49,9 +51,9 @@ try {
    server.on('error',e=>{console.error(`Proxy failed: ${e.code || 'SERVER_ERROR'}`);process.exitCode=1;});
    server.listen(config.port,'127.0.0.1',()=>console.log(`Autotoken recording proxy (${config.provider}): http://127.0.0.1:${config.port}\nTraces: ${config.directory}\nNo model restrictions; use your provider's model ID.`));
    const stop=()=>{server.closeAllConnections();server.close();};process.once('SIGINT',stop);process.once('SIGTERM',stop);
-  } else if(['demo','traces','eval'].includes(command)) {
-   if((command==='traces'&&args.length!==1)||(command!=='traces'&&args.length))throw new Error(`Invalid ${command} arguments`);
-   const script={demo:'demo.js',traces:'trace.js',eval:'evaluate.js'}[command];
+  } else if(['demo','traces','eval','router','router-replay'].includes(command)) {
+   if((command==='traces'&&args.length!==1)||(['demo','eval'].includes(command)&&args.length)||(command==='router'&&(args.length<1||args.length>3))||(command==='router-replay'&&(args.length<2||args.length>3)))throw new Error(`Invalid ${command} arguments`);
+   const script={demo:'demo.js',traces:'trace.js',eval:'evaluate.js',router:'decision-server.js','router-replay':'router-experiment.js'}[command];
    const child=spawn(process.execPath,[fileURLToPath(new URL('../src/'+script,import.meta.url)),...args],{stdio:'inherit',env:process.env});
    child.on('error',()=>{console.error('Could not start command');process.exitCode=1;});
    child.on('exit',(code)=>{process.exitCode=code ?? 1;});

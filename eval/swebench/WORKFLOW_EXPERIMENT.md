@@ -86,3 +86,41 @@ Send SIGUSR2 to the PID in `trial.lock` to drain: finish active tasks, then stop
 The Opus trial moved from serial to three workers after seven completed runs. One interrupted attempt was archived, with its charges retained, before retrying that task. Existing compressed Anthropic responses were reanalyzed locally to recover usage; original raw bytes and pre-recovery metadata remain available locally. Unknown/interrupted usage retains its reservation. Compression decoding is bounded to 16 MiB and does not alter forwarded bytes.
 
 Parallelism changes machine contention. Do not interpret serial-versus-parallel run times as a treatment effect; report the scheduling transition and analyze model calls/tokens separately. The $50 cap covers both phases and the interrupted attempt.
+
+## Trace-trained router replay
+
+The next experiment implements the proposed loop as a restricted program compiler, a decision API, batch-trained logistic routing, and incremental candidate updates. It replays recorded traffic rather than intervening in a live agent. No new paid model calls were made.
+
+The candidate `patch_review_v1` proposes `git diff --check; git diff --stat; git diff; git status --short`. Discovery selects support from training issues whose entire next action consists of recognized read-only Git diff/status commands. The program is generated from a fixed operation template, not arbitrary model-written source. Program/argument validation prevents the decision API from inventing executable commands.
+
+Protocol:
+
+- Freeze the 39 discovery runs that completed and passed local checks (314 requests). The remaining completed run failed checks; incomplete runs are excluded.
+- Deterministically split issue IDs using SHA-256 with the fixed `router-v1:` prefix: 23 training issues / 187 examples, eight calibration / 64, eight test / 63. Positive compatibility labels: four, one, and three respectively.
+- Inputs are features extracted only from commands/results preceding the target response. Target commands, final answers, and future outcomes never enter router features. Features describe previous tests, edits, searches, reads, diff/status, whether earlier edits/tests occurred, and turn position.
+- Train a logistic classifier for 40 passes. Separately train an incremental classifier with one pass. Both use only training labels; serving weights stay frozen during evaluation.
+- Choose a threshold using calibration only, requiring at least two compatible selections and zero incompatible selections. With only one positive calibration example, neither policy qualifies; both use a fallback-only threshold.
+- Evaluate on eight internal test issues and separately on the six first-repetition baseline runs from `workflow-expanded-v2` (41 requests, one compatible turn). Treatment runs and second repetitions are excluded.
+
+At the gated threshold both policies select zero programs. The exploratory 0.1 threshold was added as a diagnostic after the fallback-only run; it is not used for selection or promotion:
+
+| Router / evaluation set | Selected | Compatible | Incompatible | Compatible turns missed |
+| --- | ---: | ---: | ---: | ---: |
+| Batch / eight internal test issues | 2 | 2 | 0 | 1 |
+| Batch / six external issues | 1 | 0 | 1 | 1 |
+| One-pass online / internal test | 0 | 0 | 0 | 3 |
+| One-pass online / external | 0 | 0 | 0 | 1 |
+
+There are zero exact command matches for the generated packet among selected actions. Compatibility is an opportunity label, not semantic output equivalence, task success, or saved calls. These discovery traces were previously inspected by the project, so the internal holdout is algorithm-held-out, not a pristine benchmark. The small positive sample does not establish reliable routing. No policy or program is promoted.
+
+Reproduction:
+
+```sh
+node src/trajectory-analysis.js data/collections/discovery-25usd data/analysis/discovery-final
+node src/router-experiment.js data/analysis/discovery-final/analysis.json \
+  data/experiments/router-replay-v1 data/experiments/workflow-expanded-v2
+```
+
+Local artifacts include the split manifest, threshold curves, metrics, program source, and both router snapshots. The decision service is available through `autotoken router ROUTER_JSON` and can use the local classifier or a hosted Anthropic/OpenAI-compatible decision adapter. Hosted adapters have mocked tests, not measured routing accuracy in this replay. Its authenticated outcome endpoint updates a separate candidate, excludes known held-out issues, and records the evidence type. Replay labels cannot activate a policy. A contextual-bandit policy is not implemented.
+
+Next requirement before live replacement: more independently labeled opportunities, meaningful bug-specific outcomes, and a paired comparison that counts decision cost, fallbacks, and program execution. Expanding supported programs may yield more useful training examples than lowering the routing threshold.
