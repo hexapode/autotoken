@@ -1,0 +1,1924 @@
+{
+  "version": 1,
+  "kind": "official-public-trajectories-recorded-usage",
+  "status": "partial",
+  "trajectories": 2498,
+  "uniqueIssues": 500,
+  "repositories": 12,
+  "downloadBytes": 1667400475,
+  "selection": "All trajectory files in five official mini-SWE-agent v2 model submissions; source availability, not outcome. Same benchmark issues recur across models.",
+  "sources": [
+    {
+      "label": "sonnet45",
+      "submission": "20260217_mini-v2.0.0_claude-4-5-sonnet-high",
+      "githubRevision": "40f164d5b8f1d249bf95a6df8b74b577fd8e519d",
+      "metadataURL": "https://raw.githubusercontent.com/SWE-bench/experiments/40f164d5b8f1d249bf95a6df8b74b577fd8e519d/evaluation/verified/20260217_mini-v2.0.0_claude-4-5-sonnet-high/metadata.yaml",
+      "metadataSha256": "a158a82473a28ec37c2639d5d309dbba23cd4f75d22763c9b5e67b4b5830d308",
+      "trajectoryPrefix": "https://swe-bench-submissions.s3.amazonaws.com/bash-only/20260217_mini-v2.0.0_claude-4-5-sonnet-high/trajs/",
+      "availableTrajectories": 500,
+      "availableBytes": 298722547,
+      "downloadedTrajectories": 500,
+      "totals": {
+        "modelCalls": 24143,
+        "callsWithUsage": 24143,
+        "inputTokens": 522347941,
+        "outputTokens": 7365272,
+        "cachedInputTokens": 504431119,
+        "cacheCreationInputTokens": 17852490,
+        "reasoningOutputTokens": 1520265,
+        "recordedCostUsd": 328.94824920000025,
+        "callsWithCost": 24143
+      }
+    },
+    {
+      "label": "gpt52",
+      "submission": "20260217_mini-v2.0.0_gpt-5-2-high",
+      "githubRevision": "40f164d5b8f1d249bf95a6df8b74b577fd8e519d",
+      "metadataURL": "https://raw.githubusercontent.com/SWE-bench/experiments/40f164d5b8f1d249bf95a6df8b74b577fd8e519d/evaluation/verified/20260217_mini-v2.0.0_gpt-5-2-high/metadata.yaml",
+      "metadataSha256": "969a7c91b351fd0ac9ce47fddec706a9babbc15a84bc2022dd6f138461858d75",
+      "trajectoryPrefix": "https://swe-bench-submissions.s3.amazonaws.com/bash-only/20260217_mini-v2.0.0_gpt-5-2-high/trajs/",
+      "availableTrajectories": 500,
+      "availableBytes": 129942497,
+      "downloadedTrajectories": 500,
+      "totals": {
+        "modelCalls": 17520,
+        "callsWithUsage": 17520,
+        "inputTokens": 322598043,
+        "outputTokens": 6692906,
+        "cachedInputTokens": 267596032,
+        "cacheCreationInputTokens": 0,
+        "reasoningOutputTokens": 4871131,
+        "recordedCostUsd": 236.78350884999995,
+        "callsWithCost": 17520
+      }
+    },
+    {
+      "label": "deepseek32",
+      "submission": "20260217_mini-v2.0.0_deepseek-3-2-high",
+      "githubRevision": "40f164d5b8f1d249bf95a6df8b74b577fd8e519d",
+      "metadataURL": "https://raw.githubusercontent.com/SWE-bench/experiments/40f164d5b8f1d249bf95a6df8b74b577fd8e519d/evaluation/verified/20260217_mini-v2.0.0_deepseek-3-2-high/metadata.yaml",
+      "metadataSha256": "cc7f67a07a5059e6cd884ef5d000d25b6284845d4bb09253636a885af58cff43",
+      "trajectoryPrefix": "https://swe-bench-submissions.s3.amazonaws.com/bash-only/20260217_mini-v2.0.0_deepseek-3-2-high/trajs/",
+      "availableTrajectories": 500,
+      "availableBytes": 392738581,
+      "downloadedTrajectories": 500,
+      "totals": {
+        "modelCalls": 43683,
+        "callsWithUsage": 43683,
+        "inputTokens": 1177730550,
+        "outputTokens": 13441973,
+        "cachedInputTokens": 798975703,
+        "cacheCreationInputTokens": 0,
+        "reasoningOutputTokens": 7941114,
+        "recordedCostUsd": 223.92324824999974,
+        "callsWithCost": 43683
+      }
+    },
+    {
+      "label": "gemini3flash",
+      "submission": "20260217_mini-v2.0.0_gemini-3-flash-high",
+      "githubRevision": "40f164d5b8f1d249bf95a6df8b74b577fd8e519d",
+      "metadataURL": "https://raw.githubusercontent.com/SWE-bench/experiments/40f164d5b8f1d249bf95a6df8b74b577fd8e519d/evaluation/verified/20260217_mini-v2.0.0_gemini-3-flash-high/metadata.yaml",
+      "metadataSha256": "1f0567e39e292e9216cb669def83e6f6a9bd02ee3d9731c4f23cad13ac42816b",
+      "trajectoryPrefix": "https://swe-bench-submissions.s3.amazonaws.com/bash-only/20260217_mini-v2.0.0_gemini-3-flash-high/trajs/",
+      "availableTrajectories": 500,
+      "availableBytes": 625003330,
+      "downloadedTrajectories": 498,
+      "totals": {
+        "modelCalls": 28054,
+        "callsWithUsage": 28054,
+        "inputTokens": 847926935,
+        "outputTokens": 10071357,
+        "cachedInputTokens": 613767718,
+        "cacheCreationInputTokens": 0,
+        "reasoningOutputTokens": 7549905,
+        "recordedCostUsd": 177.98206540000024,
+        "callsWithCost": 28054
+      }
+    },
+    {
+      "label": "opus45",
+      "submission": "20260217_mini-v2.0.0_claude-4-5-opus-high",
+      "githubRevision": "40f164d5b8f1d249bf95a6df8b74b577fd8e519d",
+      "metadataURL": "https://raw.githubusercontent.com/SWE-bench/experiments/40f164d5b8f1d249bf95a6df8b74b577fd8e519d/evaluation/verified/20260217_mini-v2.0.0_claude-4-5-opus-high/metadata.yaml",
+      "metadataSha256": "65f42343f076d47de2b7fe175469bea9123ea61d033c67bb9c3bbc5f9a508f3f",
+      "trajectoryPrefix": "https://swe-bench-submissions.s3.amazonaws.com/bash-only/20260217_mini-v2.0.0_claude-4-5-opus-high/trajs/",
+      "availableTrajectories": 500,
+      "availableBytes": 221052108,
+      "downloadedTrajectories": 500,
+      "totals": {
+        "modelCalls": 16446,
+        "callsWithUsage": 16446,
+        "inputTokens": 330622219,
+        "outputTokens": 4806100,
+        "cachedInputTokens": 314095302,
+        "cacheCreationInputTokens": 13695410,
+        "reasoningOutputTokens": 1193410,
+        "recordedCostUsd": 376.9539984999997,
+        "callsWithCost": 16446
+      }
+    }
+  ],
+  "totals": {
+    "modelCalls": 129846,
+    "callsWithUsage": 129846,
+    "inputTokens": 3201225688,
+    "outputTokens": 42377608,
+    "cachedInputTokens": 2498865874,
+    "cacheCreationInputTokens": 31547900,
+    "reasoningOutputTokens": 23075825,
+    "recordedCostUsd": 1344.5910701999999,
+    "callsWithCost": 129846
+  },
+  "reportedApiCalls": 130435,
+  "unrepresentedReportedCalls": 589,
+  "reportedCallMismatches": [
+    {
+      "label": "deepseek32",
+      "instanceId": "astropy__astropy-12907",
+      "reportedApiCalls": 114,
+      "recordedResponses": 109
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "astropy__astropy-13033",
+      "reportedApiCalls": 90,
+      "recordedResponses": 88
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "astropy__astropy-13236",
+      "reportedApiCalls": 85,
+      "recordedResponses": 81
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "astropy__astropy-13398",
+      "reportedApiCalls": 48,
+      "recordedResponses": 47
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "astropy__astropy-13453",
+      "reportedApiCalls": 95,
+      "recordedResponses": 92
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "astropy__astropy-14096",
+      "reportedApiCalls": 102,
+      "recordedResponses": 99
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "astropy__astropy-14182",
+      "reportedApiCalls": 58,
+      "recordedResponses": 56
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "astropy__astropy-14309",
+      "reportedApiCalls": 77,
+      "recordedResponses": 76
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "astropy__astropy-14365",
+      "reportedApiCalls": 48,
+      "recordedResponses": 46
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "astropy__astropy-14369",
+      "reportedApiCalls": 64,
+      "recordedResponses": 61
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "astropy__astropy-14508",
+      "reportedApiCalls": 68,
+      "recordedResponses": 67
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "astropy__astropy-14539",
+      "reportedApiCalls": 93,
+      "recordedResponses": 91
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "astropy__astropy-14598",
+      "reportedApiCalls": 78,
+      "recordedResponses": 75
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "astropy__astropy-14995",
+      "reportedApiCalls": 76,
+      "recordedResponses": 72
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "astropy__astropy-7166",
+      "reportedApiCalls": 64,
+      "recordedResponses": 63
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "astropy__astropy-7336",
+      "reportedApiCalls": 57,
+      "recordedResponses": 54
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "astropy__astropy-7606",
+      "reportedApiCalls": 70,
+      "recordedResponses": 68
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "astropy__astropy-7671",
+      "reportedApiCalls": 58,
+      "recordedResponses": 54
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "astropy__astropy-8707",
+      "reportedApiCalls": 64,
+      "recordedResponses": 62
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "astropy__astropy-8872",
+      "reportedApiCalls": 106,
+      "recordedResponses": 100
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-10097",
+      "reportedApiCalls": 91,
+      "recordedResponses": 90
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-10554",
+      "reportedApiCalls": 96,
+      "recordedResponses": 94
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-10880",
+      "reportedApiCalls": 78,
+      "recordedResponses": 74
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-10914",
+      "reportedApiCalls": 70,
+      "recordedResponses": 69
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-10973",
+      "reportedApiCalls": 53,
+      "recordedResponses": 50
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11066",
+      "reportedApiCalls": 74,
+      "recordedResponses": 71
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11087",
+      "reportedApiCalls": 92,
+      "recordedResponses": 88
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11095",
+      "reportedApiCalls": 97,
+      "recordedResponses": 93
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11099",
+      "reportedApiCalls": 103,
+      "recordedResponses": 102
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11133",
+      "reportedApiCalls": 78,
+      "recordedResponses": 75
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11138",
+      "reportedApiCalls": 98,
+      "recordedResponses": 95
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11149",
+      "reportedApiCalls": 94,
+      "recordedResponses": 91
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11163",
+      "reportedApiCalls": 54,
+      "recordedResponses": 51
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11179",
+      "reportedApiCalls": 83,
+      "recordedResponses": 78
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11206",
+      "reportedApiCalls": 53,
+      "recordedResponses": 51
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11265",
+      "reportedApiCalls": 107,
+      "recordedResponses": 106
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11276",
+      "reportedApiCalls": 89,
+      "recordedResponses": 88
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11292",
+      "reportedApiCalls": 76,
+      "recordedResponses": 72
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11299",
+      "reportedApiCalls": 94,
+      "recordedResponses": 92
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11333",
+      "reportedApiCalls": 70,
+      "recordedResponses": 69
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11433",
+      "reportedApiCalls": 78,
+      "recordedResponses": 77
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11451",
+      "reportedApiCalls": 64,
+      "recordedResponses": 62
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11477",
+      "reportedApiCalls": 95,
+      "recordedResponses": 93
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11490",
+      "reportedApiCalls": 83,
+      "recordedResponses": 82
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11532",
+      "reportedApiCalls": 111,
+      "recordedResponses": 109
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11555",
+      "reportedApiCalls": 153,
+      "recordedResponses": 152
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11734",
+      "reportedApiCalls": 197,
+      "recordedResponses": 195
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11740",
+      "reportedApiCalls": 129,
+      "recordedResponses": 127
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11790",
+      "reportedApiCalls": 68,
+      "recordedResponses": 67
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11848",
+      "reportedApiCalls": 54,
+      "recordedResponses": 52
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11951",
+      "reportedApiCalls": 49,
+      "recordedResponses": 48
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-11999",
+      "reportedApiCalls": 81,
+      "recordedResponses": 80
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-12155",
+      "reportedApiCalls": 49,
+      "recordedResponses": 47
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-12193",
+      "reportedApiCalls": 107,
+      "recordedResponses": 106
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-12262",
+      "reportedApiCalls": 62,
+      "recordedResponses": 59
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-12273",
+      "reportedApiCalls": 69,
+      "recordedResponses": 67
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-12276",
+      "reportedApiCalls": 58,
+      "recordedResponses": 56
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-12304",
+      "reportedApiCalls": 72,
+      "recordedResponses": 71
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-12308",
+      "reportedApiCalls": 95,
+      "recordedResponses": 94
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-12325",
+      "reportedApiCalls": 90,
+      "recordedResponses": 88
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-12663",
+      "reportedApiCalls": 104,
+      "recordedResponses": 103
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-12708",
+      "reportedApiCalls": 64,
+      "recordedResponses": 63
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-12741",
+      "reportedApiCalls": 55,
+      "recordedResponses": 53
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-12774",
+      "reportedApiCalls": 83,
+      "recordedResponses": 82
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13012",
+      "reportedApiCalls": 72,
+      "recordedResponses": 70
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13023",
+      "reportedApiCalls": 77,
+      "recordedResponses": 74
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13109",
+      "reportedApiCalls": 63,
+      "recordedResponses": 59
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13112",
+      "reportedApiCalls": 213,
+      "recordedResponses": 212
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13158",
+      "reportedApiCalls": 90,
+      "recordedResponses": 87
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13195",
+      "reportedApiCalls": 77,
+      "recordedResponses": 75
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13279",
+      "reportedApiCalls": 73,
+      "recordedResponses": 71
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13297",
+      "reportedApiCalls": 71,
+      "recordedResponses": 69
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13343",
+      "reportedApiCalls": 90,
+      "recordedResponses": 85
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13344",
+      "reportedApiCalls": 93,
+      "recordedResponses": 91
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13363",
+      "reportedApiCalls": 82,
+      "recordedResponses": 81
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13401",
+      "reportedApiCalls": 94,
+      "recordedResponses": 93
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13417",
+      "reportedApiCalls": 86,
+      "recordedResponses": 82
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13512",
+      "reportedApiCalls": 91,
+      "recordedResponses": 88
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13516",
+      "reportedApiCalls": 116,
+      "recordedResponses": 113
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13569",
+      "reportedApiCalls": 105,
+      "recordedResponses": 101
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13590",
+      "reportedApiCalls": 76,
+      "recordedResponses": 74
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13658",
+      "reportedApiCalls": 71,
+      "recordedResponses": 70
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13741",
+      "reportedApiCalls": 74,
+      "recordedResponses": 73
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13794",
+      "reportedApiCalls": 93,
+      "recordedResponses": 92
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13807",
+      "reportedApiCalls": 88,
+      "recordedResponses": 87
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13810",
+      "reportedApiCalls": 65,
+      "recordedResponses": 63
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13820",
+      "reportedApiCalls": 62,
+      "recordedResponses": 57
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13821",
+      "reportedApiCalls": 72,
+      "recordedResponses": 71
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13837",
+      "reportedApiCalls": 67,
+      "recordedResponses": 66
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13925",
+      "reportedApiCalls": 104,
+      "recordedResponses": 102
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13933",
+      "reportedApiCalls": 84,
+      "recordedResponses": 82
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-13964",
+      "reportedApiCalls": 92,
+      "recordedResponses": 91
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-14007",
+      "reportedApiCalls": 108,
+      "recordedResponses": 107
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-14017",
+      "reportedApiCalls": 132,
+      "recordedResponses": 130
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-14034",
+      "reportedApiCalls": 75,
+      "recordedResponses": 74
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-14053",
+      "reportedApiCalls": 66,
+      "recordedResponses": 63
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-14089",
+      "reportedApiCalls": 59,
+      "recordedResponses": 58
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-14155",
+      "reportedApiCalls": 90,
+      "recordedResponses": 88
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-14311",
+      "reportedApiCalls": 68,
+      "recordedResponses": 66
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-14315",
+      "reportedApiCalls": 56,
+      "recordedResponses": 52
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-14351",
+      "reportedApiCalls": 112,
+      "recordedResponses": 109
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-14373",
+      "reportedApiCalls": 51,
+      "recordedResponses": 50
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-14404",
+      "reportedApiCalls": 77,
+      "recordedResponses": 74
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-14434",
+      "reportedApiCalls": 73,
+      "recordedResponses": 72
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-14539",
+      "reportedApiCalls": 95,
+      "recordedResponses": 93
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-14559",
+      "reportedApiCalls": 70,
+      "recordedResponses": 69
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-14672",
+      "reportedApiCalls": 63,
+      "recordedResponses": 62
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-14752",
+      "reportedApiCalls": 54,
+      "recordedResponses": 52
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-14765",
+      "reportedApiCalls": 71,
+      "recordedResponses": 70
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-14771",
+      "reportedApiCalls": 64,
+      "recordedResponses": 61
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-14787",
+      "reportedApiCalls": 42,
+      "recordedResponses": 34
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-14855",
+      "reportedApiCalls": 121,
+      "recordedResponses": 119
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-14915",
+      "reportedApiCalls": 65,
+      "recordedResponses": 63
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-15104",
+      "reportedApiCalls": 62,
+      "recordedResponses": 61
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-15128",
+      "reportedApiCalls": 98,
+      "recordedResponses": 96
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-15161",
+      "reportedApiCalls": 97,
+      "recordedResponses": 96
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-15277",
+      "reportedApiCalls": 52,
+      "recordedResponses": 51
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-15315",
+      "reportedApiCalls": 85,
+      "recordedResponses": 82
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-15375",
+      "reportedApiCalls": 115,
+      "recordedResponses": 114
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-15382",
+      "reportedApiCalls": 119,
+      "recordedResponses": 117
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-15467",
+      "reportedApiCalls": 67,
+      "recordedResponses": 60
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-15554",
+      "reportedApiCalls": 100,
+      "recordedResponses": 98
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-15561",
+      "reportedApiCalls": 56,
+      "recordedResponses": 54
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-15569",
+      "reportedApiCalls": 48,
+      "recordedResponses": 43
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-15695",
+      "reportedApiCalls": 91,
+      "recordedResponses": 90
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-15732",
+      "reportedApiCalls": 95,
+      "recordedResponses": 87
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-15916",
+      "reportedApiCalls": 68,
+      "recordedResponses": 67
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-15930",
+      "reportedApiCalls": 99,
+      "recordedResponses": 96
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-15957",
+      "reportedApiCalls": 109,
+      "recordedResponses": 108
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-16032",
+      "reportedApiCalls": 221,
+      "recordedResponses": 219
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-16100",
+      "reportedApiCalls": 101,
+      "recordedResponses": 100
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-16136",
+      "reportedApiCalls": 82,
+      "recordedResponses": 80
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-16139",
+      "reportedApiCalls": 66,
+      "recordedResponses": 64
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-16256",
+      "reportedApiCalls": 89,
+      "recordedResponses": 87
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-16263",
+      "reportedApiCalls": 126,
+      "recordedResponses": 125
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-16315",
+      "reportedApiCalls": 84,
+      "recordedResponses": 82
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-16485",
+      "reportedApiCalls": 41,
+      "recordedResponses": 40
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-16502",
+      "reportedApiCalls": 93,
+      "recordedResponses": 92
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-16527",
+      "reportedApiCalls": 65,
+      "recordedResponses": 63
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-16560",
+      "reportedApiCalls": 102,
+      "recordedResponses": 98
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-16595",
+      "reportedApiCalls": 67,
+      "recordedResponses": 66
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-16612",
+      "reportedApiCalls": 76,
+      "recordedResponses": 73
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-16631",
+      "reportedApiCalls": 100,
+      "recordedResponses": 99
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-16642",
+      "reportedApiCalls": 62,
+      "recordedResponses": 60
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-16667",
+      "reportedApiCalls": 131,
+      "recordedResponses": 130
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-16801",
+      "reportedApiCalls": 70,
+      "recordedResponses": 68
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-16877",
+      "reportedApiCalls": 71,
+      "recordedResponses": 67
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-16901",
+      "reportedApiCalls": 95,
+      "recordedResponses": 94
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-16938",
+      "reportedApiCalls": 88,
+      "recordedResponses": 87
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-16950",
+      "reportedApiCalls": 101,
+      "recordedResponses": 97
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-17029",
+      "reportedApiCalls": 49,
+      "recordedResponses": 48
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-17084",
+      "reportedApiCalls": 92,
+      "recordedResponses": 91
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "django__django-7530",
+      "reportedApiCalls": 86,
+      "recordedResponses": 85
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "matplotlib__matplotlib-13989",
+      "reportedApiCalls": 54,
+      "recordedResponses": 53
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "matplotlib__matplotlib-20488",
+      "reportedApiCalls": 83,
+      "recordedResponses": 81
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "matplotlib__matplotlib-20676",
+      "reportedApiCalls": 57,
+      "recordedResponses": 55
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "matplotlib__matplotlib-20826",
+      "reportedApiCalls": 139,
+      "recordedResponses": 134
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "matplotlib__matplotlib-20859",
+      "reportedApiCalls": 79,
+      "recordedResponses": 76
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "matplotlib__matplotlib-22719",
+      "reportedApiCalls": 102,
+      "recordedResponses": 101
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "matplotlib__matplotlib-22865",
+      "reportedApiCalls": 72,
+      "recordedResponses": 71
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "matplotlib__matplotlib-23299",
+      "reportedApiCalls": 97,
+      "recordedResponses": 96
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "matplotlib__matplotlib-23412",
+      "reportedApiCalls": 95,
+      "recordedResponses": 94
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "matplotlib__matplotlib-23476",
+      "reportedApiCalls": 110,
+      "recordedResponses": 109
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "matplotlib__matplotlib-24177",
+      "reportedApiCalls": 146,
+      "recordedResponses": 144
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "matplotlib__matplotlib-24570",
+      "reportedApiCalls": 62,
+      "recordedResponses": 61
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "matplotlib__matplotlib-24870",
+      "reportedApiCalls": 57,
+      "recordedResponses": 56
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "matplotlib__matplotlib-25287",
+      "reportedApiCalls": 106,
+      "recordedResponses": 104
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "matplotlib__matplotlib-25332",
+      "reportedApiCalls": 90,
+      "recordedResponses": 88
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "matplotlib__matplotlib-25479",
+      "reportedApiCalls": 102,
+      "recordedResponses": 100
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "matplotlib__matplotlib-26113",
+      "reportedApiCalls": 85,
+      "recordedResponses": 84
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "matplotlib__matplotlib-26208",
+      "reportedApiCalls": 111,
+      "recordedResponses": 110
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "matplotlib__matplotlib-26342",
+      "reportedApiCalls": 60,
+      "recordedResponses": 59
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "matplotlib__matplotlib-26466",
+      "reportedApiCalls": 95,
+      "recordedResponses": 93
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "mwaskom__seaborn-3187",
+      "reportedApiCalls": 124,
+      "recordedResponses": 123
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "psf__requests-1142",
+      "reportedApiCalls": 79,
+      "recordedResponses": 76
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "psf__requests-2317",
+      "reportedApiCalls": 131,
+      "recordedResponses": 129
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "psf__requests-2931",
+      "reportedApiCalls": 77,
+      "recordedResponses": 73
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "psf__requests-5414",
+      "reportedApiCalls": 95,
+      "recordedResponses": 93
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "psf__requests-6028",
+      "reportedApiCalls": 134,
+      "recordedResponses": 133
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pydata__xarray-2905",
+      "reportedApiCalls": 111,
+      "recordedResponses": 108
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pydata__xarray-3095",
+      "reportedApiCalls": 59,
+      "recordedResponses": 58
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pydata__xarray-3151",
+      "reportedApiCalls": 58,
+      "recordedResponses": 55
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pydata__xarray-4075",
+      "reportedApiCalls": 118,
+      "recordedResponses": 117
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pydata__xarray-4356",
+      "reportedApiCalls": 107,
+      "recordedResponses": 106
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pydata__xarray-4687",
+      "reportedApiCalls": 129,
+      "recordedResponses": 126
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pydata__xarray-6461",
+      "reportedApiCalls": 126,
+      "recordedResponses": 125
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pydata__xarray-6744",
+      "reportedApiCalls": 52,
+      "recordedResponses": 51
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pydata__xarray-7233",
+      "reportedApiCalls": 68,
+      "recordedResponses": 67
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pylint-dev__pylint-4551",
+      "reportedApiCalls": 131,
+      "recordedResponses": 129
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pylint-dev__pylint-4604",
+      "reportedApiCalls": 123,
+      "recordedResponses": 122
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pylint-dev__pylint-6386",
+      "reportedApiCalls": 78,
+      "recordedResponses": 76
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pylint-dev__pylint-7080",
+      "reportedApiCalls": 149,
+      "recordedResponses": 146
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pylint-dev__pylint-7277",
+      "reportedApiCalls": 54,
+      "recordedResponses": 52
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pylint-dev__pylint-8898",
+      "reportedApiCalls": 109,
+      "recordedResponses": 108
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pytest-dev__pytest-10051",
+      "reportedApiCalls": 58,
+      "recordedResponses": 57
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pytest-dev__pytest-10081",
+      "reportedApiCalls": 66,
+      "recordedResponses": 65
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pytest-dev__pytest-10356",
+      "reportedApiCalls": 91,
+      "recordedResponses": 90
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pytest-dev__pytest-5262",
+      "reportedApiCalls": 58,
+      "recordedResponses": 55
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pytest-dev__pytest-5631",
+      "reportedApiCalls": 57,
+      "recordedResponses": 56
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pytest-dev__pytest-5809",
+      "reportedApiCalls": 42,
+      "recordedResponses": 41
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pytest-dev__pytest-5840",
+      "reportedApiCalls": 78,
+      "recordedResponses": 77
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pytest-dev__pytest-7205",
+      "reportedApiCalls": 68,
+      "recordedResponses": 67
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pytest-dev__pytest-7236",
+      "reportedApiCalls": 127,
+      "recordedResponses": 125
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pytest-dev__pytest-7490",
+      "reportedApiCalls": 84,
+      "recordedResponses": 80
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pytest-dev__pytest-7521",
+      "reportedApiCalls": 65,
+      "recordedResponses": 64
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pytest-dev__pytest-7571",
+      "reportedApiCalls": 116,
+      "recordedResponses": 115
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pytest-dev__pytest-7982",
+      "reportedApiCalls": 48,
+      "recordedResponses": 47
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "pytest-dev__pytest-8399",
+      "reportedApiCalls": 64,
+      "recordedResponses": 63
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "scikit-learn__scikit-learn-10844",
+      "reportedApiCalls": 64,
+      "recordedResponses": 63
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "scikit-learn__scikit-learn-10908",
+      "reportedApiCalls": 145,
+      "recordedResponses": 143
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "scikit-learn__scikit-learn-11578",
+      "reportedApiCalls": 54,
+      "recordedResponses": 53
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "scikit-learn__scikit-learn-12973",
+      "reportedApiCalls": 70,
+      "recordedResponses": 58
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "scikit-learn__scikit-learn-13124",
+      "reportedApiCalls": 84,
+      "recordedResponses": 83
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "scikit-learn__scikit-learn-13135",
+      "reportedApiCalls": 53,
+      "recordedResponses": 52
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "scikit-learn__scikit-learn-13142",
+      "reportedApiCalls": 106,
+      "recordedResponses": 104
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "scikit-learn__scikit-learn-14087",
+      "reportedApiCalls": 57,
+      "recordedResponses": 55
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "scikit-learn__scikit-learn-14141",
+      "reportedApiCalls": 34,
+      "recordedResponses": 33
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "scikit-learn__scikit-learn-14710",
+      "reportedApiCalls": 77,
+      "recordedResponses": 75
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "scikit-learn__scikit-learn-14894",
+      "reportedApiCalls": 82,
+      "recordedResponses": 81
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "scikit-learn__scikit-learn-14983",
+      "reportedApiCalls": 84,
+      "recordedResponses": 77
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "scikit-learn__scikit-learn-15100",
+      "reportedApiCalls": 42,
+      "recordedResponses": 40
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "scikit-learn__scikit-learn-25102",
+      "reportedApiCalls": 71,
+      "recordedResponses": 70
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "scikit-learn__scikit-learn-26194",
+      "reportedApiCalls": 93,
+      "recordedResponses": 91
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "scikit-learn__scikit-learn-9288",
+      "reportedApiCalls": 54,
+      "recordedResponses": 53
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-10435",
+      "reportedApiCalls": 111,
+      "recordedResponses": 110
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-10449",
+      "reportedApiCalls": 72,
+      "recordedResponses": 67
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-10614",
+      "reportedApiCalls": 76,
+      "recordedResponses": 74
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-11445",
+      "reportedApiCalls": 66,
+      "recordedResponses": 63
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-7440",
+      "reportedApiCalls": 122,
+      "recordedResponses": 119
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-7454",
+      "reportedApiCalls": 140,
+      "recordedResponses": 134
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-7590",
+      "reportedApiCalls": 154,
+      "recordedResponses": 152
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-7748",
+      "reportedApiCalls": 97,
+      "recordedResponses": 92
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-7889",
+      "reportedApiCalls": 65,
+      "recordedResponses": 62
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-8035",
+      "reportedApiCalls": 132,
+      "recordedResponses": 131
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-8056",
+      "reportedApiCalls": 250,
+      "recordedResponses": 247
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-8120",
+      "reportedApiCalls": 63,
+      "recordedResponses": 62
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-8265",
+      "reportedApiCalls": 137,
+      "recordedResponses": 136
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-8269",
+      "reportedApiCalls": 50,
+      "recordedResponses": 48
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-8459",
+      "reportedApiCalls": 119,
+      "recordedResponses": 116
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-8548",
+      "reportedApiCalls": 103,
+      "recordedResponses": 101
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-8551",
+      "reportedApiCalls": 242,
+      "recordedResponses": 240
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-8621",
+      "reportedApiCalls": 68,
+      "recordedResponses": 64
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-8721",
+      "reportedApiCalls": 97,
+      "recordedResponses": 94
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-9229",
+      "reportedApiCalls": 192,
+      "recordedResponses": 189
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-9230",
+      "reportedApiCalls": 133,
+      "recordedResponses": 131
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-9367",
+      "reportedApiCalls": 43,
+      "recordedResponses": 42
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-9461",
+      "reportedApiCalls": 100,
+      "recordedResponses": 99
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-9591",
+      "reportedApiCalls": 96,
+      "recordedResponses": 95
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-9658",
+      "reportedApiCalls": 157,
+      "recordedResponses": 155
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sphinx-doc__sphinx-9698",
+      "reportedApiCalls": 115,
+      "recordedResponses": 114
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-12096",
+      "reportedApiCalls": 80,
+      "recordedResponses": 78
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-12419",
+      "reportedApiCalls": 118,
+      "recordedResponses": 114
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-12489",
+      "reportedApiCalls": 199,
+      "recordedResponses": 197
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-13031",
+      "reportedApiCalls": 138,
+      "recordedResponses": 137
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-13372",
+      "reportedApiCalls": 106,
+      "recordedResponses": 105
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-13647",
+      "reportedApiCalls": 115,
+      "recordedResponses": 114
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-13798",
+      "reportedApiCalls": 127,
+      "recordedResponses": 126
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-14248",
+      "reportedApiCalls": 127,
+      "recordedResponses": 125
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-14531",
+      "reportedApiCalls": 111,
+      "recordedResponses": 110
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-14711",
+      "reportedApiCalls": 76,
+      "recordedResponses": 75
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-16792",
+      "reportedApiCalls": 88,
+      "recordedResponses": 87
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-17318",
+      "reportedApiCalls": 90,
+      "recordedResponses": 88
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-18199",
+      "reportedApiCalls": 52,
+      "recordedResponses": 51
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-18211",
+      "reportedApiCalls": 161,
+      "recordedResponses": 160
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-19346",
+      "reportedApiCalls": 71,
+      "recordedResponses": 69
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-19495",
+      "reportedApiCalls": 99,
+      "recordedResponses": 97
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-19637",
+      "reportedApiCalls": 37,
+      "recordedResponses": 36
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-20154",
+      "reportedApiCalls": 62,
+      "recordedResponses": 61
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-20438",
+      "reportedApiCalls": 117,
+      "recordedResponses": 116
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-20590",
+      "reportedApiCalls": 107,
+      "recordedResponses": 106
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-21379",
+      "reportedApiCalls": 100,
+      "recordedResponses": 99
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-21596",
+      "reportedApiCalls": 81,
+      "recordedResponses": 80
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-21847",
+      "reportedApiCalls": 40,
+      "recordedResponses": 39
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-21930",
+      "reportedApiCalls": 76,
+      "recordedResponses": 75
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-22080",
+      "reportedApiCalls": 97,
+      "recordedResponses": 96
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-22456",
+      "reportedApiCalls": 162,
+      "recordedResponses": 161
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-23262",
+      "reportedApiCalls": 86,
+      "recordedResponses": 84
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-23413",
+      "reportedApiCalls": 108,
+      "recordedResponses": 107
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-23824",
+      "reportedApiCalls": 38,
+      "recordedResponses": 37
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-24066",
+      "reportedApiCalls": 85,
+      "recordedResponses": 83
+    },
+    {
+      "label": "deepseek32",
+      "instanceId": "sympy__sympy-24443",
+      "reportedApiCalls": 52,
+      "recordedResponses": 51
+    },
+    {
+      "label": "gemini3flash",
+      "instanceId": "django__django-13212",
+      "reportedApiCalls": 52,
+      "recordedResponses": 51
+    },
+    {
+      "label": "gemini3flash",
+      "instanceId": "django__django-15629",
+      "reportedApiCalls": 6,
+      "recordedResponses": 5
+    },
+    {
+      "label": "gemini3flash",
+      "instanceId": "django__django-15732",
+      "reportedApiCalls": 8,
+      "recordedResponses": 7
+    },
+    {
+      "label": "gemini3flash",
+      "instanceId": "sympy__sympy-15599",
+      "reportedApiCalls": 38,
+      "recordedResponses": 35
+    },
+    {
+      "label": "gemini3flash",
+      "instanceId": "sympy__sympy-16886",
+      "reportedApiCalls": 38,
+      "recordedResponses": 37
+    },
+    {
+      "label": "gpt52",
+      "instanceId": "django__django-13012",
+      "reportedApiCalls": 43,
+      "recordedResponses": 42
+    },
+    {
+      "label": "gpt52",
+      "instanceId": "django__django-13112",
+      "reportedApiCalls": 95,
+      "recordedResponses": 94
+    },
+    {
+      "label": "gpt52",
+      "instanceId": "matplotlib__matplotlib-20676",
+      "reportedApiCalls": 44,
+      "recordedResponses": 43
+    },
+    {
+      "label": "opus45",
+      "instanceId": "pytest-dev__pytest-6197",
+      "reportedApiCalls": 65,
+      "recordedResponses": 63
+    },
+    {
+      "label": "sonnet45",
+      "instanceId": "django__django-11265",
+      "reportedApiCalls": 47,
+      "recordedResponses": 46
+    },
+    {
+      "label": "sonnet45",
+      "instanceId": "django__django-16662",
+      "reportedApiCalls": 56,
+      "recordedResponses": 55
+    },
+    {
+      "label": "sonnet45",
+      "instanceId": "scikit-learn__scikit-learn-13124",
+      "reportedApiCalls": 54,
+      "recordedResponses": 53
+    },
+    {
+      "label": "sonnet45",
+      "instanceId": "scikit-learn__scikit-learn-25931",
+      "reportedApiCalls": 57,
+      "recordedResponses": 56
+    },
+    {
+      "label": "sonnet45",
+      "instanceId": "sympy__sympy-15599",
+      "reportedApiCalls": 143,
+      "recordedResponses": 142
+    },
+    {
+      "label": "sonnet45",
+      "instanceId": "sympy__sympy-23413",
+      "reportedApiCalls": 75,
+      "recordedResponses": 73
+    }
+  ],
+  "excludedArtifacts": 2,
+  "caveats": [
+    "Same benchmark issues recur across models; trajectory count is not the number of independent issues.",
+    "Input totals already include cached input and cache creation; those fields are subsets, not additional tokens.",
+    "Reasoning tokens are included in output totals.",
+    "Recorded cost is historical source-harness accounting, not our spending or an independently reconciled invoice.",
+    "Each native response is one model call even when it contains multiple tool actions.",
+    "Reported API-call counters can exceed stored response records (for example failed attempts); their missing usage is not imputed.",
+    "This corpus was not screened for overlap with previous discovery data; it is not held-out evaluation.",
+    "Only aggregate counts and source links are published; raw trajectories remain private."
+  ]
+}

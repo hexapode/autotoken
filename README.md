@@ -33,6 +33,51 @@ Three additional research prototypes preserve test-process status, guard exact-t
 
 The discovery corpus also includes **300 public trajectories / 11,525 assistant turns** from SWE-agent, OpenHands, and mini-SWE-agent-plus. See [sources, sampling, and importer commands](eval/swebench/WORKFLOW_EXPERIMENT.md#public-multi-harness-discovery-sample). Raw data stays outside the repository; [aggregate metadata](docs/public-traces-summary.json) is public. Discovery replay found 42/49 matching read repairs, 22/23 matching unique-line navigation steps, and 469/584 matching write-then-run commands. These are predicted next actions, not demonstrated saved calls; [methods and limits](eval/swebench/WORKFLOW_EXPERIMENT.md#mining-the-public-multi-harness-sample).
 
+## Run program classifiers on thousands of traces
+
+The offline batch runner evaluates the program eligibility guards and argument
+planners without calling a model or executing recorded commands. The current
+corpus has **2,498 trajectories / 129,846 recorded responses** across five models
+and 500 issues. Four workers classify it in about **24 seconds** on our machine;
+a checksum-verified cached replay takes about **5 seconds**.
+Results are cached by trace checksum and the selected program bundle's source
+hashes; changed code automatically invalidates that bundle's cache.
+
+From a source checkout, using Python 3.9 or later (standard library only):
+
+```sh
+# Download ~1.67 GB of pinned public artifacts to an external volume.
+python3 scripts/download-official-traces.py --out /path/to/traces --workers 16
+
+# Run all four classifiers. The SQLite cache and raw data stay local.
+python3 scripts/batch-program-replay.py \
+  --manifest /path/to/traces/manifest.json \
+  --cache /path/to/traces/replay.sqlite \
+  --public /path/to/traces/replay-report.json --workers 4
+
+# Evaluate only one program, using a separate cache key.
+python3 scripts/batch-program-replay.py \
+  --manifest /path/to/traces/manifest.json \
+  --cache /path/to/traces/replay.sqlite \
+  --public /path/to/traces/write-run-report.json \
+  --program write_then_run_v2 --workers 4
+```
+
+Downloads resume with checksum verification and a 2 GB bound. Batch processing
+uses a bounded process pool, one linear normalization pass per trajectory, and
+an incremental SQLite cache. Rerunning the same command reuses classifications
+while rechecking source bytes. `--no-cache` forces evaluation; `--limit 100`
+provides a small smoke run. Errors and unsupported usage formats are reported,
+not silently counted as zero opportunities. No provider key is needed.
+
+The large replay finds **459 exact whole-call matches / 7,476,472 recorded
+tokens**, before routing and program costs. Another 1,695 wider-read opportunities
+are reported separately. A next-action match does not prove that reasoning or
+task outcomes survive removal. [Per-program results](docs/scale-replay-summary.json)
+and [source provenance](docs/usage-traces-scale-summary.json) include model
+breakdowns, missing-response accounting and overlap limits. The learned router
+below remains a separate experiment; this batch uses deterministic program guards.
+
 ## Install
 
 Node.js 22.19 or later is required. The CLI has no runtime npm dependencies. Install from the public GitHub repository:

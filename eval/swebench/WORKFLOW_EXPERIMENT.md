@@ -568,3 +568,72 @@ requires exit code 1 and assertion-failure evidence; the sole preceding failure
 is an Astropy import/setup error, which is rejected. Five variant fixtures pass
 alongside eight original rerun fixtures. Both policies remain separate in the
 [aggregate report](../../docs/candidate-estimates.json).
+
+### Batch classifiers across thousands of trajectories
+
+The expanded corpus contains 2,498 usable official mini-SWE-agent v2 trajectories:
+500 each for Sonnet 4.5, GPT-5.2, DeepSeek V3.2 and Opus 4.5, and 498 Gemini
+3 Flash trajectories. These are 500 distinct issues across 12 repositories, not
+2,498 independent issues. About 1.67 GB is stored on the external volume. Two
+empty Gemini artifacts are excluded. All 129,846 stored responses have usage and
+cost metadata: 3,201,225,688 input + 42,377,608 output tokens. Source counters
+report another 589 attempts without response records; their usage is not imputed.
+
+`scripts/download-official-traces.py` downloads the pinned sources concurrently,
+resumes verified files and caps planned bytes at 2 GB. The private manifest records
+per-file SHA256/ETag and source URLs; only aggregates are published.
+`scripts/trace_batch_core.py` performs linear message normalization, scopes tool
+results to their preceding response IDs, and preserves a multi-tool response as
+one model call. It matches the original normalizer on the original 100 files and
+additional source samples. Unsupported accounting formats fail explicitly.
+
+`scripts/batch-program-replay.py` runs the four unchanged program planners with a
+bounded process pool. Decisions use current/prior observations; the next recorded
+response is a label only. This is deterministic eligibility classification and
+argument planning, not learned-router inference. No recorded command is executed.
+Only singleton whole-response matches receive usage credit. The SQLite cache is
+keyed by source checksum, cohort and selected program-bundle/source hashes. A code
+change invalidates the bundle; cache hits still recheck the source bytes. Each
+completed trace commits independently, making interrupted runs resumable. Errors
+are reported separately from valid zero-opportunity traces. Source size and worker
+counts are bounded; `--program` selects one classifier and `--limit` supports small
+checks. All scripts use Python 3.9+ standard library only.
+
+| Program | Proposals | Exact matches | Recorded tokens in matched calls |
+| --- | ---: | ---: | ---: |
+| Write/run v2 | 2,238 | 438 | 7,017,304 |
+| Previously passing test rerun | 92 | 18 | 445,040 |
+| Search/context v2 | 3,572 | 3 | 14,128 |
+| Failed assertion rerun | 3 | 0 | 0 |
+
+The exact union has 459 calls across 179 issues, 7,476,472 tokens and $3.5179 in
+historical source-reported cost. No exact targets overlap. Search/context also has
+1,695 wider-read coverage opportunities / 35,971,774 recorded tokens, excluded
+from the exact union because additional context costs and byte-cap feasibility
+are unknown. Proposal-match rates are descriptive: unmatched proposals could
+change the workflow, and all matching calls may contain needed reasoning.
+Execution opt-in and filesystem state checks remain unverified in replay.
+
+The larger corpus includes the original discovery sample. Grouping by issue,
+450 issues / 2,248 trajectories lie outside its 50 issues; this subset contributes
+409 exact matches / 6,668,645 tokens. This is issue-disjoint from that specified
+sample, not a claim that all issues were untouched by earlier project research.
+Model differences are substantial: write/run matches 339 Sonnet, 95 DeepSeek and
+four Opus calls, with none from GPT or Gemini. Passing-test rerun matches 16 Gemini,
+one DeepSeek and one Sonnet call. These differences argue for model/harness-aware
+eligibility checks rather than assuming one rule generalizes universally.
+
+A complete classification pass took 23.6 seconds with four workers on the local
+machine (~5,497 responses/second). A verified cache replay took 4.8 seconds and
+reused all 2,498 results. Counts and token usage are identical; floating-point cost
+sums agree within the recorded tolerance. These are classifier timings with a warm
+filesystem, not a live model latency benchmark. Download time is excluded.
+Seven normalizer fixtures, seven batch/cache/error fixtures and four downloader
+fixtures pass, including tampered-source and multi-tool checks.
+
+See the [README commands](../../README.md#run-program-classifiers-on-thousands-of-traces),
+[source summary](../../docs/usage-traces-scale-summary.json),
+[full per-program report](../../docs/scale-replay-summary.json), and
+[cache benchmark](../../docs/scale-replay-benchmark.json). Raw trajectories and
+cached per-event evidence remain outside the repository. No paid inference was
+used to acquire or classify this public corpus.

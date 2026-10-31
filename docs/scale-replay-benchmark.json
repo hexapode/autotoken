@@ -1,0 +1,39 @@
+{
+  "kind": "classifier-cache-benchmark",
+  "policyHash": "6de8639438179261e7d115301450ed2ed47d73eee33934af2f7ab3b9396fb6a3",
+  "sourceManifestSha256": "73cccd8079f5c3150015207a7d102f1a4409c7996f0ea9ae1305f1b45239247b",
+  "trajectories": 2498,
+  "responses": 129846,
+  "freshClassification": {
+    "workers": 4,
+    "wallSeconds": 23.62305475,
+    "cacheHits": 0,
+    "classifiedTrajectories": 2498,
+    "trajectoriesPerSecond": 105.74415656383304,
+    "responsesPerSecond": 5496.579564926928,
+    "workerSecondsNewWork": 44.225416051999915
+  },
+  "cachedReplay": {
+    "workers": 4,
+    "wallSeconds": 4.831436333,
+    "cacheHits": 2498,
+    "classifiedTrajectories": 0,
+    "trajectoriesPerSecond": 517.0305118041177,
+    "responsesPerSecond": 26875.237724466562,
+    "workerSecondsNewWork": null
+  },
+  "countsAndTokenUsageIdentical": true,
+  "reportedCostAgreementTolerance": {
+    "relative": 1e-12,
+    "absolute": 1e-09
+  },
+  "python": "3.9.6",
+  "platform": "Darwin",
+  "notes": [
+    "Same machine and frozen source/program hashes.",
+    "Fresh classification means no classifier-cache hits, not a cold filesystem cache.",
+    "Cached replay still hashes all source bytes; it skips normalization and program classification.",
+    "Timings exclude downloads and paid inference; no paid inference occurs.",
+    "Cache speed does not measure the latency benefit of substituting a live model call."
+  ]
+}
