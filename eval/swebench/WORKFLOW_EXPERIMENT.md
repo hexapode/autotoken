@@ -219,3 +219,30 @@ One agent per candidate completed an offline feasibility check for missing-path 
 - **Verification:** deeper inspection finds three workspace-changing original-versus-patched comparisons among the 15 no-edit-tagged turns. Of the remaining 12, nine invoke CLI pytest (four full suites, five newly selected subsets) and three use custom Python wrappers. None repeats an exact prior test argv. An explicitly requested verification tool is more defensible than automatic repetition of the previous test. The heuristic tag alone is insufficient to establish a read-only operation.
 
 These findings do not establish new whole-call savings. Path recovery is worth testing as a bounded tool-output helper; orientation and autonomous verification rank lower for call elimination. The earlier structured-test-result and checked-edit candidates remain useful alternatives to investigate.
+
+
+### Three reliability-program prototypes
+
+A second one-agent-per-candidate pass built three opt-in programs under `scripts/`. Only baseline discovery folds 2–4 were analyzed. No recorded commands were executed, no paid model calls were made, and none of these programs was activated in the proxy.
+
+| Program | Discovery evidence | Implemented behavior | What this establishes |
+| --- | --- | --- | --- |
+| Structured test results | 66 tail-wrapped turns / 24 issues; 15 outputs show failure evidence with an outer shell exit of zero | Direct pytest subprocess status, bounded failure IDs and excerpts, timeout/output limits | Reliable evidence in fixtures, not historical success labels or saved calls |
+| Guarded text edits | 118 opportunities / 28 issues; static extraction supports 56 turns / 24 issues, containing 127 replacements | Exact occurrence count, SHA256 guard, confined paths, atomic replacement | Safe refusal in fixtures; historical guards remain unverified |
+| Isolated regression comparison | 10 comparison turns / 6 issues: 8 stash workflows and 2 temporary source swaps | Separate base/patched copies, identical explicit test overlays, hashes and bounded test execution | Synthetic original-fails/patched-passes result; zero certified historical replays |
+
+**Structured test results.** `scripts/structured-test.mjs` offers a parser and a direct subprocess runner. All 66 historical pytest exit statuses remain unknown because the trace's shell exit cannot substitute for the test process exit. Eight turns contain multiple pytest commands; failures can be intentional, so the 15 observations are not false-success accusations. There are 65 recognizable summaries and 12 outputs with failure IDs. Structured JSON is 18,467 characters versus 29,322 original characters in aggregate, but 30 of 66 outputs grow. This is a character comparison, not token savings or evidence that omitted output is irrelevant. The runner uses a trusted interpreter/workspace and explicit targets, inherits plugins by default, and uses fixed reporting flags; it does not reproduce arbitrary historical commands or sandbox test code.
+
+**Guarded edits.** `scripts/guarded-edit-program.py` requires an explicit path, old/new text, count, and content fingerprint. It refuses stale/ambiguous edits, traversal, symlinks, hardlinks, FIFOs, and oversized inputs. The workspace must serialize writes; fingerprint checks are not atomic compare-and-swap against concurrent writers. Of 56 statically supported turns, 53 also contain other commands. Generated operation JSON is 56,883 bytes versus 50,720 bytes of recorded scripts (+12.2%), even with short guard placeholders; actual SHA256 hashes add more. The model still chooses the change, and neither historical counts nor fingerprints were reconstructed. No token or call reduction is established.
+
+**Isolated comparisons.** `scripts/isolated-regression.py` creates bounded temporary snapshots, adds identical explicit regression files to both, and runs explicit argv. Four observed workflows use whole-tree stash forms that can remove tracked test additions. The prototype verifies identical regression hashes and unchanged input worktree/Git metadata in fixtures. Historical regression overlays and pre-edit tests were not reconstructed, so there are zero certified historical automatic-replay cases. Temporary copies protect against ordinary test writes, not hostile code. A nonzero base exit and zero patched exit still require inspecting evidence to distinguish bug reproduction from environment failure.
+
+Checks from a source checkout:
+
+```sh
+node scripts/structured-test-check.mjs /path/to/python-with-pytest
+python3 scripts/guarded-edit-check.py
+python3 scripts/isolated-regression-test.py
+```
+
+All fixture checks passed: pytest pass/failure/timeout/output-cap/spawn-error behavior; 13 guarded-edit refusal cases plus successful UTF-8, mode preservation, and cleanup; seven isolated-comparison checks. Replay scripts are `structured-test-replay.mjs`, `guarded-edit-mine.py`, and `isolated-regression-mine.py`; they require the private discovery corpus. Aggregate findings are public; raw evidence remains in ignored `data/analysis/` directories. These prototypes currently support reliability more strongly than autonomous whole-turn replacement.

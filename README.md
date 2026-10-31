@@ -29,6 +29,8 @@ A single development comparison of search-context used **8 → 5 model calls** a
 
 No API key or model calls are required for the demo. Search-with-context, expanded reads, patch review, and explicit abstention are executable. The public page executes search and context planning on editable sample code in your browser and includes a simple text-diff preview. The CLI executes repository-backed variants, including Git patch review. Buttons choose programs explicitly, so this is not a demonstration of an autonomous learned router.
 
+Three additional research prototypes preserve test-process status, guard exact-text edits, and compare identical regression tests on original and patched code. Their local fixture checks pass; no new model-call savings are established. See [prototype results and check commands](eval/swebench/WORKFLOW_EXPERIMENT.md#three-reliability-program-prototypes). They are opt-in source-checkout scripts, not activated proxy routes.
+
 ## Install
 
 Node.js 22.19 or later is required. The CLI has no runtime npm dependencies. Install from the public GitHub repository:
