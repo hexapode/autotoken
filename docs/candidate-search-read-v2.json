@@ -1,0 +1,161 @@
+{
+  "program": "search_read_v2",
+  "title": "Read context around the only search hit",
+  "kind": "conditional_gross_replay_estimate_not_measured_savings",
+  "policy": {
+    "lineRadius": 100,
+    "fileLines": 200,
+    "maxOutputBytes": 16000,
+    "requiresUnchangedFile": true,
+    "requiresRepoRootAndNoSymlinks": true
+  },
+  "trajectories": 100,
+  "calls": 4367,
+  "proposals": 57,
+  "matchedCalls": 0,
+  "matchedIssues": 0,
+  "matchedUsage": {
+    "calls": 0,
+    "callsWithUsage": 0,
+    "inputTokens": 0,
+    "inputTokensReportedCalls": 0,
+    "outputTokens": 0,
+    "outputTokensReportedCalls": 0,
+    "totalTokens": 0,
+    "totalTokensReportedCalls": 0,
+    "cachedInputTokens": 0,
+    "cachedInputTokensReportedCalls": 0,
+    "cacheCreationInputTokens": 0,
+    "cacheCreationInputTokensReportedCalls": 0,
+    "reasoningOutputTokens": 0,
+    "reasoningOutputTokensReportedCalls": 0,
+    "sourceReportedCostSum": 0,
+    "callsWithReportedCost": 0
+  },
+  "coverageOnly": {
+    "matchedCalls": 29,
+    "matchedIssues": 16,
+    "matchedUsage": {
+      "calls": 29,
+      "callsWithUsage": 29,
+      "inputTokens": 542810,
+      "inputTokensReportedCalls": 29,
+      "outputTokens": 1866,
+      "outputTokensReportedCalls": 29,
+      "totalTokens": 544676,
+      "totalTokensReportedCalls": 29,
+      "cachedInputTokens": 506248,
+      "cachedInputTokensReportedCalls": 29,
+      "cacheCreationInputTokens": 2701,
+      "cacheCreationInputTokensReportedCalls": 13,
+      "reasoningOutputTokens": 193,
+      "reasoningOutputTokensReportedCalls": 29,
+      "sourceReportedCostSum": 0.21508864999999996,
+      "callsWithReportedCost": 29
+    }
+  },
+  "cohorts": {
+    "gpt52": {
+      "proposals": 28,
+      "matchedCalls": 0,
+      "matchedIssues": 0,
+      "matchedUsage": {
+        "calls": 0,
+        "callsWithUsage": 0,
+        "inputTokens": 0,
+        "inputTokensReportedCalls": 0,
+        "outputTokens": 0,
+        "outputTokensReportedCalls": 0,
+        "totalTokens": 0,
+        "totalTokensReportedCalls": 0,
+        "cachedInputTokens": 0,
+        "cachedInputTokensReportedCalls": 0,
+        "cacheCreationInputTokens": 0,
+        "cacheCreationInputTokensReportedCalls": 0,
+        "reasoningOutputTokens": 0,
+        "reasoningOutputTokensReportedCalls": 0,
+        "sourceReportedCostSum": 0,
+        "callsWithReportedCost": 0
+      },
+      "coverageOnly": {
+        "matchedCalls": 16,
+        "matchedIssues": 12,
+        "matchedUsage": {
+          "calls": 16,
+          "callsWithUsage": 16,
+          "inputTokens": 302622,
+          "inputTokensReportedCalls": 16,
+          "outputTokens": 610,
+          "outputTokensReportedCalls": 16,
+          "totalTokens": 303232,
+          "totalTokensReportedCalls": 16,
+          "cachedInputTokens": 268800,
+          "cachedInputTokensReportedCalls": 16,
+          "cacheCreationInputTokens": 0,
+          "cacheCreationInputTokensReportedCalls": 0,
+          "reasoningOutputTokens": 0,
+          "reasoningOutputTokensReportedCalls": 16,
+          "sourceReportedCostSum": 0.11476850000000001,
+          "callsWithReportedCost": 16
+        }
+      }
+    },
+    "sonnet45": {
+      "proposals": 29,
+      "matchedCalls": 0,
+      "matchedIssues": 0,
+      "matchedUsage": {
+        "calls": 0,
+        "callsWithUsage": 0,
+        "inputTokens": 0,
+        "inputTokensReportedCalls": 0,
+        "outputTokens": 0,
+        "outputTokensReportedCalls": 0,
+        "totalTokens": 0,
+        "totalTokensReportedCalls": 0,
+        "cachedInputTokens": 0,
+        "cachedInputTokensReportedCalls": 0,
+        "cacheCreationInputTokens": 0,
+        "cacheCreationInputTokensReportedCalls": 0,
+        "reasoningOutputTokens": 0,
+        "reasoningOutputTokensReportedCalls": 0,
+        "sourceReportedCostSum": 0,
+        "callsWithReportedCost": 0
+      },
+      "coverageOnly": {
+        "matchedCalls": 13,
+        "matchedIssues": 7,
+        "matchedUsage": {
+          "calls": 13,
+          "callsWithUsage": 13,
+          "inputTokens": 240188,
+          "inputTokensReportedCalls": 13,
+          "outputTokens": 1256,
+          "outputTokensReportedCalls": 13,
+          "totalTokens": 241444,
+          "totalTokensReportedCalls": 13,
+          "cachedInputTokens": 237448,
+          "cachedInputTokensReportedCalls": 13,
+          "cacheCreationInputTokens": 2701,
+          "cacheCreationInputTokensReportedCalls": 13,
+          "reasoningOutputTokens": 193,
+          "reasoningOutputTokensReportedCalls": 13,
+          "sourceReportedCostSum": 0.10032015,
+          "callsWithReportedCost": 13
+        }
+      }
+    }
+  },
+  "unmatchedProposals": 28,
+  "limitations": [
+    "Discovery policy, not held-out validation; fixed plus/minus100-line policy chosen before evaluating labels.",
+    "Only exact fixed-range matches count in matchedCalls. Coverage-only next reads may be supplied by a larger context output; extra output and downstream input costs are not measured, so their recorded target-call tokens are a gross opportunity ceiling only. Historical files are not reconstructed, so the larger output may hit its byte cap before covering the desired lines.",
+    "Recorded input includes cache subsets; cache and reasoning details are not added twice.",
+    "Read-only program must validate repository paths, reject symlinks, and bind unchanged file version at runtime; inert replay does not reconstruct historical filesystem state.",
+    "Matched response may contain useful reasoning; removing it is not independently validated. Strict causal saved-call credit is zero.",
+    "Router, discovery and fallback costs are excluded; source-reported costs are not verified invoices.",
+    "No recorded commands executed. Pure reads require successful nontruncated observed output; bundled/multitool turns not credited."
+  ],
+  "sourceManifestSha256": "cfeedd50bd348710bcb73f7e63c6488d8d7a662fa1c14d3da1d9ff4c317b9144",
+  "plannerSha256": "197c7052f831c631597f6e6cb815863c11ff51827f178563094144afe13214fe"
+}

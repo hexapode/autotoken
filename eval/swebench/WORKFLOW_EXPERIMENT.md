@@ -493,3 +493,78 @@ live task-quality validation.
 
 [Source summary](../../docs/usage-traces-summary.json) ·
 [Recorded-usage replay](../../docs/recorded-usage-estimate.json)
+
+### New candidate programs on the recorded-usage sample
+
+One mining agent developed each candidate. These are inert planners with refusal
+checks and replay estimates; no recorded shell command is executed. They use the
+100 official mini-SWE-agent traces above (4,367 responses, 50 distinct issues).
+A separate accounting script verifies every credited event against the original
+response usage and deduplicates target calls and adjacent dependent replacements.
+Per-program token counts are gross conditional opportunities, not net savings.
+
+| Candidate | Proposals | Whole-response matches | Recorded tokens in matched calls |
+| --- | ---: | ---: | ---: |
+| Explicit script write/run v2 | 68 | 36 | 494,149 |
+| Unique search hit → fixed context | 57 | 0 exact | 0 exact |
+| Previously passing test → rerun after edit | 0 | 0 | 0 |
+
+**Write/run v2** supports a single quoted Python heredoc with either redirection
+order and an optional bounded `cd` prefix. It predicts a registered interpreter,
+exact file path and working directory before inspecting the next response. A
+future executor would require explicit run-after-write intent, an unchanged file
+hash and bounded execution. Thirty-six whole singleton responses match across
+11 issues, all Sonnet; the GPT cohort has one proposal and no match. The matched
+calls contain 491,291 input and 2,858 output tokens. There are 32 unmatched
+proposals (28 different actions and four multi-tool responses), so unconditional
+execution after every script write would be unjustified. All matched responses
+contain reasoning/prose. Their observed script exits (24 zero, 12 nonzero) do not
+measure bug-fix quality.
+
+Issue-grouped partitioning keeps both model runs for an issue together. The
+write/run development partition has 17 matches / 210,358 tokens; the within-round
+validation partition has 19 / 283,791. The corpus was sampled and inspected in
+prior work, so this is not untouched external validation. Nine planner fixtures
+cover parsing, refusal, working directories, early delimiters and multi-tool
+exclusion. The original frozen planner and its zero-match report remain unchanged.
+
+**Search/context v2** fixes a ±100-line window around a unique line hit or the
+first 200 lines of a uniquely identified file. It produces 57 proposals and no
+exact next-range matches. Twenty-nine next singleton reads fall inside its
+proposed wider context, across 16 issues: 542,810 input + 1,866 output tokens.
+This is a separate coverage scenario, not equivalent output. Extra-context costs,
+byte-cap feasibility, file stability and task quality are unmeasured; these
+544,676 tokens are excluded from the exact-match total. Eight fixtures pass.
+
+**Passing-test rerun v2** recognizes 57 bounded source edits and 138 registered
+standalone/inline test shapes, including 91 successful tests. Fifty-six source
+edits have no recognized test in the previous 12 responses; the remaining edit
+follows a failing test, so the success gate abstains. Zero proposals earn zero
+savings credit. Coverage limitations are reported rather than hidden.
+
+The exact-match union is 36 calls (0.824% of responses) and 494,149 tokens
+(0.528% of recorded tokens), with no overlaps. Of the input, 467,821 tokens were
+cache reads and 23,336 cache creation; these are already included, never added
+again. Source-reported cost sums to about $0.2711, illustrating why a token
+reduction need not produce a proportional cost reduction. Router costs, false
+positives, reasoning loss and future cache behavior still need live measurement.
+
+```sh
+python3 scripts/candidate-write-run-v2-test.py
+python3 scripts/candidate-search-read-v2-test.py
+python3 scripts/candidate-rerun-v2-test.py
+python3 scripts/aggregate-candidate-estimates-test.py
+# Every candidate CLI accepts --manifest, --public and --private paths.
+python3 scripts/aggregate-candidate-estimates.py --help
+```
+
+[Per-program accounting](../../docs/candidate-estimates.json) ·
+[Write/run](../../docs/candidate-write-run-v2.json) ·
+[Search/context](../../docs/candidate-search-read-v2.json) ·
+[Test rerun](../../docs/candidate-rerun-v2.json)
+
+The separate failed-regression rerun variant also yields zero proposals. It
+requires exit code 1 and assertion-failure evidence; the sole preceding failure
+is an Astropy import/setup error, which is rejected. Five variant fixtures pass
+alongside eight original rerun fixtures. Both policies remain separate in the
+[aggregate report](../../docs/candidate-estimates.json).

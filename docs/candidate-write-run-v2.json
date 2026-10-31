@@ -1,0 +1,470 @@
+{
+  "version": 2,
+  "candidate": "write_then_run_v2",
+  "kind": "conditional-recorded-usage-replay-estimate-not-measured-savings",
+  "sources": [
+    {
+      "label": "sonnet45",
+      "submission": "20260217_mini-v2.0.0_claude-4-5-sonnet-high",
+      "metadataURL": "https://raw.githubusercontent.com/SWE-bench/experiments/40f164d5b8f1d249bf95a6df8b74b577fd8e519d/evaluation/verified/20260217_mini-v2.0.0_claude-4-5-sonnet-high/metadata.yaml",
+      "githubRevision": "40f164d5b8f1d249bf95a6df8b74b577fd8e519d",
+      "trajectoryPrefix": "https://swe-bench-submissions.s3.amazonaws.com/bash-only/20260217_mini-v2.0.0_claude-4-5-sonnet-high/trajs/",
+      "availableTrajectories": 500,
+      "availableBytes": 298722547,
+      "selectedTrajectories": 50,
+      "licenseStatus": "No dataset license asserted; raw artifacts kept private; source attribution preserved."
+    },
+    {
+      "label": "gpt52",
+      "submission": "20260217_mini-v2.0.0_gpt-5-2-high",
+      "metadataURL": "https://raw.githubusercontent.com/SWE-bench/experiments/40f164d5b8f1d249bf95a6df8b74b577fd8e519d/evaluation/verified/20260217_mini-v2.0.0_gpt-5-2-high/metadata.yaml",
+      "githubRevision": "40f164d5b8f1d249bf95a6df8b74b577fd8e519d",
+      "trajectoryPrefix": "https://swe-bench-submissions.s3.amazonaws.com/bash-only/20260217_mini-v2.0.0_gpt-5-2-high/trajs/",
+      "availableTrajectories": 500,
+      "availableBytes": 129942497,
+      "selectedTrajectories": 50,
+      "licenseStatus": "No dataset license asserted; raw artifacts kept private; source attribution preserved."
+    }
+  ],
+  "policy": {
+    "initialCwd": "/testbed",
+    "registeredInterpreter": "python",
+    "roots": [
+      "/testbed",
+      "/tmp"
+    ],
+    "maxWriteBytes": 65536,
+    "quotedHeredocOnly": true,
+    "singleStandaloneWrite": true,
+    "singleRunWithoutArguments": true,
+    "exactCwdAndPathRequired": true,
+    "runtimeRequires": [
+      "explicit run-after-write opt-in",
+      "current file hash matches",
+      "registered interpreter",
+      "resolve path inside allowlisted roots without symlinks",
+      "bounded subprocess"
+    ]
+  },
+  "split": {
+    "method": "SHA256(write-run-v2:instance_id) parity; issue stays grouped across models",
+    "discoveryUsedForDevelopment": true,
+    "validationMeans": "Issue-disjoint within this round; corpus previously inspected, not untouched external validation"
+  },
+  "summary": {
+    "trajectories": 100,
+    "issues": 50,
+    "denominator": {
+      "calls": 4367,
+      "callsWithUsage": 4367,
+      "inputTokens": 92192158,
+      "inputTokensReportedCalls": 4367,
+      "outputTokens": 1457977,
+      "outputTokensReportedCalls": 4367,
+      "totalTokens": 93650135,
+      "totalTokensReportedCalls": 4367,
+      "cachedInputTokens": 84833584,
+      "cachedInputTokensReportedCalls": 4367,
+      "cacheCreationInputTokens": 1801215,
+      "cacheCreationInputTokensReportedCalls": 2422,
+      "reasoningOutputTokens": 682957,
+      "reasoningOutputTokensReportedCalls": 4367,
+      "sourceReportedCostSum": 58.753398950000026,
+      "callsWithReportedCost": 4367
+    },
+    "proposals": 68,
+    "matchedWholeCalls": 36,
+    "unmatchedProposals": 32,
+    "matchedIssues": 11,
+    "grossMatchedUsage": {
+      "calls": 36,
+      "callsWithUsage": 36,
+      "inputTokens": 491291,
+      "inputTokensReportedCalls": 36,
+      "outputTokens": 2858,
+      "outputTokensReportedCalls": 36,
+      "totalTokens": 494149,
+      "totalTokensReportedCalls": 36,
+      "cachedInputTokens": 467821,
+      "cachedInputTokensReportedCalls": 36,
+      "cacheCreationInputTokens": 23336,
+      "cacheCreationInputTokensReportedCalls": 36,
+      "reasoningOutputTokens": 323,
+      "reasoningOutputTokensReportedCalls": 36,
+      "sourceReportedCostSum": 0.27112830000000004,
+      "callsWithReportedCost": 36
+    },
+    "matchesWithReasoningOrProse": 36,
+    "matchedTargetExitCodes": {
+      "0": 24,
+      "1": 12
+    },
+    "diagnostics": {
+      "heredocLikeSources": 490,
+      "nextActionDiffers": 28,
+      "nextNotSingleton": 4
+    }
+  },
+  "byModel": {
+    "gpt52": {
+      "trajectories": 50,
+      "issues": 50,
+      "denominator": {
+        "calls": 1945,
+        "callsWithUsage": 1945,
+        "inputTokens": 40065726,
+        "inputTokensReportedCalls": 1945,
+        "outputTokens": 740263,
+        "outputTokensReportedCalls": 1945,
+        "totalTokens": 40805989,
+        "totalTokensReportedCalls": 1945,
+        "cachedInputTokens": 34515072,
+        "cachedInputTokensReportedCalls": 1945,
+        "cacheCreationInputTokens": 0,
+        "cacheCreationInputTokensReportedCalls": 0,
+        "reasoningOutputTokens": 535811,
+        "reasoningOutputTokensReportedCalls": 1945,
+        "sourceReportedCostSum": 26.117464100000017,
+        "callsWithReportedCost": 1945
+      },
+      "proposals": 1,
+      "matchedWholeCalls": 0,
+      "unmatchedProposals": 1,
+      "matchedIssues": 0,
+      "grossMatchedUsage": {
+        "calls": 0,
+        "callsWithUsage": 0,
+        "inputTokens": 0,
+        "inputTokensReportedCalls": 0,
+        "outputTokens": 0,
+        "outputTokensReportedCalls": 0,
+        "totalTokens": 0,
+        "totalTokensReportedCalls": 0,
+        "cachedInputTokens": 0,
+        "cachedInputTokensReportedCalls": 0,
+        "cacheCreationInputTokens": 0,
+        "cacheCreationInputTokensReportedCalls": 0,
+        "reasoningOutputTokens": 0,
+        "reasoningOutputTokensReportedCalls": 0,
+        "sourceReportedCostSum": 0,
+        "callsWithReportedCost": 0
+      },
+      "matchesWithReasoningOrProse": 0,
+      "matchedTargetExitCodes": {},
+      "diagnostics": {
+        "heredocLikeSources": 39,
+        "nextActionDiffers": 1
+      }
+    },
+    "sonnet45": {
+      "trajectories": 50,
+      "issues": 50,
+      "denominator": {
+        "calls": 2422,
+        "callsWithUsage": 2422,
+        "inputTokens": 52126432,
+        "inputTokensReportedCalls": 2422,
+        "outputTokens": 717714,
+        "outputTokensReportedCalls": 2422,
+        "totalTokens": 52844146,
+        "totalTokensReportedCalls": 2422,
+        "cachedInputTokens": 50318512,
+        "cachedInputTokensReportedCalls": 2422,
+        "cacheCreationInputTokens": 1801215,
+        "cacheCreationInputTokensReportedCalls": 2422,
+        "reasoningOutputTokens": 147146,
+        "reasoningOutputTokensReportedCalls": 2422,
+        "sourceReportedCostSum": 32.63593485000005,
+        "callsWithReportedCost": 2422
+      },
+      "proposals": 67,
+      "matchedWholeCalls": 36,
+      "unmatchedProposals": 31,
+      "matchedIssues": 11,
+      "grossMatchedUsage": {
+        "calls": 36,
+        "callsWithUsage": 36,
+        "inputTokens": 491291,
+        "inputTokensReportedCalls": 36,
+        "outputTokens": 2858,
+        "outputTokensReportedCalls": 36,
+        "totalTokens": 494149,
+        "totalTokensReportedCalls": 36,
+        "cachedInputTokens": 467821,
+        "cachedInputTokensReportedCalls": 36,
+        "cacheCreationInputTokens": 23336,
+        "cacheCreationInputTokensReportedCalls": 36,
+        "reasoningOutputTokens": 323,
+        "reasoningOutputTokensReportedCalls": 36,
+        "sourceReportedCostSum": 0.27112830000000004,
+        "callsWithReportedCost": 36
+      },
+      "matchesWithReasoningOrProse": 36,
+      "matchedTargetExitCodes": {
+        "0": 24,
+        "1": 12
+      },
+      "diagnostics": {
+        "heredocLikeSources": 451,
+        "nextActionDiffers": 27,
+        "nextNotSingleton": 4
+      }
+    }
+  },
+  "byPartition": {
+    "discovery": {
+      "trajectories": 46,
+      "issues": 23,
+      "denominator": {
+        "calls": 1836,
+        "callsWithUsage": 1836,
+        "inputTokens": 35546840,
+        "inputTokensReportedCalls": 1836,
+        "outputTokens": 613403,
+        "outputTokensReportedCalls": 1836,
+        "totalTokens": 36160243,
+        "totalTokensReportedCalls": 1836,
+        "cachedInputTokens": 32823767,
+        "cachedInputTokensReportedCalls": 1836,
+        "cacheCreationInputTokens": 822339,
+        "cacheCreationInputTokensReportedCalls": 1063,
+        "reasoningOutputTokens": 266502,
+        "reasoningOutputTokensReportedCalls": 1836,
+        "sourceReportedCostSum": 23.653148850000044,
+        "callsWithReportedCost": 1836
+      },
+      "proposals": 36,
+      "matchedWholeCalls": 17,
+      "unmatchedProposals": 19,
+      "matchedIssues": 5,
+      "grossMatchedUsage": {
+        "calls": 17,
+        "callsWithUsage": 17,
+        "inputTokens": 209000,
+        "inputTokensReportedCalls": 17,
+        "outputTokens": 1358,
+        "outputTokensReportedCalls": 17,
+        "totalTokens": 210358,
+        "totalTokensReportedCalls": 17,
+        "cachedInputTokens": 199410,
+        "cachedInputTokensReportedCalls": 17,
+        "cacheCreationInputTokens": 9527,
+        "cacheCreationInputTokensReportedCalls": 17,
+        "reasoningOutputTokens": 151,
+        "reasoningOutputTokensReportedCalls": 17,
+        "sourceReportedCostSum": 0.11610825000000001,
+        "callsWithReportedCost": 17
+      },
+      "matchesWithReasoningOrProse": 17,
+      "matchedTargetExitCodes": {
+        "0": 13,
+        "1": 4
+      },
+      "diagnostics": {
+        "heredocLikeSources": 219,
+        "nextActionDiffers": 15,
+        "nextNotSingleton": 4
+      }
+    },
+    "validation": {
+      "trajectories": 54,
+      "issues": 27,
+      "denominator": {
+        "calls": 2531,
+        "callsWithUsage": 2531,
+        "inputTokens": 56645318,
+        "inputTokensReportedCalls": 2531,
+        "outputTokens": 844574,
+        "outputTokensReportedCalls": 2531,
+        "totalTokens": 57489892,
+        "totalTokensReportedCalls": 2531,
+        "cachedInputTokens": 52009817,
+        "cachedInputTokensReportedCalls": 2531,
+        "cacheCreationInputTokens": 978876,
+        "cacheCreationInputTokensReportedCalls": 1359,
+        "reasoningOutputTokens": 416455,
+        "reasoningOutputTokensReportedCalls": 2531,
+        "sourceReportedCostSum": 35.10025009999992,
+        "callsWithReportedCost": 2531
+      },
+      "proposals": 32,
+      "matchedWholeCalls": 19,
+      "unmatchedProposals": 13,
+      "matchedIssues": 6,
+      "grossMatchedUsage": {
+        "calls": 19,
+        "callsWithUsage": 19,
+        "inputTokens": 282291,
+        "inputTokensReportedCalls": 19,
+        "outputTokens": 1500,
+        "outputTokensReportedCalls": 19,
+        "totalTokens": 283791,
+        "totalTokensReportedCalls": 19,
+        "cachedInputTokens": 268411,
+        "cachedInputTokensReportedCalls": 19,
+        "cacheCreationInputTokens": 13809,
+        "cacheCreationInputTokensReportedCalls": 19,
+        "reasoningOutputTokens": 172,
+        "reasoningOutputTokensReportedCalls": 19,
+        "sourceReportedCostSum": 0.15502005000000002,
+        "callsWithReportedCost": 19
+      },
+      "matchesWithReasoningOrProse": 19,
+      "matchedTargetExitCodes": {
+        "1": 8,
+        "0": 11
+      },
+      "diagnostics": {
+        "heredocLikeSources": 271,
+        "nextActionDiffers": 13
+      }
+    }
+  },
+  "conservativeDeploymentCredit": {
+    "calls": 0,
+    "tokens": 0,
+    "reason": "Required execution opt-in and live unchanged-file check are not observed in historical traces."
+  },
+  "limitations": [
+    "New policy version; not a retrospective update to the original frozen policy.",
+    "Plans use current commands and successful observations only; next actions are replay labels.",
+    "A complete next model response must contain exactly one matching bash action and one aligned result.",
+    "Matching may remove useful reasoning; task success has not been tested.",
+    "Reported input/output/cache counts belong to original calls; savings are conditional counterfactual estimates.",
+    "Cached input and reasoning output are subsets, never added again.",
+    "Gross estimates exclude router/discovery/fallback overhead and downstream history/cache changes.",
+    "Shell body is inert data; no recorded commands executed and no paid inference.",
+    "Existing bundled write-and-run commands are excluded because no additional call is avoided.",
+    "A successful write does not establish intent to execute it; unmatched proposals show the risk of broad automatic routing."
+  ],
+  "plannerSha256": "a38f7a197ce7d91bd228a05be9a36cb3e68183d37632dcfb82876953a7a49a4b",
+  "program": "write_then_run_v2",
+  "title": "Write a script and run it",
+  "proposals": 68,
+  "matchedCalls": 36,
+  "matchedIssues": 11,
+  "matchedUsage": {
+    "calls": 36,
+    "callsWithUsage": 36,
+    "inputTokens": 491291,
+    "inputTokensReportedCalls": 36,
+    "outputTokens": 2858,
+    "outputTokensReportedCalls": 36,
+    "totalTokens": 494149,
+    "totalTokensReportedCalls": 36,
+    "cachedInputTokens": 467821,
+    "cachedInputTokensReportedCalls": 36,
+    "cacheCreationInputTokens": 23336,
+    "cacheCreationInputTokensReportedCalls": 36,
+    "reasoningOutputTokens": 323,
+    "reasoningOutputTokensReportedCalls": 36,
+    "sourceReportedCostSum": 0.27112830000000004,
+    "callsWithReportedCost": 36
+  },
+  "cohorts": {
+    "gpt52": {
+      "trajectories": 50,
+      "issues": 50,
+      "denominator": {
+        "calls": 1945,
+        "callsWithUsage": 1945,
+        "inputTokens": 40065726,
+        "inputTokensReportedCalls": 1945,
+        "outputTokens": 740263,
+        "outputTokensReportedCalls": 1945,
+        "totalTokens": 40805989,
+        "totalTokensReportedCalls": 1945,
+        "cachedInputTokens": 34515072,
+        "cachedInputTokensReportedCalls": 1945,
+        "cacheCreationInputTokens": 0,
+        "cacheCreationInputTokensReportedCalls": 0,
+        "reasoningOutputTokens": 535811,
+        "reasoningOutputTokensReportedCalls": 1945,
+        "sourceReportedCostSum": 26.117464100000017,
+        "callsWithReportedCost": 1945
+      },
+      "proposals": 1,
+      "matchedWholeCalls": 0,
+      "unmatchedProposals": 1,
+      "matchedIssues": 0,
+      "grossMatchedUsage": {
+        "calls": 0,
+        "callsWithUsage": 0,
+        "inputTokens": 0,
+        "inputTokensReportedCalls": 0,
+        "outputTokens": 0,
+        "outputTokensReportedCalls": 0,
+        "totalTokens": 0,
+        "totalTokensReportedCalls": 0,
+        "cachedInputTokens": 0,
+        "cachedInputTokensReportedCalls": 0,
+        "cacheCreationInputTokens": 0,
+        "cacheCreationInputTokensReportedCalls": 0,
+        "reasoningOutputTokens": 0,
+        "reasoningOutputTokensReportedCalls": 0,
+        "sourceReportedCostSum": 0,
+        "callsWithReportedCost": 0
+      },
+      "matchesWithReasoningOrProse": 0,
+      "matchedTargetExitCodes": {},
+      "diagnostics": {
+        "heredocLikeSources": 39,
+        "nextActionDiffers": 1
+      }
+    },
+    "sonnet45": {
+      "trajectories": 50,
+      "issues": 50,
+      "denominator": {
+        "calls": 2422,
+        "callsWithUsage": 2422,
+        "inputTokens": 52126432,
+        "inputTokensReportedCalls": 2422,
+        "outputTokens": 717714,
+        "outputTokensReportedCalls": 2422,
+        "totalTokens": 52844146,
+        "totalTokensReportedCalls": 2422,
+        "cachedInputTokens": 50318512,
+        "cachedInputTokensReportedCalls": 2422,
+        "cacheCreationInputTokens": 1801215,
+        "cacheCreationInputTokensReportedCalls": 2422,
+        "reasoningOutputTokens": 147146,
+        "reasoningOutputTokensReportedCalls": 2422,
+        "sourceReportedCostSum": 32.63593485000005,
+        "callsWithReportedCost": 2422
+      },
+      "proposals": 67,
+      "matchedWholeCalls": 36,
+      "unmatchedProposals": 31,
+      "matchedIssues": 11,
+      "grossMatchedUsage": {
+        "calls": 36,
+        "callsWithUsage": 36,
+        "inputTokens": 491291,
+        "inputTokensReportedCalls": 36,
+        "outputTokens": 2858,
+        "outputTokensReportedCalls": 36,
+        "totalTokens": 494149,
+        "totalTokensReportedCalls": 36,
+        "cachedInputTokens": 467821,
+        "cachedInputTokensReportedCalls": 36,
+        "cacheCreationInputTokens": 23336,
+        "cacheCreationInputTokensReportedCalls": 36,
+        "reasoningOutputTokens": 323,
+        "reasoningOutputTokensReportedCalls": 36,
+        "sourceReportedCostSum": 0.27112830000000004,
+        "callsWithReportedCost": 36
+      },
+      "matchesWithReasoningOrProse": 36,
+      "matchedTargetExitCodes": {
+        "0": 24,
+        "1": 12
+      },
+      "diagnostics": {
+        "heredocLikeSources": 451,
+        "nextActionDiffers": 27,
+        "nextNotSingleton": 4
+      }
+    }
+  }
+}
