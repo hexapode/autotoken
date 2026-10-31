@@ -1,6 +1,6 @@
 # Project page
 
-`index.html` is a self-contained project explainer. It has no build step, JavaScript, external fonts, analytics, or runtime dependencies. Local navigation uses page anchors; source and experiment links point to the public repository. The page works under a GitHub Pages repository subpath and when opened directly from disk.
+`index.html`, `styles.css`, and `site.js` form a static project explainer with no build step, external fonts, analytics, or runtime dependencies. A small local script switches illustrative routing examples and copies setup commands; it makes no network or model calls. Core content remains readable without JavaScript. Relative asset paths work under the GitHub Pages repository subpath and directly from disk.
 
 Preview from the repository root:
 
