@@ -1,0 +1,26 @@
+{
+  "name": "model-to-code",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env src/server.js",
+    "test": "node --test",
+    "demo": "node src/demo.js",
+    "eval": "node --env-file-if-exists=.env src/evaluate.js",
+    "proxy": "node --env-file-if-exists=.env src/recording-proxy.js",
+    "traces": "node src/trace.js",
+    "proxy:smoke": "node src/proxy-smoke.js",
+    "pi:smoke": "node src/pi-smoke.js",
+    "pi:live-smoke": "node --env-file-if-exists=.env src/pi-live-smoke.js",
+    "swe:run": "node --env-file-if-exists=.env src/swe-runner.js",
+    "swe:analyze": "node src/trajectory-analysis.js",
+    "swe:propose": "node --env-file-if-exists=.env src/trajectory-learn.js"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "1.4.0"
+  }
+}

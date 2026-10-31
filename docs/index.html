@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Autotoken explores whether recurring LLM work can become tested deterministic programs, with a decision model choosing when to use them.">
+  <meta name="theme-color" content="#f5f3ed">
+  <title>Autotoken — Let repetition become code.</title>
+  <style>
+    :root{--paper:#f5f3ed;--ink:#172a31;--muted:#536369;--line:#ccd1c9;--green:#d6edac;--orange:#c74925;--white:#fffef9;--mono:ui-monospace,SFMono-Regular,Consolas,monospace}
+    *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:28px}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,Arial,Helvetica,sans-serif;line-height:1.55}a{color:inherit;text-decoration-thickness:1px;text-underline-offset:4px}a:focus-visible,summary:focus-visible{outline:3px solid var(--orange);outline-offset:5px}.wrap{max-width:1180px;margin:auto;padding:0 36px}.skip{position:absolute;left:12px;top:-80px;background:var(--ink);color:white;padding:12px;z-index:10}.skip:focus{top:12px}header{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:28px 0;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:12px;text-decoration:none;font-size:20px;font-weight:750;letter-spacing:-.6px}.logo{background:var(--ink);color:var(--green);font:700 20px var(--mono);padding:8px 9px;border-radius:6px}nav{display:flex;gap:28px;font-size:13px;font-weight:600}nav a{text-decoration:none}nav a:hover{color:var(--orange)}.eyebrow{font:11px var(--mono);letter-spacing:1.7px;text-transform:uppercase;display:flex;align-items:center;gap:10px}.dot{width:7px;height:7px;background:var(--orange);border-radius:50%;display:inline-block}.hero{padding:76px 0 66px;display:grid;grid-template-columns:1.1fr 1fr;gap:55px;align-items:center}h1{font-size:clamp(48px,5.4vw,76px);line-height:1.02;letter-spacing:-4px;font-weight:600;margin:26px 0}h1 em{font-family:Georgia,serif;font-weight:400;color:var(--orange)}.lede{font-size:18px;color:var(--muted);max-width:490px;line-height:1.65}.actions{display:flex;align-items:center;gap:22px;margin-top:30px;font-size:13px;font-weight:650}.button{display:inline-block;padding:13px 20px;background:var(--ink);color:var(--white);text-decoration:none;border-radius:4px}.button:hover{background:#2d454f}.hero-note{font:11px var(--mono);color:var(--muted);margin-top:26px}.diagram{border:1px solid var(--line);border-radius:10px;background:var(--white);padding:24px;box-shadow:8px 8px 0 #e5e6dc}.diagram-head{display:flex;justify-content:space-between;font:10px var(--mono);letter-spacing:1px;color:var(--muted);margin-bottom:24px}.diagram-flow{display:flex;flex-direction:column;align-items:center}.node{padding:14px 18px;border:1px solid var(--line);border-radius:5px;text-align:center;width:100%;font-size:13px}.node small{display:block;font:10px var(--mono);color:var(--muted);margin-top:5px}.node.router{background:var(--ink);color:white;max-width:260px}.node.router small{color:#d5e0df}.connector{height:27px;display:flex;align-items:center;font-size:19px;color:#89958b}.branches{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;margin-top:18px}.branch-label{text-align:center;font:10px var(--mono);color:var(--muted);margin-bottom:9px}.node.program{background:var(--green);border-color:#bdd48e}.loop{border-top:1px dashed var(--line);padding-top:17px;margin-top:22px;font:11px var(--mono);color:var(--muted);line-height:1.7}.loop b{color:var(--ink)}.thesis{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:26px 0;display:grid;grid-template-columns:160px 1fr;gap:25px}.thesis p{margin:0;font-size:20px;line-height:1.5;max-width:800px}.section{padding:75px 0;border-bottom:1px solid var(--line)}.section-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:45px;margin-bottom:32px}h2{font-size:36px;line-height:1.15;letter-spacing:-1.4px;font-weight:600;margin:13px 0 0}.section-intro{color:var(--muted);max-width:390px;margin:24px 0 0;font-size:14px}.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:25px}.step{border-top:2px solid var(--ink);padding-top:17px}.step-num{font:11px var(--mono);color:var(--orange)}h3{font-size:19px;letter-spacing:-.4px;margin:13px 0 9px}.step p,.card p{font-size:14px;color:var(--muted);margin:0}.example{display:grid;grid-template-columns:1fr 1fr;margin-top:35px;border:1px solid var(--line);border-radius:6px;overflow:hidden}.example-copy{padding:28px;background:#e9ecdf}.example-copy h3{margin-top:0}.example-copy p{font-size:14px;color:var(--muted);margin-bottom:0}.code{background:var(--ink);padding:26px;color:#eaf0e9;font:12px/1.9 var(--mono);overflow:auto}.code .label{color:#a7b5b7;font-size:10px;letter-spacing:1px;margin-bottom:12px}.code .accent{color:var(--green)}.experiment{background:var(--ink);color:var(--white);padding:42px;border-radius:8px}.experiment .eyebrow{color:#c6d8b1}.experiment h2{font-size:32px}.experiment p{color:#bfcccc}.pipeline{display:flex;flex-wrap:wrap;align-items:center;gap:12px;font:12px var(--mono);margin:25px 0 32px}.pipeline span{border:1px solid #52656b;border-radius:4px;padding:9px 12px}.pipeline .proxy{color:var(--green);border-color:#829961}.metrics{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid #42565d;padding-top:25px;gap:25px}.metric strong{display:block;font-size:44px;letter-spacing:-2px;line-height:1.2;font-weight:500}.metric span{font-size:12px;color:#c7d2d2}.caveat{font-size:12px!important;margin:24px 0 0!important;max-width:850px}.findings{display:grid;grid-template-columns:1fr 1fr;gap:38px;margin-top:35px}.findings h3{font-size:17px}.findings p{color:var(--muted);font-size:14px}.status{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{border:1px solid var(--line);border-radius:6px;padding:25px;background:var(--white)}.badge{display:inline-block;font:10px var(--mono);padding:4px 8px;background:#e8eddf;border-radius:3px}.badge.next{background:#f5e2d8;color:#9b391f}.card h3{margin-top:19px}.questions{margin-top:30px}details{border-top:1px solid var(--line);padding:18px 0}summary{font-size:15px;font-weight:600;cursor:pointer}details p{max-width:800px;color:var(--muted);font-size:14px}.start{display:grid;grid-template-columns:1fr 1fr;gap:55px;align-items:center}.terminal{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:25px;font:12px/2 var(--mono);overflow:auto}.terminal .comment{color:var(--muted)}.start p{font-size:15px;color:var(--muted)}footer{display:flex;justify-content:space-between;gap:25px;padding:30px 0 40px;font:11px var(--mono);color:var(--muted)}footer a{white-space:nowrap}
+    @media(max-width:850px){.hero{gap:30px;grid-template-columns:1fr 1fr}h1{font-size:53px;letter-spacing:-3px}.steps{grid-template-columns:1fr 1fr}.status{grid-template-columns:1fr}.section-heading{gap:25px}.wrap{padding:0 24px}.diagram{padding:18px}.experiment{padding:28px}}
+    @media(max-width:620px){header{padding:20px 0;gap:15px}.brand{font-size:17px}.logo{font-size:16px}nav{gap:16px;font-size:11px}nav a:last-child{display:none}.hero{grid-template-columns:1fr;padding:48px 0;gap:35px}h1{font-size:58px}.lede{font-size:17px}.diagram{box-shadow:5px 5px 0 #e5e6dc}.thesis{grid-template-columns:1fr;gap:13px}.thesis p{font-size:18px}.section{padding:48px 0}.section-heading{display:block}.section-intro{margin-top:18px}h2{font-size:31px}.steps{gap:25px 18px}.step p{font-size:13px}.example,.findings,.start{grid-template-columns:1fr}.findings{gap:10px}.experiment{padding:23px}.experiment h2{font-size:28px}.metrics{gap:15px}.metric strong{font-size:36px}.metric span{font-size:11px}.pipeline{font-size:10px;gap:8px}.pipeline span{padding:7px 9px}.start{gap:22px}footer{display:block}footer a{display:inline-block;margin-top:12px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  </style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#" aria-label="Autotoken home"><span class="logo" aria-hidden="true">a↗</span>Autotoken</a>
+    <nav aria-label="Main navigation"><a href="#idea">The idea</a><a href="#experiment">Experiment</a><a href="https://github.com/hexapode/autotoken">GitHub ↗</a></nav>
+  </header>
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div>
+        <div class="eyebrow"><span class="dot"></span>An experiment in learning from repetition</div>
+        <h1 id="hero-title">Let repetition<br>become <em>code.</em></h1>
+        <p class="lede">What if an AI system learned which parts of its work no longer needed an AI?</p>
+        <p class="lede">Autotoken watches LLM traffic, discovers recurring tasks, and explores turning them into tested, deterministic programs.</p>
+        <div class="actions"><a class="button" href="#idea">Explore the idea <span aria-hidden="true">↓</span></a><a href="#experiment">See the first experiment</a></div>
+        <p class="hero-note">Research prototype · Local-first · No savings claims yet</p>
+      </div>
+      <div class="diagram" role="img" aria-label="Proposed architecture: a request reaches a decision model, which selects a validated program or falls back to the LLM. Recorded traffic feeds discovery, tests, and shadow evaluation.">
+        <div class="diagram-head"><span>THE PROPOSED LOOP</span><span>01 / ROUTE</span></div>
+        <div class="diagram-flow">
+          <div class="node">Your application or agent<small>A new request + its context</small></div>
+          <div class="connector" aria-hidden="true">↓</div>
+          <div class="node router">Decision model<small>Can a known program handle this?</small></div>
+          <div class="branches">
+            <div><div class="branch-label">MATCH + VALID CONTRACT ↓</div><div class="node program">Deterministic program<small>Execute a tested operation</small></div></div>
+            <div><div class="branch-label">UNCERTAIN / NEW TASK ↓</div><div class="node">LLM<small>Reason about the request</small></div></div>
+          </div>
+        </div>
+        <div class="loop"><b>02 / LEARN</b><br>Traffic → recurring patterns → bounded programs<br>→ tests → shadow evaluation → program registry ↺</div>
+      </div>
+    </section>
+    <div class="thesis"><div class="eyebrow">The hypothesis</div><p>A model can help discover a procedure once. A program can repeat that procedure many times. The hard part is knowing <em>when it applies.</em></p></div>
+    <section class="section" id="idea" aria-labelledby="idea-title">
+      <div class="section-heading"><div><div class="eyebrow">01 / The learning loop</div><h2 id="idea-title">From observed work<br>to reusable behavior.</h2></div><p class="section-intro">Start with traffic instead of a hand-written catalog of tasks. Let evidence determine what is common enough—and precise enough—to automate.</p></div>
+      <div class="steps">
+        <article class="step"><span class="step-num">01 — OBSERVE</span><h3>Watch the work</h3><p>A proxy records requests, responses, tool actions, and results while the model keeps doing the job.</p></article>
+        <article class="step"><span class="step-num">02 — DISCOVER</span><h3>Find repetition</h3><p>A learner looks across distinct examples for recurring intent and a procedure that could generalize.</p></article>
+        <article class="step"><span class="step-num">03 — VALIDATE</span><h3>Make it explicit</h3><p>Build a bounded program with an input contract. Test it, then compare it in shadow mode on new inputs.</p></article>
+        <article class="step"><span class="step-num">04 — ROUTE</span><h3>Use it selectively</h3><p>A decision model selects an eligible program or abstains. Rejections and execution errors fall back to the answer model.</p></article>
+      </div>
+      <div class="example">
+        <div class="example-copy"><div class="eyebrow">A small, concrete example</div><h3>Different words. The same operation.</h3><p>“Sort these numbers.” “Put these values in ascending order.” A program can handle new arrays, provided the intent and input contract match.</p><p>The decision still requires care: “sort by absolute value” is a different task.</p></div>
+        <div class="code"><div class="label">ILLUSTRATIVE BOUNDED PROGRAM</div><div>intent&nbsp;&nbsp; <span class="accent">sort numbers ascending</span></div><div>input&nbsp;&nbsp;&nbsp; <span class="accent">[9, 2, 1]</span></div><div>program&nbsp; numeric sort · ascending</div><div>output&nbsp;&nbsp; <span class="accent">[1, 2, 9]</span></div><div style="color:#a7b5b7;margin-top:10px">New input, same procedure. No answer-model call.</div></div>
+      </div>
+    </section>
+    <section class="section" id="experiment" aria-labelledby="experiment-title">
+      <div class="experiment">
+        <div class="eyebrow">02 / First experiment</div><h2 id="experiment-title">Can a coding agent teach us<br>which steps repeat?</h2>
+        <p>Put the proxy between Pi and the model. Run real repository issues. Study the decisions inside each trajectory.</p>
+        <div class="pipeline" aria-label="Pi coding agent to recording proxy to GPT model"><span>Pi coding agent</span><b aria-hidden="true">→</b><span class="proxy">Autotoken proxy</span><b aria-hidden="true">→</b><span>gpt-6.1-sol</span></div>
+        <div class="metrics"><div class="metric"><strong>2</strong><span>distinct development issues</span></div><div class="metric"><strong>17</strong><span>recorded model calls</span></div><div class="metric"><strong>2 / 2</strong><span>passed local validation</span></div></div>
+        <p class="caveat">Pilot snapshot: two marshmallow issues from SWE-bench Lite's development split. Patches passed repository tests and independent public-issue regressions in fresh checkouts. These are local checks, not official SWE-bench scores. All 17 calls still went to the model.</p>
+      </div>
+      <div class="findings"><div><h3>What we observed</h3><p>Both trajectories include workspace inspection, file reading, searching, editing, testing, and diff review. The analyzer counts current actions, links tool results, and separates distinct issues from repeated runs.</p></div><div><h3>What that does—and does not—tell us</h3><p>Recurring categories suggest places to investigate. They do not establish that an entire model decision is replaceable. We still need held-out shadow evaluation and paired agent runs to measure downstream correctness and net savings.</p></div></div>
+    </section>
+    <section class="section" aria-labelledby="status-title">
+      <div class="section-heading"><div><div class="eyebrow">03 / State of the project</div><h2 id="status-title">A working prototype.<br>An open research question.</h2></div><p class="section-intro">The small data-transformation prototype and the coding-agent experiment are separate paths. Their evidence should be read separately, too.</p></div>
+      <div class="status">
+        <article class="card"><span class="badge">IMPLEMENTED</span><h3>Bounded transformations</h3><p>A model router, a small operation language, candidate tests, shadow comparison, explicit promotion, and fallback. The bundled demo uses scripted fixtures.</p></article>
+        <article class="card"><span class="badge">IMPLEMENTED</span><h3>Agent observation</h3><p>Pi integration, streaming trace capture, patch export, local issue validation, and cross-run analysis. Two bounded action proposals remain offline and inactive; neither exactly replaces a full observed command.</p></article>
+        <article class="card"><span class="badge next">NEXT TO VALIDATE</span><h3>Agent substitution</h3><p>Freeze candidates, test on unseen issues, then compare baseline and routed runs. Measure patch quality alongside coverage, latency, and all model costs.</p></article>
+      </div>
+      <div class="questions">
+        <details><summary>Is this just a response cache?</summary><p>The goal is to reuse a procedure across new inputs, rather than replay an answer to a previous request. A sorting program can handle an array it has never seen. Its applicability still needs to be checked.</p></details>
+        <details><summary>Does it eliminate model calls?</summary><p>An active program can avoid an answer-model call, but the decision model still uses inference. Discovery and shadow evaluation add costs too. The coding-agent path currently substitutes no calls, and the project has not demonstrated net cost savings.</p></details>
+        <details><summary>Can the learner execute arbitrary generated code?</summary><p>The transformation prototype uses a bounded JSON operation language. The offline agent proposal compiler selects from a fixed set of read-only operations. Proposed agent programs are not connected to live routing. The coding agent's local execution mode itself is not sandboxed.</p></details>
+        <details><summary>What would count as a convincing result?</summary><p>A frozen registry evaluated on unseen issues, with paired baseline and routed runs, stable task success, and lower total cost or latency after including routing and learning overhead. Discovery, calibration, and test issues must stay separate.</p></details>
+      </div>
+    </section>
+    <section class="section start" id="try" aria-labelledby="try-title">
+      <div><div class="eyebrow">04 / Try it locally</div><h2 id="try-title">Start with the loop.</h2><p>From the repository root, run the tests, then the scripted demo. The demo needs no API key and shows observation, discovery, shadow evaluation, promotion, and fallback.</p><p>See the <a href="https://github.com/hexapode/autotoken#readme">repository README</a> and <a href="https://github.com/hexapode/autotoken/blob/main/eval/swebench/README.md">coding-agent setup</a> for live models and experiments.</p></div>
+      <div class="terminal" role="region" aria-label="Quick start commands"><div class="comment"># Node.js 22+ · from the repository root</div><div>npm test</div><div>npm run demo</div><br><div class="comment"># Run the scripted evaluation</div><div>npm run eval</div></div>
+    </section>
+  </main>
+  <footer><span>Autotoken · Learning what can become a program.</span><a href="#main">Back to the idea ↑</a></footer>
+</div>
+</body>
+</html>

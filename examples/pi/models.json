@@ -1,0 +1,33 @@
+{
+  "providers": {
+    "model-to-code": {
+      "baseUrl": "http://127.0.0.1:3001/v1",
+      "api": "openai-responses",
+      "apiKey": "$PROXY_TOKEN",
+      "headers": {
+        "X-M2C-Run-ID": "$M2C_RUN_ID",
+        "X-M2C-Instance-ID": "$M2C_INSTANCE_ID",
+        "X-M2C-Session-ID": "$M2C_SESSION_ID"
+      },
+      "models": [
+        {
+          "id": "gpt-6.1-sol",
+          "name": "GPT-6.1 Sol",
+          "reasoning": true,
+          "input": [
+            "text",
+            "image"
+          ],
+          "contextWindow": 1050000,
+          "maxTokens": 16384,
+          "cost": {
+            "input": 2,
+            "output": 10,
+            "cacheRead": 0.1,
+            "cacheWrite": 2.5
+          }
+        }
+      ]
+    }
+  }
+}

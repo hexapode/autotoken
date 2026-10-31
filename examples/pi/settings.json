@@ -1,0 +1,10 @@
+{
+  "transport": "sse",
+  "defaultThinkingLevel": "medium",
+  "retry": {
+    "enabled": false,
+    "provider": {
+      "maxRetries": 0
+    }
+  }
+}
