@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {suggestPaths} from './path-recovery.mjs';
+assert.deepEqual(suggestPaths('tests/test_x.py',['pkg/tests/test_x.py']).paths,['pkg/tests/test_x.py']);
+assert.deepEqual(suggestPaths('tests/test_x.py',['tests/unittest_x.py']).paths,['tests/unittest_x.py']);
+assert.equal(suggestPaths('test_x.py',['a/test_x.py','b/test_x.py']).status,'ambiguous');
+assert.equal(suggestPaths('../test_x.py',['test_x.py']).status,'unsupported');
+assert.equal(suggestPaths('tests/*.py',['tests/test_x.py']).status,'unsupported');
+assert.equal(suggestPaths('x.py',['x.py']).status,'already_exists');
+assert.equal(suggestPaths('x.py',['.hidden/x.py']).status,'no_match');
+assert.equal(suggestPaths('x.py',Array.from({length:6},(_,i)=>`${i}/x.py`)).status,'ambiguous_over_limit');
+assert.deepEqual(suggestPaths('tests',['pkg/tests/test_x.py']).paths,['pkg/tests']);
+console.log('9 path suggestion checks passed');

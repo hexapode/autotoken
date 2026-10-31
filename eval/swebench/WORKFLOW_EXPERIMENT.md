@@ -192,3 +192,30 @@ A separate subagent mined the frozen baseline corpus for additional candidates, 
 - Failure output followed by source inspection:36 observations with file/line pointers across27 issues; eight next turns include reads, none are pure read-only next turns.
 
 These are exploratory opportunities and feasibility rankings, not validated programs or measured savings. Structured test evidence and checked edits are the most concrete next implementation candidates.
+
+
+### Discovery-only candidate expansion
+
+Reproduce with `node scripts/explore-candidates.mjs`. This pass reads only baseline runs in existing discovery folds 2–4: 455 decisions in 60 runs. Calibration and evaluation turns are excluded from candidate selection. Command-level evidence stays in ignored `data/analysis/more-candidates-v1/report.json`.
+
+| Candidate | Observations | Distinct issues | Descriptive follow-up |
+| --- | ---: | ---: | --- |
+| Missing-path recovery | 26 | 17 | 20 followed by an inspection turn |
+| Repository configuration packet | 33 | 24 | 29 in the first three turns |
+| Test-and-diff verification packet | 15 | 13 | 12 followed by a final answer |
+| Missing-tool recovery | 4 | 4 | Too sparse to prioritize |
+| Same-file pure-read continuation | 0 | 0 | No support under the strict parser |
+| Exact repeated read/search within conservative read-only epochs | 0 | 0 | No support under the strict parser |
+
+Counts are heuristic observations and overlap across candidates. They are not calls that a program could necessarily replace. Mixed commands are common. Configuration collection and verification may already be batched; earlier collection adds tokens and cannot be assumed to save a turn. A missing path can be intentional or ambiguous, so recovery should suggest bounded matches rather than silently substitute or execute a guessed path. Recorded outputs and later commands are descriptive evidence only, never future inputs to a proposed router.
+
+One agent per candidate completed an offline feasibility check for missing-path recovery, repository orientation, and verification. No new paid model calls or production routing changes were made for this pass. New independent issues are needed to validate any resulting policy.
+
+
+#### Per-candidate feasibility checks
+
+- **Path recovery:** `scripts/path-recovery.mjs` suggests bounded basename/test-prefix matches from the original base Git tree without executing or rewriting a command. In 33 diagnostics across the 26 discovery turns, it suggests paths for 14 turns across 12 issues; seven suggestions appear in the next command. It has 14 no-match diagnostics and five unsupported wildcard paths. A unique `tests/brain` → `astroid/brain` match is semantically misleading twice. Suggestions must remain informational. Nine checks pass (`node scripts/path-recovery-check.mjs`); replay is `node scripts/path-recovery-replay.mjs`.
+- **Repository orientation:** exact parsing confirms 32 turns across 24 issues, versus the heuristic's 33 (one unsupported wildcard read). Of these, 28 occur in the first three turns. `node scripts/repo-orientation-probe.mjs` builds bounded source/test-root and configuration packets from original base Git objects for all 60 discovery runs. It covers 25 of 40 configuration-read substeps and all config reads in 18 turns, but zero whole turns: each also requests issue-specific information. Median config payload is 3,619 bytes, maximum 4,258. All packets pass bounds checks. Token cost and task benefit are unmeasured.
+- **Verification:** deeper inspection finds three workspace-changing original-versus-patched comparisons among the 15 no-edit-tagged turns. Of the remaining 12, nine invoke CLI pytest (four full suites, five newly selected subsets) and three use custom Python wrappers. None repeats an exact prior test argv. An explicitly requested verification tool is more defensible than automatic repetition of the previous test. The heuristic tag alone is insufficient to establish a read-only operation.
+
+These findings do not establish new whole-call savings. Path recovery is worth testing as a bounded tool-output helper; orientation and autonomous verification rank lower for call elimination. The earlier structured-test-result and checked-edit candidates remain useful alternatives to investigate.
