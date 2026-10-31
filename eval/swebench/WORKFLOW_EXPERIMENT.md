@@ -246,3 +246,30 @@ python3 scripts/isolated-regression-test.py
 ```
 
 All fixture checks passed: pytest pass/failure/timeout/output-cap/spawn-error behavior; 13 guarded-edit refusal cases plus successful UTF-8, mode preservation, and cleanup; seven isolated-comparison checks. Replay scripts are `structured-test-replay.mjs`, `guarded-edit-mine.py`, and `isolated-regression-mine.py`; they require the private discovery corpus. Aggregate findings are public; raw evidence remains in ignored `data/analysis/` directories. These prototypes currently support reliability more strongly than autonomous whole-turn replacement.
+
+
+### Source-inspection candidate round
+
+Three further agents tested separate candidates using baseline discovery folds 2–4 only (455 decisions). No paid model calls, evaluation-fold inspection, or live routing changes were made.
+
+| Candidate | Discovery result | Assessment |
+| --- | --- | --- |
+| Failure traceback context | 28 plans / 18 issues; zero complete next turns covered | Deprioritize automatic injection; up to 2,720 proposed source lines |
+| Relevant-test locator | 61 proposals / 26 issues; 15 proposals match a following explicit test-file operand | Inexpensive filename hints; no demonstrated call elimination |
+| Compact multi-file reads | 24 supported turns / 17 issues; argument JSON 2,589 → 1,945 bytes | 24.9% smaller arguments, only 644 bytes across the discovery corpus |
+
+**Failure context.** `scripts/failure-context.mjs` uses only completed failure output: at most four supported relative Python file/line pointers, ±20-line windows, 160 lines total. Among 43 failure-bearing test turns it produces 28 plans. Seven following turns include reads, but none is a supported pure bounded-read turn. Two mixed turns contain parseable requested ranges; one has partial coverage, totaling 24 of 72 parseable requested lines. No full turns are covered. The 2,720 proposed lines are a budget, not reconstructed historical source; unsupported mixed commands leave incomplete labels. Eleven fixture checks pass. This count differs from the earlier failure-context miner because it also accepts quoted Python traceback frames and uses test-run tags.
+
+**Test locator.** `scripts/test-locator-probe.py` compares filename words from up to four previously requested source files with original-base test filenames, returns at most four matches, and excludes already mentioned test paths. All 60 base trees were available. It proposes 80 paths on 61 turns; 36 following turns have supported explicit test-file operands, and 15 proposal turns match at least one (16 matched paths across ten issues). The 64 unmatched suggestions are not proven irrelevant. Seven matching turns also edit code, and four only read/search. A path list does not replace any of those actions. Suggestion text totals 2,343 bytes (~38 per proposal), excluding wrappers, source contents, and tokenizer effects. Thirteen fixtures pass, including search-pattern versus path handling, pytest selectors, heredoc/wildcard abstention, and original-tree/symlink exclusion. Git output is captured from trusted local repositories; the tree-size limit is checked after capture, not a process-memory bound.
+
+**Compact reads.** `scripts/compact-read.mjs` parses a conservative subset of whole read-only shell turns into tuples and executes bounded, numbered multi-file reads. Arguments use `{"r":[["file.py",10,30],[null,50,70]]}`; a null path repeats the preceding path, and a null end reads through EOF subject to caps. All 24 supported turns had successful recorded shell results. Single-range arguments total 707 → 575 bytes over 13 turns; multi-range arguments total 1,882 → 1,370 over 11 turns (-27.2%). Five turns include unbounded historical `cat` reads whose runtime eligibility is unknown. Verbose object arguments would instead total 3,509 bytes (+35.5%), so representation matters. Both sides include argument JSON envelopes; tool names, schemas, and unchanged execution metadata are excluded. No tokenizer, billing, task-quality, or model-call savings were measured. Numbered output may add input tokens, and the model still selects every path/range. Nine fixtures pass, covering output fidelity, truncation, serialized JSON caps, and traversal/symlink/FIFO rejection. The reader assumes a trusted, quiescent workspace and is not a sandbox against concurrent directory changes.
+
+Run checks with:
+
+```sh
+node scripts/failure-context-check.mjs
+python3 scripts/test-locator-check.py
+node scripts/compact-read-test.mjs
+```
+
+Replays are `failure-context-replay.mjs`, `test-locator-probe.py`, and `compact-read-mine.mjs`; they need the private corpus. The test locator is worth testing alongside search context on new issues. Compact reads offer modest argument compression; failure-context injection currently has weak coverage and substantial potential overhead.

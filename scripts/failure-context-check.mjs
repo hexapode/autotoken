@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {planFailureContext,rangeCoverage} from './failure-context.mjs';
+assert.equal(planFailureContext('src/a.py:42: AssertionError\n1 passed in 0.1s').status,'no_failure_evidence');
+const example=planFailureContext('src/a.py:42: AssertionError\n1 failed in 0.1s');assert.deepEqual(example.ranges,[{path:'src/a.py',start:22,end:62}]);
+assert.equal(planFailureContext('../a.py:42: AssertionError\n1 failed').status,'no_supported_pointers');
+assert.equal(planFailureContext('/tmp/a.py:42: AssertionError\n1 failed').status,'no_supported_pointers');
+assert.equal(planFailureContext('.venv/a.py:42: AssertionError\n1 failed').status,'no_supported_pointers');
+assert.equal(planFailureContext('src/a.py:42: DeprecationWarning\n1 failed').status,'no_supported_pointers');
+const merged=planFailureContext('src/a.py:42: AssertionError\nsrc/a.py:43: AssertionError\n1 failed');assert.equal(merged.proposedLines,42);
+const cap=planFailureContext(Array.from({length:20},(_,i)=>`src/a${i}.py:50: AssertionError`).join('\n')+'\n1 failed');assert.equal(cap.pointers.length,4);assert.equal(cap.proposedLines,160);
+assert.equal(rangeCoverage(example.ranges,[{path:'src/a.py',start:30,end:40}]).allCovered,true);
+assert.equal(rangeCoverage(example.ranges,[{path:'src/a.py',start:60,end:70}]).coveredLines,3);
+assert.equal(rangeCoverage(example.ranges,[{path:'src/b.py',start:30,end:40}]).coveredLines,0);
+console.log('11 failure-context planner and coverage checks passed');
