@@ -132,13 +132,14 @@ test('mid-stream upstream failure is not misclassified as client cancellation', 
   stream.write('data: {}\n\n'); await started; stream.destroy(new Error('socket failed'));
   await running; assert.equal((await trace()).metadata.state, 'failed');
 });
-test('compressed responses stay byte-exact with unknown usage, malformed SSE is inspectable', async t => {
+test('compressed responses stay byte-exact with recovered usage, malformed SSE is inspectable', async t => {
   const compressed = gzipSync('{"usage":{"total_tokens":12}}');
   const { handler, directory } = await setup(t, async () => upstream(compressed, { 'content-type': 'application/json', 'content-encoding': 'gzip' }));
   const res = new ResponseSink(); await handler(request('{}'), res);
   assert.deepEqual(res.bytes(), compressed);
   const summary = await summarizeTraces(directory);
-  assert.equal(summary.callsWithoutTokenUsage, 1);
+  assert.equal(summary.callsWithoutTokenUsage, 0);
+  assert.equal(summary.knownTotalTokens, 12);
   const parsed = inspectResponse(Buffer.from('data: broken\n\ndata: {"choices":[]}\n\n'), { 'content-type': 'text/event-stream' });
   assert.equal(parsed.malformedEvents, 1); assert.equal(parsed.done, false);
 });

@@ -75,3 +75,14 @@ The discovery collection exhausted its inventory with 331 requests: 40 completed
 Heuristic tags show initial search in 39/40 runs and initial workspace inspection in 38/40. These are frequently bundled with issue-specific search terms, so replacing only `pwd` or `git status` would not remove the whole call. Manual inspection plus a strict command-only filter finds nine turns on nine distinct issues containing only Git diff/status commands. Several ask for the actual patch, beyond the existing workflow's whitespace check and statistics.
 
 Next candidate: return a bounded patch-review packet (diff, whitespace check, status) once per changed patch, retaining model review and fallback. This is a candidate for an independent paired test, not nine demonstrated saved calls. Do not use the discovery issues to claim held-out performance. No learned router or replacement program was activated by this analysis.
+
+
+## Parallel collection
+
+`node --env-file=.env.anthropic src/workflow-trial.js OUTPUT 50 PLAN claude-opus-5-5 3` runs up to three independent issue/repetition blocks concurrently. Arms within each block retain the planned sequential order. Each task has its own checkout, home, environment, proxy, and trace directory. One process owns the synchronous reservation/settlement ledger; in-flight reservations count against the same total budget before dispatch. Separate processes must not share a ledger.
+
+Send SIGUSR2 to the PID in `trial.lock` to drain: finish active tasks, then stop scheduling. SIGINT/SIGTERM interrupts active tasks. Resume ordinarily requires identical runtime hashes. An explicit `--migrate-runtime` on a stopped trial records old/new hashes for an intentional migration; plan, model, dataset revision, and budget must still match.
+
+The Opus trial moved from serial to three workers after seven completed runs. One interrupted attempt was archived, with its charges retained, before retrying that task. Existing compressed Anthropic responses were reanalyzed locally to recover usage; original raw bytes and pre-recovery metadata remain available locally. Unknown/interrupted usage retains its reservation. Compression decoding is bounded to 16 MiB and does not alter forwarded bytes.
+
+Parallelism changes machine contention. Do not interpret serial-versus-parallel run times as a treatment effect; report the scheduling transition and analyze model calls/tokens separately. The $50 cap covers both phases and the interrupted attempt.

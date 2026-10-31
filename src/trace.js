@@ -2,11 +2,18 @@ import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
+import { gunzipSync, inflateSync, brotliDecompressSync } from 'node:zlib';
 import { inspectAnthropicResponse } from './trace-anthropic.js';
 
 // Analysis is separate from forwarding. Unknown events remain intact in response.bin.
 export function inspectResponse(buffer, headers, endpoint = '/v1/chat/completions') {
-  if (headers['content-encoding'] && headers['content-encoding'] !== 'identity') return { usage: null, parseError: 'Compressed response retained raw; analysis unavailable' };
+  const encoding = String(headers['content-encoding'] || 'identity').toLowerCase();
+  if (encoding !== 'identity') {
+    const decode = { gzip: gunzipSync, deflate: inflateSync, br: brotliDecompressSync }[encoding];
+    if (!decode) return { usage: null, parseError: 'Unsupported response compression' };
+    try { buffer = decode(buffer, { maxOutputLength: 16 * 1024 * 1024 }); }
+    catch { return { usage: null, parseError: 'Invalid or oversized compressed response' }; }
+  }
   if (endpoint === '/v1/messages') return inspectAnthropicResponse(buffer, headers);
   const text = buffer.toString('utf8');
   if (!String(headers['content-type']).includes('text/event-stream')) {
