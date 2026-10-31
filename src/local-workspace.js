@@ -4,6 +4,7 @@ import { seedPydicomFixtures } from './warm-workspace.js';
 import { localEnvironment } from './local-tool.js';
 
 export function localProfile(task) {
+  if (task.repo === 'asottile/pyupgrade') return {python:'3.9',testPath:'tests',packages:['setuptools==69.5.1','wheel==0.46.3','pytest==7.4.4','tokenize-rt==5.2.0']};
   if (!['marshmallow-code/marshmallow', 'pydicom/pydicom', 'pylint-dev/astroid'].includes(task.repo)) throw new Error('No verified local environment profile for this issue; use Docker or add a tested profile');
   return { python: task.repo === 'pylint-dev/astroid' ? '3.10' : '3.9', testPath: task.repo === 'pydicom/pydicom' ? 'pydicom/tests' : 'tests', packages: [task.repo === 'pylint-dev/astroid' ? 'setuptools==65.6.3' : 'setuptools==68.2.2', 'wheel==0.42.0', 'pytest==6.2.5', 'python-dateutil==2.8.2', 'simplejson==3.19.2', 'pytz==2021.3', 'packaging==24.2', ...(task.repo === 'pylint-dev/astroid' ? ['wrapt==1.14.1', 'lazy-object-proxy==1.9.0', 'typing_extensions==4.12.2', 'attrs==23.2.0', 'six==1.16.0'] : []), ...(task.repo === 'pydicom/pydicom' ? ['numpy==1.23.5', 'Pillow==9.5.0'] : [])] };
 }

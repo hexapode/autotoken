@@ -17,6 +17,6 @@ export async function seedPydicomFixtures(repo,home,sourceHome){
 }
 export function publicInventoryTask(task,options){
  if(options.execution!=='local'||task.instance_id!==options.instance||! /^[a-f0-9]{40}$/.test(task.base_commit)||! /^[a-f0-9]{40}$/.test(options.revision||''))throw Error('Invalid pinned local task');
- if(!['marshmallow-code/marshmallow','pydicom/pydicom','pylint-dev/astroid'].includes(task.repo)||typeof task.problem_statement!=='string')throw Error('Unsupported public task');
+ if(!['marshmallow-code/marshmallow','pydicom/pydicom','pylint-dev/astroid','asottile/pyupgrade'].includes(task.repo)||typeof task.problem_statement!=='string')throw Error('Unsupported public task');
  return {instance_id:task.instance_id,repo:task.repo,base_commit:task.base_commit,problem_statement:task.problem_statement,version:task.version,dataset:options.dataset,split:options.split,revision:options.revision};
 }

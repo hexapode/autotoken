@@ -29,3 +29,11 @@ test('model shell text is one container argument, never a host shell expression'
   assert.equal(args[0], 'exec'); assert.equal(args[3], 'm2c-swe-0123456789abcdef');
   assert.throws(() => dockerCommand('other-container', 'true'));
 });
+
+test('read-repair arms have identical public prompts and keep evaluator data out', () => {
+  const task = {repo:'fixture/repo',instance_id:'fixture__repo-1',problem_statement:'Fix behavior',test_patch:'PRIVATE_ORACLE',patch:'PRIVATE_GOLD'};
+  const baseline=taskPrompt(task,'local','read-range-baseline');
+  assert.equal(baseline,taskPrompt(task,'local','read-range-repair'));
+  assert.match(baseline,/str_replace_editor/);
+  assert.doesNotMatch(baseline,/PRIVATE_|repair|retry/);
+});

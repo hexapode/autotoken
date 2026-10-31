@@ -354,3 +354,54 @@ python3 scripts/mine-public-mini-test.py
 ```
 
 Only [aggregate results](../../docs/public-mining-summary.json), fixture code and planners are published. Event-level evidence remains on the external data volume. Dataset attribution and pinned revisions are in the public sample section above.
+
+### Fresh-task live read-repair trial
+
+`src/read-range-tool.js` implements the bounded oversized-read repair with one
+retry. Both Pi arms advertise identical `local_bash` and view-only
+`str_replace_editor` tools and receive the same prompt. Only the treatment
+executor retries the supported native range error. Valid reads have identical
+outputs. This is Pi with an OpenHands-style read tool, not a full OpenHands run.
+No errors are injected into the live tasks. A fixed rule routes this program;
+there is no learned routing-model call to subtract from usage.
+
+`scripts/read-range-integration.mjs` runs real Pi, tools and proxy against a
+scripted local provider: baseline makes three requests and treatment two, with
+identical retrieved source. That establishes the mechanism, not live savings.
+Eight read-tool fixtures and runner checks cover supported errors, abstention,
+bounds, paths and identical prompts.
+
+The live protocol fixes Opus 5.5, medium reasoning, 20 requests and 600 seconds
+per run, three repeats, balanced arm order and three parallel issue workers.
+Each run gets a fresh checkout and environment. The repository suite must pass
+before inference. Dataset test patches remain host-only and are applied to
+separate original and patched checkouts after inference; gold source patches
+are never read. Evaluation is local, not the official SWE-bench evaluator.
+Code hashes, task identities and schedule are frozen in the private protocol.
+The durable request ledger shares the existing authorized experiment ceiling;
+unfinished and failed requests retain conservative charges.
+
+Tasks come from `nebius/SWE-bench-extra`, train revision
+`11dcbfb30e19552df2a2f8030bd764adc95c92a5`, excluding known local issues and public
+sample issue/base groups. Preflight initially admitted six pyupgrade issues.
+A stricter terminal JUnit-message classifier caught an error immediately after
+inference began: traceback text containing an assertion had admitted three
+exception failures. Issues 146, 143 and 135 are excluded from the strict cohort;
+890, 142 and 104 qualify. All runs and spending remain reported. This correction
+was made before examining the affected paired outcomes. Trial environments
+independently rerun the baseline suite with Python 3.9, pytest 7.4.4,
+tokenize-rt 5.2.0, setuptools 69.5.1 and wheel 0.46.3.
+
+`scripts/read-range-report.mjs` reports complete strict pairs separately from
+excluded and incomplete runs. Repository-suite and independent bug-test outcomes
+are retained beside call/token counts. Conflicting agent test edits reject the
+host oracle rather than silently weakening it. In particular, a lower call count
+with **no automatic retry** is sampling variation, not evidence of program savings.
+
+```sh
+node scripts/read-range-integration.mjs
+node --test test/read-range-tool.test.js test/dataset-oracle.test.js test/swe-runner.test.js
+# Requires a private, preflighted task catalog and an unused allocation guard:
+node --env-file=.env.anthropic src/read-range-trial.js /path/to/preflight
+node scripts/read-range-report.mjs data/experiments/read-range-live-v1
+```
