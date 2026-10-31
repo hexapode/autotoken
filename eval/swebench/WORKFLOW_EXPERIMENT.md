@@ -273,3 +273,14 @@ node scripts/compact-read-test.mjs
 ```
 
 Replays are `failure-context-replay.mjs`, `test-locator-probe.py`, and `compact-read-mine.mjs`; they need the private corpus. The test locator is worth testing alongside search context on new issues. Compact reads offer modest argument compression; failure-context injection currently has weak coverage and substantial potential overhead.
+
+
+### Final local discovery pass
+
+A further three-agent pass used the same 455 baseline discovery decisions (60 runs / 28 issues), without paid calls or evaluation-fold inspection:
+
+- **Read-output deduplication:** 55 strictly parsed read/search-only turns and 17 pure bounded-read turns yielded zero same-turn range overlaps, zero cross-turn overlaps within conservative read-only epochs, and zero identical complete read payloads over 80 bytes. `scripts/read-dedup.mjs` supplies a bounded union/reference planner, with ten passing checks. Union requires an immutable snapshot; cross-turn references require matching whole-file fingerprints and confirmation that referenced text remains available after context compaction. Otherwise content must be resent. No observed bytes or calls saved.
+- **Reusable Python inspection:** 140 recognized heredoc blocks contained 18 without recognized writes, but only two unrelated inspection examples (runtime `type` and type hints). No recurring signature/source/module-location procedure or safe static equivalent was found. The AST-only audit does not execute recorded code; absence of recognized writes is not proof of purity. Ten checks pass for `scripts/python-inspection-audit.py`. Candidate rejected for insufficient recurrence.
+- **Targeted failed-test reruns:** among 40 failure-summary turns, 39 have a single supported tool action. A conservative prior-output planner produces 22 plans across 16 issues, but zero exact next pytest argv matches and zero exact failed-node-set matches. Seventeen following turns run recognizable pytest; thirteen also edit. Plans add 4,200 JSON bytes. Five fixture groups pass for `scripts/targeted-rerun.py`, which never executes commands and would require registered environment and confirmed patch-change metadata before any live use. Automatic routing is not supported by this replay.
+
+Checks: `node scripts/read-dedup-check.mjs`, `python3 scripts/python-inspection-check.py`, and `python3 scripts/targeted-rerun-test.py`. These negative results support broadening the discovery corpus before further local mining.

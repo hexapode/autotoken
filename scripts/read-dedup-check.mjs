@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import {unionReadRanges,planOutputReferences} from './read-dedup.mjs';
+const r=(start,end,path='src/a.py')=>({path,start,end});
+assert.equal(unionReadRanges([r(1,10),r(5,15)]).duplicateRequestedLines,6);
+assert.equal(unionReadRanges([r(1,10),r(11,20)]).duplicateRequestedLines,0);
+assert.equal(unionReadRanges([r(1,10),r(5,15,'src/b.py')]).duplicateRequestedLines,0);
+assert.equal(unionReadRanges([r(1,10),r(1,10),r(1,10)]).duplicateRequestedLines,20);
+assert.equal(unionReadRanges([r(1,10,'../a.py')]).status,'abstained');
+assert.equal(unionReadRanges([r(1,10001)]).status,'abstained');
+const prior={...r(1,10),fingerprint:'a'.repeat(64),sourceId:'turn1'};
+assert.equal(planOutputReferences([{...prior,start:3,end:5,sourceId:'turn2'}],[prior]).items[0].kind,'reference');
+assert.equal(planOutputReferences([{...prior,fingerprint:'b'.repeat(64)}],[prior]).items[0].kind,'read');
+assert.equal(planOutputReferences([{...prior,end:20}],[prior]).items[0].kind,'read');
+assert.equal(planOutputReferences([r(1,10)],[prior]).status,'abstained');
+console.log('10 read-union and fingerprint reference checks passed');
