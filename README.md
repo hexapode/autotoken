@@ -31,7 +31,7 @@ No API key or model calls are required for the demo. Search-with-context, expand
 
 Three additional research prototypes preserve test-process status, guard exact-text edits, and compare identical regression tests on original and patched code. Their local fixture checks pass; no new model-call savings are established. See [prototype results and check commands](eval/swebench/WORKFLOW_EXPERIMENT.md#three-reliability-program-prototypes). They are opt-in source-checkout scripts, not activated proxy routes.
 
-The discovery corpus also includes **300 public trajectories / 11,525 assistant turns** from SWE-agent, OpenHands, and mini-SWE-agent-plus. See [sources, sampling, and importer commands](eval/swebench/WORKFLOW_EXPERIMENT.md#public-multi-harness-discovery-sample). Raw data stays outside the repository; [aggregate metadata](docs/public-traces-summary.json) is public.
+The discovery corpus also includes **300 public trajectories / 11,525 assistant turns** from SWE-agent, OpenHands, and mini-SWE-agent-plus. See [sources, sampling, and importer commands](eval/swebench/WORKFLOW_EXPERIMENT.md#public-multi-harness-discovery-sample). Raw data stays outside the repository; [aggregate metadata](docs/public-traces-summary.json) is public. Discovery replay found 42/49 matching read repairs, 22/23 matching unique-line navigation steps, and 469/584 matching write-then-run commands. These are predicted next actions, not demonstrated saved calls; [methods and limits](eval/swebench/WORKFLOW_EXPERIMENT.md#mining-the-public-multi-harness-sample).
 
 ## Install
 

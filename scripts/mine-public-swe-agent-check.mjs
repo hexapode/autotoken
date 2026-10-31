@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {planUniqueNavigation as plan} from './mine-public-swe-agent-plan.mjs';
+const file='Found 1 matches for "a.py" in /repo:\n/repo/pkg/a.py\n\n(Open file: n/a)\n(Current directory: /repo)\nbash-$';
+assert.equal(plan({command:'find_file "a.py"',output:file}).action.command,'open /repo/pkg/a.py');
+assert.equal(plan({command:'find_file "a.py"',output:file.replace('Found 1','Found 2')}).status,'abstained');
+assert.equal(plan({command:'find_file "a.py"',output:file.replace('/repo/pkg/a.py','/other/a.py')}).status,'abstained');
+assert.equal(plan({command:'find_file "a.py"',output:file.replace('/repo/pkg/a.py','/repo/../a.py')}).status,'abstained');
+assert.equal(plan({command:'find_file "a.py"',output:file.replace('/repo/pkg/a.py','/repo/a.py\n/repo/b.py')}).status,'abstained');
+assert.equal(plan({command:'find_file a.py\nrm a.py',output:file}).status,'abstained');
+const search='Found 1 matches for "class X" in /repo/a.py:\nLine 20:class X:\nEnd of matches\n(Open file: /repo/a.py)\n(Current directory: /repo)\nbash-$';
+assert.equal(plan({command:'search_file "class X"',output:search}).action.command,'goto 20');
+assert.equal(plan({command:'search_file "class X"',output:search.replace('Open file: /repo/a.py','Open file: /repo/b.py')}).status,'abstained');
+assert.equal(plan({command:'find_file a.py; rm a.py',output:file}).status,'abstained');
+assert.equal(plan({command:'find_file b.py',output:file}).status,'abstained');
+assert.equal(plan({command:'search_file "class X" b.py',output:search}).status,'abstained');
+assert.equal(plan({command:'search_file "class X" a.py',output:search}).action.command,'goto 20');
+console.log('12 SWE-agent navigation planner checks passed');

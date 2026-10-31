@@ -314,3 +314,43 @@ python3 scripts/audit-public-traces.py --output /path/to/external/autotoken/publ
 ```
 
 The normalizer's nine synthetic checks cover message preservation, role conversion, custom actions, tool-ID alignment, terminal completion, missing results, ambiguous commands and grouped variants. The corpus audit confirms unique issues per harness, no known-local issue overlap, consistent discovery folds and preserved message counts. The normalization and audit scripts require the existing local fold manifest to reproduce its exclusions and refuse to run if it is absent.
+
+
+### Mining the public multi-harness sample
+
+One agent mined each harness, followed by independent reruns of all miners and 37 fixture checks. The source is the 300-record public discovery sample above. No held-out conversations, paid inference, or recorded commands/script bodies were executed. Proposals are computed from prior completed tool output; next actions and their outputs are retrospective labels. Candidate policies were developed on this discovery sample, so these results need frozen-policy testing on separate issue/base groups.
+
+| Candidate | Proposals | Next-action match | Matched issue coverage |
+| --- | ---: | --- | --- |
+| SWE-agent unique line → `goto` | 23 / 22 issues | 22 exact actions | 21 issues |
+| SWE-agent unique file → `open` | 62 / 43 issues | 39 exact actions | 26 issues |
+| OpenHands oversized view → bounded retry | 49 / 30 issues | 34 exact + 8 equivalent EOF reads | 28 issues combined |
+| mini-SWE write script → run | 584 / 100 issues / 70 base groups | 469 exact actions | 83 issues / 61 base groups |
+| mini-SWE edit source → rerun previous script | 167 / 68 issues / 56 base groups | 75 exact actions | 52 issues / 43 base groups |
+
+**SWE-agent navigation.** The typed `open`/`goto` planner in `scripts/mine-public-swe-agent-plan.mjs` respects SWE-agent custom-tool semantics, unique result counts, safe paths, current open-buffer state, and explicit search filenames. All 61 matched next navigation actions display the expected file with no captured explicit error. They span 41 issues combined. Twelve fixture checks pass. One unique-line search leads directly to an edit, so navigation is not universally necessary. Some unmatched file opens include a line argument, deliberately excluded from the exact label.
+
+Failure loops also appear: 216 invalid-command outcomes across four issues, with 213 identical next commands across three issues. These counts are dominated by 210 repetitions of malformed `find. -name '*.html'` on a single issue. Rejected edits produce 247 events across 43 issues, but only 48 repeat the identical edit; semantic repair is usually needed. Of 53 scrolling actions, ten scroll again and 19 edit instead, leaving no reliable automatic stopping rule. The sample is mostly older Llama-based agents (92 70B records, seven 8B, one 405B), so these loops do not establish generality to current models.
+
+**OpenHands view repair.** `repair_view` in `scripts/mine-public-openhands.py` uses the failed request and exact native error-reported line count, preserves the start line, clamps only the oversized end, and allows one retry with a maximum 250-line request. It assumes an unchanged file version and an immediate serialized retry; another error requires fallback. Of 52 range errors, 49 are supported. All 42 matched subsequent reads have the native numbered-output header and every requested line. Five terminal non-finish result gaps are excluded from success labels. Nineteen fixtures check repair behavior, refusal conditions, one-retry policy and native source-read evidence. Equivalent EOF matches require the same start/path and supported argument keys; they are kept separate from exact arguments.
+
+Other OpenHands policies are much weaker: expanding 734 bounded reads covers 66 next ranges (two already covered) but could add 52,939 lines; 21 failed replacements yield nine same-file views; repeating a previous passing pytest command after 815 successful edits matches only four next commands; 76 traceback opportunities cover six next read ranges. Its native editor already implements exact replacement, so another replacement tool is not itself a new optimization.
+
+**mini-SWE write-and-run.** `plan_script_run` in `scripts/mine-public-mini.py` recognizes a strict successful single-file heredoc write and proposes a fixed registered `python <path>` action before inspecting the next turn. The plan binds the script hash, restricts paths/size and requires an explicit run-after-write policy. It is inert: arbitrary script content is not executed by mining or fixtures. Six fixture groups pass, including early heredoc terminators and exclusion of bundled setup from exact matches. Of 584 proposals, 469 (80.3%) exactly match the next whole action; another 67 appear only within larger commands, and six use different interpreters. Automatic execution after every write would therefore be too broad. The 469 matching next outputs show 440 zero exits and 29 nonzero exits; those are script process results, not bug-resolution labels. Replacing an assistant turn could remove useful reasoning, and full-task quality is untested.
+
+A compact wrapper around mini-SWE's existing edit helper reduces argument JSON from 305,580 to 280,242 bytes across 246 edits (25,338 bytes / 8.3%). That excludes schema/tool-name/output-token costs. Of 99 terminal handoffs, 94 use identical commands, but completion intent cannot be inferred from passing tests alone. These remain smaller secondary candidates.
+
+The bounded read-repair and navigation planners are the clearest next live-test candidates. Write-and-run has greater observed coverage but needs an explicit combined operation with interpreter/environment registration and separate evaluation. None of these replay matches is an observed avoided model call, and no learned router has been activated.
+
+Reproduce with the external normalized corpus:
+
+```sh
+node scripts/mine-public-swe-agent.mjs /path/to/sample.jsonl /path/to/mining/swe-agent
+python3 scripts/mine-public-openhands.py --input /path/to/sample.jsonl --output /path/to/mining/openhands
+python3 scripts/mine-public-mini.py --input /path/to/sample.jsonl --output /path/to/mining/mini
+node scripts/mine-public-swe-agent-check.mjs
+python3 scripts/mine-public-openhands-check.py
+python3 scripts/mine-public-mini-test.py
+```
+
+Only [aggregate results](../../docs/public-mining-summary.json), fixture code and planners are published. Event-level evidence remains on the external data volume. Dataset attribution and pinned revisions are in the public sample section above.

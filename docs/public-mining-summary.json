@@ -1,0 +1,213 @@
+{
+  "corpus": "public-traces-summary.json",
+  "kind": "discovery-only-next-action-replay",
+  "causalSavingsMeasured": false,
+  "scope": "300 imported trajectories; programs proposed from completed prior tool output; next actions used as labels only",
+  "sweAgent": {
+    "denominator": {
+      "records": 100,
+      "issues": 100,
+      "turns": 2316,
+      "actions": 2314,
+      "unsupportedActionTurns": 1
+    },
+    "modelRecords": {
+      "swe-agent-llama-70b": 92,
+      "swe-agent-llama-8b": 7,
+      "swe-agent-llama-405b": 1
+    },
+    "summary": {
+      "unique_file_navigation": {
+        "events": 62,
+        "issues": 43,
+        "wholeNextActionMatches": 39,
+        "nextDisplayMatches": 39,
+        "nextExplicitErrors": 0,
+        "matchedWithoutDisplayEvidence": 0,
+        "matchedIssues": 26,
+        "nextVerbCounts": {
+          "open": 53,
+          "scroll_down": 1,
+          "search_file": 2,
+          "edit": 6
+        }
+      },
+      "unique_match_navigation": {
+        "events": 23,
+        "issues": 22,
+        "wholeNextActionMatches": 22,
+        "nextDisplayMatches": 22,
+        "nextExplicitErrors": 0,
+        "matchedWithoutDisplayEvidence": 0,
+        "matchedIssues": 21,
+        "nextVerbCounts": {
+          "goto": 22,
+          "edit": 1
+        }
+      },
+      "repeated_invalid_command": {
+        "events": 216,
+        "issues": 4,
+        "identicalNextCommand": 213,
+        "repeatIssues": 3
+      },
+      "repeated_rejected_edit": {
+        "events": 247,
+        "issues": 43,
+        "identicalNextCommand": 48,
+        "repeatIssues": 14
+      },
+      "scroll_continuation": {
+        "events": 53,
+        "issues": 24,
+        "nextSameScroll": 10,
+        "nextIsEdit": 19
+      }
+    },
+    "limitations": [
+      "SWE-agent custom commands are not bash; no recorded action executed.",
+      "Unique navigation proposals use only prior result and current harness state; next action is an offline label.",
+      "Navigation changes open-file state; deployment must use a harness adapter and preserve state/observations.",
+      "Exact next action matches are opportunities, not avoided calls or proven task outcomes.",
+      "Repeated failed actions may warrant cycle detection but returning the same error alone cannot repair model reasoning or save the generation already made.",
+      "Scroll continuation does not reveal a safe stop condition in prior information.",
+      "Sample is discovery-only:92 records use swe-agent-llama-70b,7 llama-8b,1 llama-405b; no token/timing usage. Failure loops are not evidence of modern model generality."
+    ]
+  },
+  "openhands": {
+    "denominator": {
+      "records": 100,
+      "issues": 100,
+      "turns": 5929,
+      "eligibleAdjacentPairs": 5823,
+      "viewRangeErrors": 52
+    },
+    "missingTargetResults": 5,
+    "summary": {
+      "view_range_repair": {
+        "events": 49,
+        "issues": 30,
+        "exactNextAction": 34,
+        "sameReadToEOF": 42,
+        "nextSucceeded": 42,
+        "equivalentEOFOnly": 8,
+        "exactMatchIssues": 21,
+        "equivalentMatchIssues": 28
+      },
+      "view_expansion": {
+        "events": 734,
+        "issues": 96,
+        "nextSameFileView": 164,
+        "nextRangeCovered": 66,
+        "alreadyCovered": 2,
+        "proposedAdditionalLines": 52939
+      },
+      "edit_failure_readback": {
+        "events": 21,
+        "issues": 12,
+        "nextSameFileView": 9,
+        "nextAnotherEdit": 3,
+        "failures": {
+          "missing_text": 13,
+          "unchanged": 6,
+          "ambiguous": 2
+        }
+      },
+      "edit_followed_by_prior_pytest": {
+        "events": 815,
+        "issues": 91,
+        "exactNextCommand": 4,
+        "nextAnyPytest": 31
+      },
+      "test_failure_source_context": {
+        "events": 76,
+        "issues": 36,
+        "nextViewRangeCovered": 6
+      }
+    },
+    "limitations": [
+      "Discovery observations only; no frozen heldout evaluation or causal savings.",
+      "Proposal inputs precede target actions; next-action comparisons label potential only.",
+      "Native structured edits already exist: another exact-replacement API is not a new optimization here.",
+      "Output expansion adds context; historical file content beyond displayed ranges is unavailable.",
+      "Exact tool-action reproduction does not establish preservation of assistant reasoning or task success.",
+      "Read repair prototype emits bounded arguments only; no source files, imports or recorded commands executed.",
+      "Repair assumes unchanged file version and immediate serialized retry; any repeated error falls back.",
+      "Pytest loop is a compatibility label, not authorization to run tests after every edit.",
+      "All missing non-finish tool-result targets excluded; finish calls normally have no tool result."
+    ]
+  },
+  "mini": {
+    "denominator": {
+      "records": 100,
+      "issues": 100,
+      "repoBaseGroups": 70,
+      "assistantTurns": 3280,
+      "actions": 3274,
+      "unsupportedActionTurns": 6
+    },
+    "summary": {
+      "write_then_run": {
+        "events": 584,
+        "issues": 100,
+        "repoBaseGroups": 70,
+        "wholeNextActionMatches": {
+          "events": 469,
+          "issues": 83,
+          "repoBaseGroups": 61
+        },
+        "substepOnlyMatches": 67,
+        "wholeMatchExitZero": 440,
+        "wholeMatchExitNonzero": 29,
+        "wholeMatchExitUnknown": 0,
+        "differentInterpreterSamePath": 6,
+        "proposalArgumentBytes": 24715
+      },
+      "source_edit_then_rerun": {
+        "events": 167,
+        "issues": 68,
+        "repoBaseGroups": 56,
+        "wholeNextActionMatches": {
+          "events": 75,
+          "issues": 52,
+          "repoBaseGroups": 43
+        },
+        "substepOnlyMatches": 1
+      },
+      "compact_edit_wrapper": {
+        "events": 246,
+        "issues": 97,
+        "repoBaseGroups": 68,
+        "originalArgumentBytes": 305580,
+        "compactArgumentBytes": 280242
+      },
+      "terminal_handoff": {
+        "events": 99,
+        "issues": 99,
+        "repoBaseGroups": 70,
+        "exactStandardCommand": 94,
+        "cleanupVariants": 5,
+        "lastTurns": 99
+      }
+    },
+    "limitations": [
+      "Synthetic issue variants share repository/base groups; counts are not independent trials.",
+      "Reported outcomes, model identities, token usage, latency and costs are absent.",
+      "Assistant turns are not measured API query counts.",
+      "Source observations are inert evidence; no imported commands executed and no bug success independently verified.",
+      "Write-run policy fixes registered interpreter python before labels; runtime must register actual environment and require explicit opt-in.",
+      "A file write is not authorization to execute arbitrary code; planner stays inactive without explicit run-after-write policy.",
+      "Whole-next-command matches are observational opportunities, not causally proven calls saved.",
+      "Script hash must be checked before execution and may be stale; script contents are not statically proven safe.",
+      "Terminal handoff needs explicit completion intent; cannot infer completion from previous test success.",
+      "Compact edit utility already exists; replacing its shell wrapper may reduce generated bytes, not a whole turn.",
+      "Byte comparisons include argument JSON, exclude tool names/schema, and do not establish token savings."
+    ]
+  },
+  "fixtureChecks": {
+    "sweAgentNavigation": 12,
+    "openhandsRangeRepair": 19,
+    "miniWriteRunPlanner": 6
+  },
+  "nextStep": "Freeze policies, evaluate separate issue/base groups, then compare full live tasks including routing/fallback costs."
+}
